@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product">
+    
+    
+    <!-- 제품 조회 -->
+	<select id="getProductList" parameterType="product" resultType="product">
+		SELECT *
+		FROM tb_product
+		WHERE 1=1
+	</select>
+    <!-- 제품 등록 (INSERT) -->
+    <insert id="productInsertSave" parameterType="product">
+	        INSERT INTO tb_product (
+	        prod_code,
+	        corp_code,
+	        prod_name,
+	        prod_no,
+	        prod_gyu,
+	        prod_jai,
+	        prod_fac1,
+	        prod_fac2,
+	        prod_fac3,
+	        prod_fac4,
+	        prod_fac5,
+	        prod_fac6,
+	        prod_gubn,
+	        prod_cno,
+	        prod_model,
+	        corp_name
+	    )
+	    SELECT
+	        CONCAT('P', LPAD(COALESCE(MAX(CAST(SUBSTRING(prod_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+	        #{corp_code},
+	        #{prod_name},
+	        #{prod_no},
+	        #{prod_gyu},
+	        #{prod_jai},
+	        #{prod_fac1},
+	        #{prod_fac2},
+	        #{prod_fac3},
+	        #{prod_fac4},
+	        #{prod_fac5},
+	        #{prod_fac6},
+	        #{prod_gubn},
+	        #{prod_cno},
+	        #{prod_model},
+	        #{corp_name}
+	    FROM tb_product
+    </insert>
+    
+    <!-- 제품 업데이트 -->
+    <update id="productUpdateSave" parameterType="product">
+	    UPDATE tb_product
+	    SET
+	        corp_code = #{corp_code},
+	        corp_name = #{corp_name},
+	        prod_name = #{prod_name},
+	        prod_no = #{prod_no},
+	        prod_gyu = #{prod_gyu},
+	        prod_jai = #{prod_jai},
+	        prod_fac1 = #{prod_fac1},
+	        prod_fac2 = #{prod_fac2},
+	        prod_fac3 = #{prod_fac3},
+	        prod_fac4 = #{prod_fac4},
+	        prod_fac5 = #{prod_fac5},
+	        prod_fac6 = #{prod_fac6},
+	        prod_gubn = #{prod_gubn},
+	        prod_cno = #{prod_cno},
+	        prod_model = #{prod_model}
+	    WHERE prod_code = #{prod_code}
+	</update>
+    
+    
+    <!-- 제품 더블클릭 -->
+    <select id="productInsertDetail" parameterType="product" resultType="product">
+		SELECT *		 
+		  FROM tb_product, 
+		       tb_corp 
+		 WHERE tb_corp.corp_code = tb_product.corp_code 
+		       AND prod_code = #{prod_code}
+	</select>
+	
+	
+	<delete id="productDelete" parameterType="String">
+	    DELETE FROM tb_product
+	    WHERE prod_code = #{prod_code}
+	</delete>
+    
+</mapper>

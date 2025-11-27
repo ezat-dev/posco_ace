@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="measure">
+	
+	
+	<select id="getMeasureList" parameterType="measure" resultType="measure">
+		SELECT *
+		FROM tb_tester
+		WHERE 1=1
+	</select>
+	
+	<insert id="measureInsertSave" parameterType="measure">
+	    INSERT INTO tb_tester (
+	        ter_code,
+	        ter_name,
+	        ter_no,
+	        ter_model,
+	        ter_kind,
+	        ter_man,
+	        ter_bigo
+	    )
+	    SELECT
+	        CONCAT('T', LPAD(COALESCE(MAX(CAST(SUBSTRING(ter_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+	        #{ter_name},
+	        #{ter_no},
+	        #{ter_model},
+	        #{ter_kind},
+	        #{ter_man},
+	        #{ter_bigo}
+	    FROM tb_tester
+	</insert>
+	
+	<update id="measureUpdateSave" parameterType="measure">
+	    UPDATE tb_tester
+	    SET
+	        ter_name = #{ter_name},
+	        ter_no = #{ter_no},
+	        ter_model = #{ter_model},
+	        ter_kind = #{ter_kind},
+	        ter_man = #{ter_man},
+	        ter_bigo = #{ter_bigo}
+	    WHERE ter_code = #{ter_code}
+	</update>
+	
+	
+	
+    <select id="getMeasurmentDetail" parameterType="measure" resultType="measure">
+		SELECT *
+		FROM tb_tester
+		WHERE ter_code = #{ter_code}
+	</select>
+	
+	
+	<delete id="measureDelete" parameterType="String">
+	    DELETE FROM tb_tester
+	    WHERE ter_code = #{ter_code}
+	</delete>
+	
+    
+</mapper>

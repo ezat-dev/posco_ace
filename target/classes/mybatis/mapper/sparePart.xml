@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sparePart">
+	
+	
+
+	<select id="getSparePartList" parameterType="sparePart" resultType="sparePart">
+		SELECT *
+		FROM tb_sparepart
+		WHERE 1=1
+	</select>
+   
+   
+    <insert id="sparePartInsertSave" parameterType="sparePart">
+	    INSERT INTO tb_sparepart (
+	        spp_code,
+	        corp_code,
+	        corp_name,
+	        spp_no,
+	        spp_name,
+	        spp_gyu,
+	        spp_yong,
+	        spp_proper
+	    )
+	    SELECT
+	        CONCAT('S', LPAD(COALESCE(MAX(CAST(SUBSTRING(spp_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+	        #{corp_code},
+	        #{corp_name},
+	        #{spp_no},
+	        #{spp_name},
+	        #{spp_gyu},
+	        #{spp_yong},
+	        #{spp_proper}
+	    FROM tb_sparepart
+    </insert>
+    
+   
+    <update id="sparePartUpdateSave" parameterType="sparePart">
+	     UPDATE tb_sparepart
+   		 SET
+        corp_code = #{corp_code},
+        corp_name = #{corp_name},
+        spp_no = #{spp_no},
+        spp_name = #{spp_name},
+        spp_gyu = #{spp_gyu},
+        spp_yong = #{spp_yong},
+        spp_proper = #{spp_proper}
+   		WHERE spp_code = #{spp_code}
+	</update>
+    
+    
+ 
+    <select id="sparePartDetail" parameterType="sparePart" resultType="sparePart">
+			SELECT *
+	      FROM tb_sparepart sp
+	      LEFT JOIN tb_corp c
+	        ON sp.corp_code = c.corp_code
+	     WHERE spp_code = #{spp_code}
+	</select>
+	
+	
+	<delete id="sparePartDelete" parameterType="String">
+	    DELETE FROM tb_sparepart
+   		 WHERE spp_code = #{spp_code}
+	</delete>
+	
+	
+    
+</mapper>

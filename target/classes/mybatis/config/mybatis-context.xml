@@ -4,10 +4,19 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 <typeAliases>
-	<package name="com.chunil.domain"/>
+	<package name="com.mibogear.domain"/>
 </typeAliases>
   <mappers>
   	<mapper resource="mybatis/mapper/users.xml"/>
+  	<mapper resource="mybatis/mapper/corp.xml"/>
+  	<mapper resource="mybatis/mapper/product.xml"/>
+  	<mapper resource="mybatis/mapper/fac.xml"/>
+  	<mapper resource="mybatis/mapper/bega.xml"/>
+  	<mapper resource="mybatis/mapper/suri.xml"/>
+  	<mapper resource="mybatis/mapper/standard.xml"/>
+  	<mapper resource="mybatis/mapper/sparePart.xml"/>
+  	<mapper resource="mybatis/mapper/measure.xml"/>
+  	<mapper resource="mybatis/mapper/workStandard.xml"/>
 
   	<mapper resource="mybatis/mapper/condition.xml"/>
   	
@@ -16,6 +25,8 @@
   	
   	<!-- 기준정보관리 쿼리 -->
   	<mapper resource="mybatis/mapper/standardData.xml"/>
+  	
+  	<mapper resource="mybatis/mapper/droppedGoods.xml"/>
 
   </mappers>
 </configuration>

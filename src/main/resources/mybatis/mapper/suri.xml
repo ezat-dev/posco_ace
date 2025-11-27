@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="suri">
+
+	<select id="getSuriHistoryList" parameterType="suri" resultType="suri">
+	    SELECT 
+	        ROW_NUMBER() OVER (ORDER BY DATE_FORMAT(fx.ffx_date, '%Y-%m-%d')) AS row_num,
+	        fac.fac_no,
+	        fx.ffx_no,
+	        fac.fac_name,
+	        DATE_FORMAT(fx.ffx_date, '%Y-%m-%d') AS ffx_date,
+	        fx.ffx_wrk,
+	        fx.ffx_cost,
+	        fx.ffx_note,
+	        fx.ffx_next
+	    FROM tb_facfix fx
+	    INNER JOIN tb_fac fac
+	        ON fx.fac_code = fac.fac_code
+	    WHERE fx.ffx_date BETWEEN #{sdate} AND #{edate}
+	    ORDER BY fx.ffx_date, fac.fac_name
+	</select>
+
+	<select id="suriHistoryDetail" parameterType="suri" resultType="suri">
+	    SELECT 
+	        fx.ffx_no,
+	        fx.fac_code,
+	        DATE_FORMAT(fx.ffx_date, '%Y-%m-%d') AS ffx_date,
+	        fx.ffx_wrk,
+	        fx.ffx_note,
+	        fx.ffx_cost,
+	        fx.ffx_next
+	    FROM tb_facfix fx
+	    WHERE fx.ffx_no = #{ffx_no}
+	      AND fx.fac_code = #{fac_code}
+	</select>
+
+	
+	<insert id="suriHistoryInsertSave" parameterType="suri">
+	    INSERT INTO tb_facfix (
+	        fac_code,
+	        ffx_no,
+	        ffx_date,
+	        ffx_wrk,
+	        ffx_note,
+	        ffx_cost,
+	        ffx_next
+	    )
+	    SELECT
+	        #{fac_code},
+	        LPAD(IFNULL(MAX_NO, 0) + 1, 4, '0'),
+	        #{ffx_date},
+	        #{ffx_wrk},
+	        #{ffx_note},
+	        #{ffx_cost},
+	        #{ffx_next}
+	    FROM (
+	        SELECT MAX(CAST(ffx_no AS SIGNED)) AS MAX_NO
+	        FROM tb_facfix
+	        WHERE fac_code = #{fac_code}
+	    ) AS TMPS
+  </insert>
+
+	
+	<update id="suriHistoryUpdateSave" parameterType="suri">
+	    UPDATE tb_facfix
+	    SET 
+	        ffx_date = #{ffx_date},
+	        ffx_wrk = #{ffx_wrk},
+	        ffx_note = #{ffx_note},
+	        ffx_cost = #{ffx_cost},
+	        ffx_next = #{ffx_next}
+	    WHERE fac_code = #{fac_code}
+	      AND ffx_no = #{ffx_no}
+	</update>
+		
+		<delete id="suriHistoryDelete" parameterType="suri">
+	    DELETE FROM tb_facfix
+	    WHERE fac_code = #{fac_code}
+	      AND ffx_no = #{ffx_no}
+	</delete>
+	
+    
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="droppedGoods">
+
+	<select id="getDroppedGoodsList" parameterType="droppedGoods" resultType="droppedGoods">
+		SELECT * FROM
+		v_workprddown
+	</select>
+	
+	<update id="updateDroppedGoods" parameterType="map">
+	    UPDATE tb_workprddown
+	    SET ${column} = #{value}
+	    WHERE d_lot = #{d_lot}
+	</update>
+	
+    
+</mapper>

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>사용자 등록</title>
-    <link rel="stylesheet" href="/chunil/css/userInsert/userInsert.css">
+    <link rel="stylesheet" href="/mibogear/css/userInsert/userInsert.css">
 <%@include file="../include/pluginpage.jsp" %>
     <jsp:include page="../include/tabBar.jsp"/>
     
@@ -200,18 +200,18 @@
 	           
 		
                 <button class="select-button">
-                    <img src="/chunil/css/tabBar/search-icon.png" alt="select" class="button-image">조회
+                    <img src="/mibogear/css/tabBar/search-icon.png" alt="select" class="button-image">조회
                 </button>
                 <button class="insert-button">
-                    <img src="/chunil/css/tabBar/add-outline.png" alt="insert" class="button-image">추가
+                    <img src="/mibogear/css/tabBar/add-outline.png" alt="insert" class="button-image">추가
                 </button>
                 <button class="delete-button">
-				    <img src="/chunil/css/tabBar/xDel3.png" alt="delete" class="button-image"> 삭제
+				    <img src="/mibogear/css/tabBar/xDel3.png" alt="delete" class="button-image"> 삭제
 				</button>
                 
                 
                 <button class="excel-button">
-                    <img src="/chunil/css/tabBar/excel-icon.png" alt="excel" class="button-image">엑셀
+                    <img src="/mibogear/css/tabBar/excel-icon.png" alt="excel" class="button-image">엑셀
                 </button>
                 
             </div>
@@ -276,7 +276,8 @@
 
 
 <script>
-let now_page_code = "h03";
+
+
 var dataTable;
 var selectedRowData = null;
 
@@ -288,7 +289,7 @@ $(function() {
     headerHozAlign: "center",
     ajaxConfig: { method: 'POST' },
     ajaxLoader: false,
-    ajaxURL: "/chunil/user/userInsert/select",
+    ajaxURL: "/mibogear/user/userInsert/select",
     ajaxParams: {},
     placeholder: "조회된 데이터가 없습니다.",
     ajaxResponse: function(url, params, response) {
@@ -340,7 +341,7 @@ $(function() {
     }); */
    // console.log("전송된 startDate 값:", startDate);
 
-    dataTable.setData("/chunil/user/userInsert/select", {
+    dataTable.setData("/mibogear/user/userInsert/select", {
       user_name: user_name,
       startDate: startDate
     });
@@ -369,14 +370,14 @@ $(function() {
     	console.log("삭제 요청 데이터:", deleteData); // 추가된 로그
 
     	$.ajax({
-    	  url: "/chunil/user/userInsert/delete",
+    	  url: "/mibogear/user/userInsert/delete",
     	  type: "POST",
     	  contentType: "application/json",
     	  data: JSON.stringify(deleteData),
     	  success: function(res) {
     	    alert('삭제되었습니다.');
     	
-    	    dataTable.setData("/chunil/user/userInsert/select", {});
+    	    dataTable.setData("/mibogear/user/userInsert/select", {});
     	    selectedRowData = null;
     	  },
     	  error: function() {
@@ -399,7 +400,7 @@ $(function() {
     }
 
     $.ajax({
-      url: "/chunil/user/userInsert/insert",
+      url: "/mibogear/user/userInsert/insert",
       type: "POST",
       data: formData,
       processData: false,
@@ -408,7 +409,7 @@ $(function() {
         alert("저장되었습니다!");
         $('#modalContainer').hide();
     
-        dataTable.setData("/chunil/user/userInsert/select", {});
+        dataTable.setData("/mibogear/user/userInsert/select", {});
         selectedRowData = null;
       },
       error: function() {

@@ -4,30 +4,30 @@
 <html lang="ko">
 
 <!-- 제이쿼리홈페이지 js -->
-<script type="text/javascript" src="/chunil/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="/mibogear/js/jquery-3.7.1.min.js"></script>
 
 <!-- Tabulator 테이블 -->
-<script type="text/javascript" src="/chunil/js/tabulator/tabulator.js"></script>
-<link rel="stylesheet" href="/chunil/css/tabulator/tabulator_simple.css">
+<script type="text/javascript" src="/mibogear/js/tabulator/tabulator.js"></script>
+<link rel="stylesheet" href="/mibogear/css/tabulator/tabulator_simple.css">
 
 <!-- moment -->
-<script type="text/javascript" src="/chunil/js/moment/moment.min.js"></script>
+<script type="text/javascript" src="/mibogear/js/moment/moment.min.js"></script>
 
 <!-- 화면캡쳐용 -->
-<script type="text/javascript" src="/chunil/js/html2canvas.js"></script>
+<script type="text/javascript" src="/mibogear/js/html2canvas.js"></script>
 
 
 <!-- 하이차트 -->
-<script type="text/javascript" src="/chunil/js/highchart/highcharts.js"></script>
-<script type="text/javascript" src="/chunil/js/highchart/exporting.js"></script>
-<script type="text/javascript" src="/chunil/js/highchart/export-data.js"></script>
-<script type="text/javascript" src="/chunil/js/highchart/data.js"></script>
+<script type="text/javascript" src="/mibogear/js/highchart/highcharts.js"></script>
+<script type="text/javascript" src="/mibogear/js/highchart/exporting.js"></script>
+<script type="text/javascript" src="/mibogear/js/highchart/export-data.js"></script>
+<script type="text/javascript" src="/mibogear/js/highchart/data.js"></script>
 
 
 <!-- Air Datepicker -->
-<script type="text/javascript" src="/chunil/js/airdatepicker/datepicker.min.js"></script>
-<script type="text/javascript" src="/chunil/js/airdatepicker/datepicker.ko.js"></script>
-<link rel="stylesheet" href="/chunil/css/airdatepicker/datepicker.min.css"> 
+<script type="text/javascript" src="/mibogear/js/airdatepicker/datepicker.min.js"></script>
+<script type="text/javascript" src="/mibogear/js/airdatepicker/datepicker.ko.js"></script>
+<link rel="stylesheet" href="/mibogear/css/airdatepicker/datepicker.min.css"> 
 
 
 <style>
@@ -198,54 +198,58 @@ function pageObject(paramKey){
 	//console.log("받은 키값 : "+paramKey);
 	var obj = {
 			//모니터링
-			"a01":["/chunil/monitoring/integrationMonitoring","통합 모니터링"],
-			"a02":["/chunil/monitoring/trend","트랜드"],
-			"a03":["/chunil/monitoring/alarm","알람현황"],
-			"a04":"",
-			"a05":"",
+			"a01":["/mibogear/monitoring/overView","통합 모니터링"],
+			"a02":["/mibogear/monitoring/alarm","알람현황"],
+			"a03":["/mibogear/monitoring/alarmHistory","알람이력"],
+			"a04":["/mibogear/monitoring/alarmRanking","알람랭킹"],
+			"a05":["/mibogear/monitoring/trend","트렌드"],
 			"a06":"",
 			"a07":"",
 			//생산관리
-			"b01":["/chunil/productionManagement/integrationProduction","종합 생산현황"],
-			"b02":["/chunil/productionManagement/machineEfficiency","설비 효율현황"],
-			"b03":["/chunil/productionManagement/alarmRecord","알람이력"],
-			"b04":["/chunil/productionManagement/alarmFrequency","알람발생빈도"],
-			"b05":["/chunil/machine/spareStatus","SPARE 관리"],
-			"b06":["/chunil/productionManagement/heatTreatment","열처리 작업이력"],
+			"b01":["/mibogear/productionManagement/lotReport","LOT보고서"],
+			"b02":["/mibogear/productionManagement/integrationProduction","종합생산현황"],
+			"b03":["/mibogear/productionManagement/integrationProduction","작업일보"],
+			"b04":"",
+			"b05":"",
+			"b06":"",
 			"b07":"",
 			//조건관리
-			"c01":["/chunil/condition/corrStatus","기준정보관리"],
-			"c02":["/chunil/condition/machinePartTemp","열전대 교체이력"],
-			"c03":["/chunil/condition/machineLiquidManage","온도조절계 보정현황"],
-			"c04":["/chunil/condition/dailyCheck","일상점검일지"],
+			"c01":["/mibogear/condition/thermocoupleChange","열전대교체이력"],
+			"c02":["/mibogear/condition/tempCorrection","온도조절계보정현황"],
+			"c03":["/mibogear/condition/heatTreatingOil","열처리유성상분석"],
+			"c04":["/mibogear/condition/dailyCheck","일상점검일지"],
 			"c05":"",
 			"c06":"",
 			"c07":"",
-			//품질관리
-			"d01":["/chunil/quality/tempUniformity","온도균일성 조사보고서"],
-			"d02":["/chunil/quality/heatTreatingOil","열처리유 성상분석"],
-			"d03":["/chunil/quality/fProof","F/PROOF"],
-			"d04":["/chunil/quality/cpk","Cpk"],
-			"d05":["/chunil/quality/ppk","Ppk"],
+			//설비보존관리
+			"d01":["/mibogear/preservation/sparePart","Spare부품관리"],
+			"d02":["/mibogear/preservation/begaInsert","설비비가동등록"],
+			"d03":["/mibogear/preservation/suriHistory","설비수리이력관리"],
+			"d04":"",
+			"d05":"",
 			"d06":"",
 			"d07":"",
-			//기준관리
-			"e01":["/chunil/standardManagement/notOperational","비가동현황"],
-			"e02":["/chunil/standardManagement/userReg","사용자등록"],
-			"e03":["/chunil/standardManagement/userAuth","사용자 권한"],
-			"e04":"",
+			//품질관리
+			"e01":["/mibogear/quality/tempUniformity","온도균일성 조사보고서"],
+			"e02":["/mibogear/quality/fProof","F/PROOF"],
+			"e03":["/mibogear/quality/cpk","Cpk"],
+			"e04":["/mibogear/quality/ppk","Ppk"],
 			"e05":"",
 			"e06":"",
 			"e07":"",
+			"e08":"",
+			"e09":"",
+			"e10":"",
+			"e11":"",
 
-			//======안씀 여분
-			"f01":"",
-			"f02":"",
-			"f03":"",
-			"f04":"",
-			"f05":"",
-			"f06":"",
-			"f07":"",
+			//기준관리
+			"f01":["/mibogear/standardManagement/productInsert","제품등록"],
+			"f02":["/mibogear/standardManagement/facInsert","설비등록"],
+			"f03":["/mibogear/standardManagement/cutumInsert","거래처등록"],
+			"f04":["/mibogear/standardManagement/standard","작업표준등록"],
+			"f05":["/mibogear/user/userInsert","사용자등록"],
+			"f06":["/mibogear/user/userPermission","사용자권한부여"],
+			"f07":["/mibogear/standardManagement/measurement","측정기기관리"],
 			"g01":"",
 			"g02":"",
 			"g03":"",
@@ -264,42 +268,11 @@ function pageObject(paramKey){
 	return obj[paramKey];
 }
 
-/* $(window).on("load", function () {
-    $.ajax({
-        url: "/chunil/user/equipment_name_select",
-        type: "POST",
-        dataType: "json",
-        success: function (response) {
-      //      console.log("서버에서 받은 전체 데이터:", response); // 전체 응답 확인
-      //      console.log("데이터 목록:", response.data); // data 배열만 확인
-            
-            const $select = $(".equipment_name_select");
-            $select.empty();
-            $select.append('<option value="">전체</option>');
-
-            response.data.forEach(function (item) {
-                if (item.facility_name) {
-                    const $option = $('<option>' + item.facility_name + '</option>')
-                        .attr('value', item.facility_mach_code);
-                   
-                     $select.append($option);
-                }
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error("장비명 조회 실패:", error);
-        }
-    });
-});
- */
-
-
-
 let userPermissions = {};
 
 function userInfoList(now_page_code) {
     $.ajax({
-        url: '/chunil/user/info',
+        url: '/mibogear/user/info',
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',

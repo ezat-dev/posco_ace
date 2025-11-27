@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="corp">
+
+	<select id="getCorpList" parameterType="corp" resultType="corp">
+		SELECT *
+		FROM tb_corp
+		WHERE 1=1
+	</select>
+	
+	
+	<!-- 거래처 더블클릭 조회 -->
+	<select id="cutumInsertDetail" parameterType="corp" resultType="corp">
+		SELECT *
+		FROM tb_corp
+		WHERE corp_code = #{corp_code}
+	</select>
+	
+	<delete id="cutumDelete" parameterType="String">
+    DELETE FROM tb_corp
+    WHERE corp_code = #{corp_code}
+	</delete>
+	
+	<insert id="cutumInsertSave" parameterType="corp">
+    INSERT INTO tb_corp (
+        corp_code,
+        corp_name,
+        corp_no,
+        corp_tel,
+        corp_fax,
+        corp_boss,
+        corp_mast,
+        corp_upte,
+        corp_upjo,
+        corp_add,
+        corp_hp
+    )
+    SELECT
+        CONCAT('C', LPAD(COALESCE(MAX(CAST(SUBSTRING(corp_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+        #{corp_name},
+        #{corp_no},
+        #{corp_tel},
+        #{corp_fax},
+        #{corp_boss},
+        #{corp_mast},
+        #{corp_upte},
+        #{corp_upjo},
+        #{corp_add},
+        #{corp_hp}
+    FROM tb_corp
+   </insert>
+
+	<update id="cutumUpdateSave" parameterType="corp">
+	    UPDATE tb_corp
+	    SET
+	        corp_name = #{corp_name},
+	        corp_no = #{corp_no},
+	        corp_tel = #{corp_tel},
+	        corp_fax = #{corp_fax},
+	        corp_boss = #{corp_boss},
+	        corp_mast = #{corp_mast},
+	        corp_upte = #{corp_upte},
+	        corp_upjo = #{corp_upjo},
+	        corp_add = #{corp_add},
+	        corp_hp = #{corp_hp}
+	    WHERE corp_code = #{corp_code}
+	</update>
+
+	
+    
+</mapper>

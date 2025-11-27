@@ -489,5 +489,49 @@
 	    a_5 = #{a_5}
 	  WHERE idx = #{idx}
 	</update>
+	
+	<!-- 열전대 교체이력 -->
+	<select id="getThermocoupleList" parameterType="string" resultType="Thermocouple">
+	    SELECT 
+	        cnt,
+	        year,
+	        hogi,
+	        zone,
+	        change_date,
+	        change_bdate,
+	        change_ndate,
+	        bigo
+	    FROM tb_thermocouple
+	    WHERE year = #{year}
+	</select>
+	<!-- 열전대 교체이력 저장 -->
+	<update id="thermocoupleSave" parameterType="Thermocouple">
+	    UPDATE tb_thermocouple
+	    SET	
+	        change_date = #{change_date},
+	        change_bdate = #{change_bdate},
+	        change_ndate = #{change_ndate},
+	        bigo = #{bigo}
+	    WHERE
+	        cnt = #{cnt}
+	        
+	</update>
+	
+	<!-- 온도조절계보정현황 리스트 -->
+	<select id="getTempCorrectionQueList" parameterType="string" resultType="TempCorrectionQue">
+		SELECT *
+	    FROM tb_temperature_que
+	    WHERE year = #{year}
+	</select>
+	
+	<update id="updateTempCorrectionField" parameterType="map">
+	    UPDATE tb_temp_correction_que
+	    SET ${column} = #{value}
+	    WHERE gb = #{gb}
+	      AND year = #{year}
+	</update>
+	
+	
+	
 
 </mapper>

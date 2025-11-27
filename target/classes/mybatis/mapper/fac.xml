@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fac">
+
+	<select id="getFacList" parameterType="fac" resultType="fac">
+       SELECT *
+       FROM tb_fac
+    </select>
+	
+	
+	<select id="facInsertDetail" parameterType="fac" resultType="fac">
+       SELECT *
+		  FROM tb_fac 
+		 WHERE fac_code = #{fac_code};
+    </select>
+    
+    <insert id="facInsertSave" parameterType="fac">
+	    INSERT INTO tb_fac (
+	        fac_code,
+	        fac_no,
+	        fac_name,
+	        fac_gyu,
+	        fac_hyun,
+	        fac_yong,
+	        fac_lot,
+	        fac_test,
+	        fac_bigo,
+	        fac_cau,
+	        fac_make
+	    )
+	    SELECT
+	        CONCAT('F', LPAD(COALESCE(MAX(CAST(SUBSTRING(fac_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+	        #{fac_no},
+	        #{fac_name},
+	        #{fac_gyu},
+	        #{fac_hyun},
+	        #{fac_yong},
+	        #{fac_lot},
+	        #{fac_test},
+	        #{fac_bigo},
+	        #{fac_cau},
+	        #{fac_make}
+	    FROM tb_fac
+	</insert>
+    
+    
+    <update id="facUpdateSave" parameterType="fac">
+	    UPDATE tb_fac
+	    SET
+	        fac_no   = #{fac_no},
+	        fac_name = #{fac_name},
+	        fac_gyu  = #{fac_gyu},
+	        fac_hyun = #{fac_hyun},
+	        fac_yong = #{fac_yong},
+	        fac_lot  = #{fac_lot},
+	        fac_test = #{fac_test},
+	        fac_bigo = #{fac_bigo},
+	        fac_cau  = #{fac_cau},
+	        fac_make = #{fac_make}
+	    WHERE fac_code = #{fac_code}
+	</update>
+    
+    
+    <delete id="facDelete" parameterType="String">
+    DELETE FROM tb_fac
+    WHERE fac_code = #{fac_code}
+	</delete>
+	
+    
+</mapper>

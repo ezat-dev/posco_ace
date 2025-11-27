@@ -4,134 +4,200 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/chunil/css/login/style.css">
+	<link rel="stylesheet" href="/mibogear/css/login/style.css">
 
 	<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>  
-	<link rel="stylesheet" href="/chunil/css/sideBar/styles.css">
-	<link rel="stylesheet" href="/chunil/css/login/style2.css">
-	<link rel="stylesheet" href="/chunil/css/headerBar/headerBar.css">
+	<link rel="stylesheet" href="/mibogear/css/sideBar/styles.css">
+	<link rel="stylesheet" href="/mibogear/css/login/style2.css">
+	<link rel="stylesheet" href="/mibogear/css/headerBar/headerBar.css">
 <%@include file="../include/pluginpage.jsp" %>
   
-<title>진합</title>
+<title>미보기아</title>
 </head>
 
 <style>
 	
-	* {
-	    font-weight: 600;
-	    font-family: 'Pretendard', sans-serif;
-	    box-sizing: border-box;
-	}
-	
-	body {
-	    background-color: #f4f6f9;
-	}
-	
-	
-	.row_select {
-	    background-color: #9ABCEA !important;
-	}
-	
-	
-	.menuDiv {
-	    display: flex;
-	    align-items: center;
-	    width: 92.7%;
-	    height: 42px;
-	    
-	    margin-left: 131px;
-	    padding: 8px 14px;
-	    border-radius: 14px;
-	    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.12);
-	    overflow-x: auto;
-	    white-space: nowrap;
-	    gap: 8px;  /* 탭 간격 좁히기 */
-	    scrollbar-width: none;
-	    -ms-overflow-style: none;
-	}
-	
-	.menuDiv::-webkit-scrollbar {
-	    display: none;
-	}
-	
-	
-	.menuDivTab {
-	    text-align: center;
-	    cursor: pointer;
-	    background: white;
-	    border-radius: 10px;
-	    padding: 12px 18px;
-	    font-size: 14px;
-	    font-weight: 700;
-	    color: #333;
-	    border: 1px solid #ddd;
-	    transition: all 0.3s ease-in-out;
-	    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-	    user-select: none;
-	    display: flex;
-	    align-items: center;
-	    justify-content: center;
-	    gap: 6px;
-	    min-width: 100px;  
-	    height: 43px;
-	}
-	
-	.menuDivTab:hover {
-	    background: #f0f2f5;
-	    transform: translateY(-2px);
-	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-	}
-	
-	.menuDivTab.active {
-	     background: #dfe6ed; /* 연한 회색 배경 */
-	    color: #333; /* 글자색은 기본 유지 */
-	    border: 1px solid #ccc;
-	    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-	    transform: translateY(-2px);
-	}
-	
-	
-	.menuDivTab i {
-	    font-size: 16px;
-	    color: inherit;
-	}
-	
-	
-	.menuDivTab .close-btn {
-	    font-size: 19px; 
-	    background: none;
-	    border: none;
-	    color: #888; 
-	    cursor: pointer;
-	    padding: 0;
-	    margin-left: 10px;
-	    display: flex;
-	    align-items: center; 
-	    justify-content: center;
-	    transition: color 0.2s ease-in-out;
-	}
+	{
+	font-weight:700;
+}
 
+.row_select{
+	background-color:#9ABCEA !important;
+}
+
+
+   .menuDiv {
+       display: flex;
+       align-items: center;
+       width: 92.7%;
+       height: 50px;
+       
+       margin-left: 131px;
+       padding: 8px 14px;
+       border-radius: 14px;
+       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.12);
+       overflow-x: auto;
+       white-space: nowrap;
+       gap: 8px;  /* 탭 간격 좁히기 */
+       scrollbar-width: none;
+       -ms-overflow-style: none;
+   }
+   
+   .menuDiv::-webkit-scrollbar {
+       display: none;
+   }
+   
+   
+   .menuDivTab {
+       text-align: center;
+       cursor: pointer;
+       background: white;
+       border-radius: 10px;
+       padding: 12px 18px;
+       font-size: 14px;
+       font-weight: 700;
+       color: #333;
+       border: 1px solid #ddd;
+       transition: all 0.3s ease-in-out;
+       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+       user-select: none;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 6px;
+       min-width: 100px;  
+       height: 43px;
+       cursor:pointer;
+   }
+   
+   
+   .menuDivTab:hover {
+       background: #f0f2f5;
+       transform: translateY(-2px);
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+   }
+   
+   .menuDivTab.active {
+       background: #007aff;
+       color: white;
+       border: 1px solid #0062cc;
+       box-shadow: 0 3px 8px rgba(0, 122, 255, 0.3);
+       transform: translateY(-2px);
+   }
+   
+   
+   .menuDivTab i {
+       font-size: 16px;
+       color: inherit;
+   }
+   
+   
+   .menuDivTab .close-btn {
+       font-size: 19px; 
+       background: none;
+       border: none;
+       color: #888; 
+       cursor: pointer;
+       padding: 0;
+       margin-left: 10px;
+       display: flex;
+       align-items: center; 
+       justify-content: center;
+       transition: color 0.2s ease-in-out;
+   }
+
+   
+   .menuDivTab .close-btn:hover {
+       color: #ff3b30; 
+   }
+   
+   
+   .frameDiv {
+       display: flex;
+       width: 92.7%;
+       height: 90%;
+       background: white;
+       margin-left: 131px;
+       border-radius: 14px;
+       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+       overflow: hidden;
+   }
+   
+   .frameDiv #pageFrame {
+       width: 100%;
+       height: 100%;
+       border: none;
+   }
+
+
+.header{
+    margin-left: 131px;
+    /* margin-right: 8px; */
+    margin-top: 5px;
+    height: 30px;
+    background-color: #33363d;
+    border-radius: 6px 6px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logout-button {
+    height: 30px; /* tab보다 조금 작게 설정 */
+    padding: 0 11px; /* 좌우 패딩 */
+    border: 1px solid rgb(53, 53, 53);
+    border-radius: 4px; /* 모서리 둥글게 */
+    background-color: #ffffff; /* 배경색 */
+    cursor: pointer; /* 포인터 커서 */
+    display: flex; /* 내부 요소를 플렉스 박스로 설정 */
+    align-items: center; /* 버튼 안에서 세로 가운데 정렬 */
+    margin-right: 30px;
+    
+    /*opacity: 0.5;  버튼을 흐릿하게 */
+ 	/*pointer-events: none;  마우스 이벤트 차단 */
+}
+
+
+.logout-button:hover {
+    background-color: #f0f0f0; /* hover 시 색상 변화 */
+}
+.button-image {
+    width: 20px; /* 원하는 너비 설정 */
+    height: 20px; /* 원하는 높이 설정 */
+    margin-right: 0px; /* 이미지와 텍스트 사이의 여백 */
+    vertical-align: middle; /* 세로 가운데 정렬 */
+}
+
+.loginName{
+	display: flex;
+}
+   .menuDivTab .close-btn {
+       font-size: 19px; 
+       background: none;
+       border: none;
+       color: #888; 
+       cursor: pointer;
+       padding: 0;
+       margin-left: 10px;
+       display: flex;
+       align-items: center; 
+       justify-content: center;
+       transition: color 0.2s ease-in-out;
+   }
+
+   
+   .menuDivTab .close-btn:hover {
+       color: #ff3b30; 
+   }
+
+	.menuName{
+		cursor:pointer;
+	}   
 	
-	.menuDivTab .close-btn:hover {
-	    color: #ff3b30; 
-	}
-	
-	
-	.frameDiv {
-	    display: flex;
-	    width: 92.7%;
-	    height: 90%;
-	    background: white;
-	    margin-left: 131px;
-	    border-radius: 14px;
-	    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
-	    overflow: hidden;
-	}
-	
-	.frameDiv #pageFrame {
-	    width: 100%;
-	    height: 100%;
-	    border: none;
+	.miboLogo{
+	width: 180px;
+    height: 70px;
+    margin-left: -1px;
 	}
 </style>
 
@@ -142,7 +208,7 @@
 	    <!-- 로그인정보 표현, 로그아웃 버튼 -->
 	    <p class="loginName" style="font-size:20px; margin-left:960px; color : white; font-weight:800;"></p>
         <button class="logout-button">
-            <img src="/chunil/css/headerBar/exit-outline.svg" alt="select" class="button-image">로그아웃	           
+            <img src="/mibogear/css/headerBar/exit-outline.svg" alt="select" class="button-image">로그아웃	           
         </button>
     </header>
 
@@ -151,7 +217,7 @@
         <nav class="nav">
             <div>
             <div class="nav__brand">
-                 <a href="#" class="nav__logo"><img class="tkLogo" src="/chunil/css/sideBar/jinhap4.gif"></a>
+                 <a href="#" class="nav__logo"><img class="miboLogo" src="/mibogear/css/sideBar/mainLogo.png"></a>
             </div>
 			<div class="nav__list">
 <!--  a1 ~ a7 -->
@@ -178,18 +244,24 @@
 <!--  d1 ~ d7 -->
 			<div class="nav__link collapse">
 				<ion-icon name="desktop-outline"></ion-icon>
-				<span class="nav_name">품질관리</span>
+				<span class="nav_name">설비보존관리</span>
 				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 				<ul class="collapse__menu" id="dMenu"></ul>
 			</div>
 <!--  e1 ~ e7 -->
 			<div class="nav__link collapse">
 				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-				<span class="nav_name">기준관리</span>
+				<span class="nav_name">품질정보</span>
 				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 				<ul class="collapse__menu" id="eMenu"></ul>
 			</div>
-
+			
+			<div class="nav__link collapse">
+				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+				<span class="nav_name">기준정보</span>
+				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+				<ul class="collapse__menu" id="fMenu"></ul>
+			</div>
 		
 		</div>
 	</div>
@@ -224,11 +296,11 @@
     //이벤트
    	$(".logout-button").on("click",function(){
    		$.ajax({
-   			url:"/chunil/user/logout",
+   			url:"/mibogear/user/logout",
    			type:"get",
    			dataTypa:"json",
    			success:function(result){
-   				location.href = "/chunil";
+   				location.href = "/mibogear";
    			}
    		});
    	});    
@@ -236,7 +308,7 @@
     //함수
 	function loginUserMenuSetting(){
 		$.ajax({
-			url:"/chunil/user/login/menuSetting",
+			url:"/mibogear/user/login/menuSetting",
 			type:"post",
 			dataType:"json",
 			success:function(result){
@@ -265,31 +337,16 @@
 								_group = "조건관리";
 								_groupID = "cMenu";
 							}else if(key.indexOf("d") != -1){
-								_group = "품질관리";
+								_group = "설비보존관리";
 								_groupID = "dMenu";
 							}else if(key.indexOf("e") != -1){
-								_group = "인원 및 안전관리";
+								_group = "품질정보";
 								_groupID = "eMenu";
-							}/* else if(key.indexOf("f") != -1){
-								_group = "투입 운전관리";
+							}else if(key.indexOf("f") != -1){
+								_group = "기준정보";
 								_groupID = "fMenu";
-							}else if(key.indexOf("g") != -1){
-								_group = "취출 운전관리";
-								_groupID = "gMenu";
-							}else if(key.indexOf("h") != -1){
-								_group = "설비관리";
-								_groupID = "hMenu";
-							}else if(key.indexOf("i") != -1){
-								_group = "문서관리";
-								_groupID = "iMenu";
-							}else if(key.indexOf("j") != -1){
-								_group = "AGV관리";
-								_groupID = "jMenu";
-							}else if(key.indexOf("k") != -1){
-								_group = "세척관리";
-								_groupID = "kMenu";
-							} */
-							
+							}
+					
 							
 							_group_t = _group.replace(/\s/gi,"&nbsp;");
 							_name_t = _name.replace(/\s/gi,"&nbsp;");
@@ -335,7 +392,7 @@
         
 	function menuSave(loginCode, menuUrl, menuName){
 		$.ajax({
-			url:"/chunil/user/login/menuSave",
+			url:"/mibogear/user/login/menuSave",
 			type:"post",
 			dataType:"json",
 			data:{
@@ -353,7 +410,7 @@
 	    var loginCode = "${loginUser.user_code}";
 	    
 	    $.ajax({
-	        url:"/chunil/user/login/menuList",
+	        url:"/mibogear/user/login/menuList",
 	        type:"post",
 	        dataType:"json",
 	        data:{
@@ -427,7 +484,7 @@ function removeMenu2(button) {
     }
 
     $.ajax({
-        url: "/chunil/user/login/menuRemove",
+        url: "/mibogear/user/login/menuRemove",
         type: "post",
         dataType: "json",
         data: {
@@ -453,7 +510,7 @@ function removeMenu(url) {
 
 	   
    $.ajax({
-	  url:"/chunil/user/login/menuRemove",
+	  url:"/mibogear/user/login/menuRemove",
 	  type:"post",
 	  dataType:"json",
 	  data:{

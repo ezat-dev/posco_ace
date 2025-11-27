@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ez25367</groupId>
 	<artifactId>web</artifactId>
-	<name>chunil</name>
+	<name>mibogear</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
@@ -14,7 +14,7 @@
 	</properties>
 	
   <build>
-  	<finalName>chunil</finalName><!-- 나중에 war파일의 이름 -->
+  	<finalName>mibogear</finalName><!-- 나중에 war파일의 이름 -->
   	<plugins>
   		<plugin>
   			<artifactId>maven-compiler-plugin</artifactId>

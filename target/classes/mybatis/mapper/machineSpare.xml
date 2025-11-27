@@ -298,17 +298,7 @@ INSERT INTO tb_spare (
 	</select>	
 	
 	
-	<select id="equipment_name_select" parameterType="facility" resultType="facility">
-    SELECT 
-        facility_code, 
-        facility_name, 
-        facility_comment, 
-        facility_yn,
-        facility_mach_code
-    FROM tb_facility
-    WHERE facility_yn = 'Y'
-    ORDER BY facility_code
-	</select>
+	
 	
 	
 	<update id="userLoginMenuRemove" parameterType="userMenu">
