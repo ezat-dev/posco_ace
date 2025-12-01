@@ -4,15 +4,15 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/mibogear/css/login/style.css">
+	<link rel="stylesheet" href="/posco/css/login/style.css">
 
 	<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>  
-	<link rel="stylesheet" href="/mibogear/css/sideBar/styles.css">
-	<link rel="stylesheet" href="/mibogear/css/login/style2.css">
-	<link rel="stylesheet" href="/mibogear/css/headerBar/headerBar.css">
+	<link rel="stylesheet" href="/posco/css/sideBar/styles.css">
+	<link rel="stylesheet" href="/posco/css/login/style2.css">
+	<link rel="stylesheet" href="/posco/css/headerBar/headerBar.css">
 <%@include file="../include/pluginpage.jsp" %>
   
-<title>미보기아</title>
+<title>POSCO</title>
 </head>
 
 <style>
@@ -194,10 +194,11 @@
 		cursor:pointer;
 	}   
 	
-	.miboLogo{
-	width: 180px;
-    height: 70px;
+	.poscoLogo{
+	width: 170px;
+    height: 60px;
     margin-left: -1px;
+    margin-top: 5px;
 	}
 </style>
 
@@ -208,7 +209,7 @@
 	    <!-- 로그인정보 표현, 로그아웃 버튼 -->
 	    <p class="loginName" style="font-size:20px; margin-left:960px; color : white; font-weight:800;"></p>
         <button class="logout-button">
-            <img src="/mibogear/css/headerBar/exit-outline.svg" alt="select" class="button-image">로그아웃	           
+            <img src="/posco/css/headerBar/exit-outline.svg" alt="select" class="button-image">로그아웃	           
         </button>
     </header>
 
@@ -217,7 +218,7 @@
         <nav class="nav">
             <div>
             <div class="nav__brand">
-                 <a href="#" class="nav__logo"><img class="miboLogo" src="/mibogear/css/sideBar/mainLogo.png"></a>
+                 <a href="#" class="nav__logo"><img class="poscoLogo" src="/posco/css/sideBar/posco_logo.png"></a>
             </div>
 			<div class="nav__list">
 <!--  a1 ~ a7 -->
@@ -237,18 +238,18 @@
 <!--  c1 ~ c7 -->
 			<div class="nav__link collapse">
 				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-				<span class="nav_name">조건관리</span>
+				<span class="nav_name">유지보수</span>
 				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 				<ul class="collapse__menu" id="cMenu"></ul>
 			</div>
-<!--  d1 ~ d7 -->
-			<div class="nav__link collapse">
+
+	<!-- 		<div class="nav__link collapse">
 				<ion-icon name="desktop-outline"></ion-icon>
 				<span class="nav_name">설비보존관리</span>
 				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 				<ul class="collapse__menu" id="dMenu"></ul>
 			</div>
-<!--  e1 ~ e7 -->
+
 			<div class="nav__link collapse">
 				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
 				<span class="nav_name">품질정보</span>
@@ -262,7 +263,7 @@
 				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 				<ul class="collapse__menu" id="fMenu"></ul>
 			</div>
-		
+		 -->
 		</div>
 	</div>
 </nav>
@@ -296,11 +297,11 @@
     //이벤트
    	$(".logout-button").on("click",function(){
    		$.ajax({
-   			url:"/mibogear/user/logout",
+   			url:"/posco/user/logout",
    			type:"get",
    			dataTypa:"json",
    			success:function(result){
-   				location.href = "/mibogear";
+   				location.href = "/posco";
    			}
    		});
    	});    
@@ -308,7 +309,7 @@
     //함수
 	function loginUserMenuSetting(){
 		$.ajax({
-			url:"/mibogear/user/login/menuSetting",
+			url:"/posco/user/login/menuSetting",
 			type:"post",
 			dataType:"json",
 			success:function(result){
@@ -334,17 +335,8 @@
 								_group = "생산관리";
 								_groupID = "bMenu";
 							}else if(key.indexOf("c") != -1){
-								_group = "조건관리";
+								_group = "유지보수";
 								_groupID = "cMenu";
-							}else if(key.indexOf("d") != -1){
-								_group = "설비보존관리";
-								_groupID = "dMenu";
-							}else if(key.indexOf("e") != -1){
-								_group = "품질정보";
-								_groupID = "eMenu";
-							}else if(key.indexOf("f") != -1){
-								_group = "기준정보";
-								_groupID = "fMenu";
 							}
 					
 							
@@ -392,7 +384,7 @@
         
 	function menuSave(loginCode, menuUrl, menuName){
 		$.ajax({
-			url:"/mibogear/user/login/menuSave",
+			url:"/posco/user/login/menuSave",
 			type:"post",
 			dataType:"json",
 			data:{
@@ -410,7 +402,7 @@
 	    var loginCode = "${loginUser.user_code}";
 	    
 	    $.ajax({
-	        url:"/mibogear/user/login/menuList",
+	        url:"/posco/user/login/menuList",
 	        type:"post",
 	        dataType:"json",
 	        data:{
@@ -484,7 +476,7 @@ function removeMenu2(button) {
     }
 
     $.ajax({
-        url: "/mibogear/user/login/menuRemove",
+        url: "/posco/user/login/menuRemove",
         type: "post",
         dataType: "json",
         data: {
@@ -510,7 +502,7 @@ function removeMenu(url) {
 
 	   
    $.ajax({
-	  url:"/mibogear/user/login/menuRemove",
+	  url:"/posco/user/login/menuRemove",
 	  type:"post",
 	  dataType:"json",
 	  data:{

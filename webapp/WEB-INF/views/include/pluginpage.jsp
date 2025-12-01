@@ -4,30 +4,30 @@
 <html lang="ko">
 
 <!-- 제이쿼리홈페이지 js -->
-<script type="text/javascript" src="/mibogear/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="/posco/js/jquery-3.7.1.min.js"></script>
 
 <!-- Tabulator 테이블 -->
-<script type="text/javascript" src="/mibogear/js/tabulator/tabulator.js"></script>
-<link rel="stylesheet" href="/mibogear/css/tabulator/tabulator_simple.css">
+<script type="text/javascript" src="/posco/js/tabulator/tabulator.js"></script>
+<link rel="stylesheet" href="/posco/css/tabulator/tabulator_simple.css">
 
 <!-- moment -->
-<script type="text/javascript" src="/mibogear/js/moment/moment.min.js"></script>
+<script type="text/javascript" src="/posco/js/moment/moment.min.js"></script>
 
 <!-- 화면캡쳐용 -->
-<script type="text/javascript" src="/mibogear/js/html2canvas.js"></script>
+<script type="text/javascript" src="/posco/js/html2canvas.js"></script>
 
 
 <!-- 하이차트 -->
-<script type="text/javascript" src="/mibogear/js/highchart/highcharts.js"></script>
-<script type="text/javascript" src="/mibogear/js/highchart/exporting.js"></script>
-<script type="text/javascript" src="/mibogear/js/highchart/export-data.js"></script>
-<script type="text/javascript" src="/mibogear/js/highchart/data.js"></script>
+<script type="text/javascript" src="/posco/js/highchart/highcharts.js"></script>
+<script type="text/javascript" src="/posco/js/highchart/exporting.js"></script>
+<script type="text/javascript" src="/posco/js/highchart/export-data.js"></script>
+<script type="text/javascript" src="/posco/js/highchart/data.js"></script>
 
 
 <!-- Air Datepicker -->
-<script type="text/javascript" src="/mibogear/js/airdatepicker/datepicker.min.js"></script>
-<script type="text/javascript" src="/mibogear/js/airdatepicker/datepicker.ko.js"></script>
-<link rel="stylesheet" href="/mibogear/css/airdatepicker/datepicker.min.css"> 
+<script type="text/javascript" src="/posco/js/airdatepicker/datepicker.min.js"></script>
+<script type="text/javascript" src="/posco/js/airdatepicker/datepicker.ko.js"></script>
+<link rel="stylesheet" href="/posco/css/airdatepicker/datepicker.min.css"> 
 
 
 <style>
@@ -198,42 +198,42 @@ function pageObject(paramKey){
 	//console.log("받은 키값 : "+paramKey);
 	var obj = {
 			//모니터링
-			"a01":["/mibogear/monitoring/overView","통합 모니터링"],
-			"a02":["/mibogear/monitoring/alarm","알람현황"],
-			"a03":["/mibogear/monitoring/alarmHistory","알람이력"],
-			"a04":["/mibogear/monitoring/alarmRanking","알람랭킹"],
-			"a05":["/mibogear/monitoring/trend","트렌드"],
+			"a01":["/posco/monitoring/overView","통합 모니터링"],
+			"a02":["/posco/monitoring/alarm","알람현황"],
+			"a03":["/posco/monitoring/alarmHistory","알람이력"],
+			"a04":["/posco/monitoring/alarmRanking","알람랭킹"],
+			"a05":["/posco/monitoring/trend","트렌드"],
 			"a06":"",
 			"a07":"",
 			//생산관리
-			"b01":["/mibogear/productionManagement/lotReport","LOT보고서"],
-			"b02":["/mibogear/productionManagement/integrationProduction","종합생산현황"],
-			"b03":["/mibogear/productionManagement/integrationProduction","작업일보"],
+			"b01":["/posco/productionManagement/lotReport","LOT보고서"],
+			"b02":["/posco/productionManagement/integrationProduction","종합생산현황"],
+			"b03":["/posco/productionManagement/integrationProduction","작업일보"],
 			"b04":"",
 			"b05":"",
 			"b06":"",
 			"b07":"",
 			//조건관리
-			"c01":["/mibogear/condition/thermocoupleChange","열전대교체이력"],
-			"c02":["/mibogear/condition/tempCorrection","온도조절계보정현황"],
-			"c03":["/mibogear/condition/heatTreatingOil","열처리유성상분석"],
-			"c04":["/mibogear/condition/dailyCheck","일상점검일지"],
+			"c01":["/posco/condition/thermocoupleChange","열전대교체이력"],
+			"c02":["/posco/condition/tempCorrection","온도조절계보정현황"],
+			"c03":["/posco/condition/heatTreatingOil","열처리유성상분석"],
+			"c04":["/posco/condition/dailyCheck","일상점검일지"],
 			"c05":"",
 			"c06":"",
 			"c07":"",
 			//설비보존관리
-			"d01":["/mibogear/preservation/sparePart","Spare부품관리"],
-			"d02":["/mibogear/preservation/begaInsert","설비비가동등록"],
-			"d03":["/mibogear/preservation/suriHistory","설비수리이력관리"],
+			"d01":["/posco/preservation/sparePart","Spare부품관리"],
+			"d02":["/posco/preservation/begaInsert","설비비가동등록"],
+			"d03":["/posco/preservation/suriHistory","설비수리이력관리"],
 			"d04":"",
 			"d05":"",
 			"d06":"",
 			"d07":"",
 			//품질관리
-			"e01":["/mibogear/quality/tempUniformity","온도균일성 조사보고서"],
-			"e02":["/mibogear/quality/fProof","F/PROOF"],
-			"e03":["/mibogear/quality/cpk","Cpk"],
-			"e04":["/mibogear/quality/ppk","Ppk"],
+			"e01":["/posco/quality/tempUniformity","온도균일성 조사보고서"],
+			"e02":["/posco/quality/fProof","F/PROOF"],
+			"e03":["/posco/quality/cpk","Cpk"],
+			"e04":["/posco/quality/ppk","Ppk"],
 			"e05":"",
 			"e06":"",
 			"e07":"",
@@ -243,13 +243,13 @@ function pageObject(paramKey){
 			"e11":"",
 
 			//기준관리
-			"f01":["/mibogear/standardManagement/productInsert","제품등록"],
-			"f02":["/mibogear/standardManagement/facInsert","설비등록"],
-			"f03":["/mibogear/standardManagement/cutumInsert","거래처등록"],
-			"f04":["/mibogear/standardManagement/standard","작업표준등록"],
-			"f05":["/mibogear/user/userInsert","사용자등록"],
-			"f06":["/mibogear/user/userPermission","사용자권한부여"],
-			"f07":["/mibogear/standardManagement/measurement","측정기기관리"],
+			"f01":["/posco/standardManagement/productInsert","제품등록"],
+			"f02":["/posco/standardManagement/facInsert","설비등록"],
+			"f03":["/posco/standardManagement/cutumInsert","거래처등록"],
+			"f04":["/posco/standardManagement/standard","작업표준등록"],
+			"f05":["/posco/user/userInsert","사용자등록"],
+			"f06":["/posco/user/userPermission","사용자권한부여"],
+			"f07":["/posco/standardManagement/measurement","측정기기관리"],
 			"g01":"",
 			"g02":"",
 			"g03":"",
@@ -272,7 +272,7 @@ let userPermissions = {};
 
 function userInfoList(now_page_code) {
     $.ajax({
-        url: '/mibogear/user/info',
+        url: '/posco/user/info',
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',

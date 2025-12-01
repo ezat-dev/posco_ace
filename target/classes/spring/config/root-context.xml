@@ -41,7 +41,7 @@
     </bean>
 
     <!-- DAO 및 Service 스캔 -->
-    <context:component-scan base-package="com.mibogear.dao com.mibogear.service"/>
+    <context:component-scan base-package="com.posco.dao com.posco.service"/>
 
     <!-- 초기 작업 클래스 -->
 
