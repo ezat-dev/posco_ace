@@ -13,14 +13,20 @@
         http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd">
 
     <!-- 스케줄러 및 비동기 처리 -->
+    <!-- <task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="false"/>
+    <task:scheduler id="scheduler" pool-size="4"/>
+    <task:executor id="executor" keep-alive="10" pool-size="10-20" queue-capacity="10" rejection-policy="ABORT"/> -->
+    
+    <!-- 스케줄러 및 비동기 처리 -->
     <task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="false"/>
+    <bean id="commProcessor" class="com.posco.async.CommProcessor"/>
     <task:scheduler id="scheduler" pool-size="4"/>
     <task:executor id="executor" keep-alive="10" pool-size="10-20" queue-capacity="10" rejection-policy="ABORT"/>
 
     <!-- MariaDB DataSource -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
-        <property name="url" value="jdbc:mariadb://192.168.1.63:3306/mibo"/>
+        <property name="url" value="jdbc:mariadb://192.168.1.20:3306/posco"/>
         <property name="username" value="root"/>
         <property name="password" value="1234"/>
     </bean>
@@ -42,7 +48,30 @@
 
     <!-- DAO 및 Service 스캔 -->
     <context:component-scan base-package="com.posco.dao com.posco.service"/>
+	
+	
+	
+    
+		<bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+		    <property name="driverClassName" value="org.sqlite.JDBC" /> 
+		    <property name="url" value="jdbc:sqlite:C:/Users/mh/Desktop/CHUNIL/Data/Alarm/CHUNIL_AlarmData.db" />
+		</bean>
 
-    <!-- 초기 작업 클래스 -->
+	
+	
+		
+	 <bean id="sqlSessionFactorySQLite" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceSQLite" />
+		<property name="configLocation" value="classpath:mybatis/config/mybatis-context-sqlite.xml"></property>
+	 </bean>
+	 
+	 
+	 <bean id="sessionSQLite" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactorySQLite" />
+	 </bean>
+		 
+	<bean id="transactionManagerSQLite" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceSQLite"/>
+	</bean>
 
 </beans>

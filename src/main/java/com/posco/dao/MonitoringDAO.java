@@ -1,5 +1,13 @@
 package com.posco.dao;
 
-public interface MonitoringDAO {
+import java.util.List;
 
+import com.posco.domain.Monitoring;
+
+public interface MonitoringDAO {
+	
+	List<Monitoring> alarmRecordListAll(Monitoring monitoring);
+	
+	List<Monitoring> gettrend(Monitoring monitoring); 
+	
 }

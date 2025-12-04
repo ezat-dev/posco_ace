@@ -184,35 +184,7 @@
     </head>
 <body>
 
-<div id="modalContainer" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <!-- 추가, 수정 -->
-    <h2>트렌드 데이터 등록</h2>
-    <hr />
-    <div id="signDataTable"></div>
-    <hr />
-    <form id="corrForm" autocomplete="off">
-      <label>작업자</label>
-      <input type="text" name="tc_cnt" value="0" style="display:none;">
-      <input type="text" name="tc_user_code" style="display:none;">
-      <input type="text" name="tc_user_name" style="" readonly="readonly">
 
-      <label>등록시간</label>
-      <input type="text"  name="tc_regtime" readonly="readonly">
-
-      <label>등록내용</label>
-      <input type="text" name="tc_name">
-
-      <label>비고</label>
-	  <input type="text" name="tc_desc">
-		<hr />
-		
-      <button type="submit" id="saveCorrStatus">저장</button>
-      <button type="button" id="closeModal">닫기</button>
-    </form>
-  </div>
-</div>
 
 
      		<div class="button-container">
@@ -227,26 +199,23 @@
 			        style="font-size: 16px; margin: 5px; border-radius: 4px; border: 1px solid #ccc; text-align: center;    height: 30px;">
 			</div>
 				<button class="select-button">
-                    <img src="/chunil/css/tabBar/search-icon.png" alt="select" class="button-image">조회
+                    <img src="/posco/css/tabBar/search-icon.png" alt="select" class="button-image">조회
                 </button>
                 <button class="insert-button">
-                    <img src="/chunil/css/tabBar/add-outline.png" alt="insert" class="button-image">추가
+                    <img src="/posco/css/tabBar/add-outline.png" alt="insert" class="button-image">추가
                 </button>
                 
 			</div>
 			<div id="container" style="width: 100%; height: 700px; margin-top:100px;"></div>
 
 <script>
-let now_page_code = "a02";
 
 let categories;
-
-let q_pv_1,q_pv_2,q_pv_3,q_pv_4,q_pv_5;
-let t_pv_1,t_pv_2,t_pv_3,t_pv_4,t_pv_5;
-let cp_pv_1,cp_pv_2;
-let tc_val_pv,tc_val_label;
-let tc_val_series;
-var trendInterval;
+let vac1_pv, vac2_pv, vac3_pv, protec_pv, tem_sp;
+let tem_1, tem_2, tem_3, tem_4, tem_5, tem_6;
+let tem_7, tem_8, tem_9, tem_10, tem_11, tem_12;
+let chart;
+let trendInterval;
 
 $(document).ready(function () {
     $(".datetimeSet").datepicker({
@@ -257,171 +226,81 @@ $(document).ready(function () {
         autoClose: true
     });
 
-    // 시간 셋팅    
     $("#startDate").val(trendStime());
     $("#endDate").val(trendEtime());
 
     fetchData();
-    trendInterval = setInterval("trendIntervalFunc()",1000*60);
+    trendInterval = setInterval(trendIntervalFunc, 1000 * 60);
 });
 
-// 조회 버튼
-$(".select-button").on("click", function(){
-	fetchData();
-});
+$(".select-button").on("click", fetchData);
 
-// 등록 버튼
-$(".insert-button").on("click", function(){
-    var userCode = "${loginUser.user_code}";
-    var userName = "${loginUser.user_name}";
-    
-    $("input[name='tc_user_code']").val(userCode);
-    $("input[name='tc_user_name']").val(userName);
-    $("input[name='tc_regtime']").val(trendEtime());
-	
-	$('#modalContainer').show().addClass('show');
-	getSignDataList();
-	signData();
-});
-
-// 모달 닫기
-$('.close, #closeModal').click(function() {
-	$('#corrForm')[0].reset();
-    $('#modalContainer').removeClass('show').hide();
-});
-
-// 저장
-$('#saveCorrStatus').click(function(event) {
-    event.preventDefault();
-    var formData = new FormData($('#corrForm')[0]);
-
-    $.ajax({
-      url: "/chunil/monitoring/trend/sign/save",
-      type: "POST",
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function(result) {
-		alert("저장되었습니다!");
-		signData();               
-		selectedRowData = null;
-      },
-      error: function() {
-        alert('저장 중 오류가 발생했습니다.');
-      }
-    });
-});
-
-function trendIntervalFunc(){
+function trendIntervalFunc() {
     $("#startDate").val(trendStime());
     $("#endDate").val(trendEtime());
     fetchData();
 }
 
-// 온도변경, 사인오프 등록데이터 조회
-function signData(){
-	$.ajax({
-		url:"/chunil/monitoring/trend/sign/list",
-		type:"post",
-		dataType:"json",
-		data:{},
-		success:function(result){			
-			signDataTable.setData(result.data);
-		}
-	})
-}
-
-var signDataTable;
-function getSignDataList(){
-	signDataTable = new Tabulator('#signDataTable', {
-	    height: '200px',
-	    layout: 'fitDataFill',
-	    headerSort: false,
-	    reactiveData: true,
-	    columnHeaderVertAlign: "middle",
-	    headerHozAlign: 'center',
-	    renderHorizontal:"virtual",
-	    ajaxResponse:function(url, params, response){
-			$("#dataTable .tabulator-col.tabulator-sortable").css("height","55px");
-	        return response; 
-	    },
-	    placeholder: "조회된 데이터가 없습니다.",
-	    columns: [
-	      { title: "tc_cnt", field: "tc_cnt",  width: 120, hozAlign: "center", visible:false},
-	      { title: "작업자", field: "tc_user_name", width: 80, hozAlign: "center" },
-	      { title: "작업내용", field: "tc_name", width: 140, hozAlign: "center" },		      
-	      { title: "작업시간", field: "tc_regtime", width: 140, hozAlign: "center" },
-	      { title: "비고",  field: "tc_bigo",    width: 180, hozAlign: "center" },
-	    ],
-	    rowClick: function(e, row) {
-	      $('#signDataTable .tabulator-row').removeClass('row_select');
-	      row.getElement().classList.add('row_select');
-	      selectedRowData = row.getData();
-	    },
-	    rowDblClick: function(e, row) {
-	  	  var d = row.getData();
-	  	}
-	});
-}
-
-var signListObj = new Object();
-
-// 조회 버튼 클릭 이벤트 정의
 function fetchData() {
     const startDate = $('#startDate').val();
     const endDate = $('#endDate').val();
 
     $.ajax({
         type: "POST",
-        url: "/chunil/monitoring/trend/list",
+        url: "/posco/monitoring/trend/list",
         data: { startDate, endDate },
         success: function (result) {
+            console.log(result); // <-- 먼저 데이터 확인
+
             if(result.length > 0 ){
-				signListObj = new Object();
-                categories = result.map(r => r.regtime);
-                
-                result.map(r =>
-                	signListObj[r.regtime] = (r.tc_val_name != "") ? r.tc_val_name : (r.lot_name != "") ? r.lot_name : ""
-                );
+                // x축 categories를 timestamp로 변환
+                categories = result.map(r => new Date(r.tdatetime).getTime());
 
-                q_pv_1 = result.map(r => Number(r.q_pv_1));
-                q_pv_2 = result.map(r => Number(r.q_pv_2));
-				q_pv_3 = result.map(r => Number(r.q_pv_3));
-                q_pv_4 = result.map(r => Number(r.q_pv_4));
-                q_pv_5 = result.map(r => Number(r.q_pv_5));
+                vac1_pv = result.map(r => Number(r.vac1_pv));
+                vac2_pv = result.map(r => Number(r.vac2_pv));
+                vac3_pv = result.map(r => Number(r.vac3_pv));
+                protec_pv = result.map(r => Number(r.protec_pv));
+                tem_sp = result.map(r => Number(r.tem_sp));
 
-                t_pv_1 = result.map(r => Number(r.t_pv_1));
-                t_pv_2 = result.map(r => Number(r.t_pv_2));
-                t_pv_3 = result.map(r => Number(r.t_pv_3));
-                t_pv_4 = result.map(r => Number(r.t_pv_4));
-                t_pv_5 = result.map(r => Number(r.t_pv_5));    
+                tem_1 = result.map(r => Number(r.tem_1));
+                tem_2 = result.map(r => Number(r.tem_2));
+                tem_3 = result.map(r => Number(r.tem_3));
+                tem_4 = result.map(r => Number(r.tem_4));
+                tem_5 = result.map(r => Number(r.tem_5));
+                tem_6 = result.map(r => Number(r.tem_6));
+                tem_7 = result.map(r => Number(r.tem_7));
+                tem_8 = result.map(r => Number(r.tem_8));
+                tem_9 = result.map(r => Number(r.tem_9));
+                tem_10 = result.map(r => Number(r.tem_10));
+                tem_11 = result.map(r => Number(r.tem_11));
+                tem_12 = result.map(r => Number(r.tem_12));
 
-                cp_pv_1 = result.map(r => Number(r.cp_pv_1));              
-                cp_pv_2 = result.map(r => Number(r.cp_pv_2));
-
-                tc_val_pv = result.map(r => (r.tc_val != 0 && r.tc_val != null) ? r.tc_val : (r.lot_val != 0 && r.lot_val != null) ? r.lot_val : null);
-
-				if(typeof chart == "undefined"){
-					getTrend();
-				}else{
-			        chart.update({
-			        	xAxis: { categories: categories },
-			        	series: [
-				            { name: '소입로1존', data: q_pv_1, color:"#FF0000", yAxis:0, marker:{radius:1}},
-				            { name: '소입로2존', data: q_pv_2, color:"#0000FF", yAxis:0, marker:{radius:1}},
-				            { name: '소입로3존', data: q_pv_3, color:"#FF00DD", yAxis:0, marker:{radius:1}},
-				            { name: '소입로4존', data: q_pv_4, color:"#003399", yAxis:0, marker:{radius:1}},
-				            { name: '소입로5존', data: q_pv_5, color:"#980000", yAxis:0, marker:{radius:1}},
-				            { name: '소려로1존', data: t_pv_1, color:"#5F00FF", yAxis:0, marker:{radius:1}},
-				            { name: '소려로2존', data: t_pv_2, color:"#1DDB16", yAxis:0, marker:{radius:1}},
-				            { name: '소려로3존', data: t_pv_3, color:"#99004C", yAxis:0, marker:{radius:1}},
-				            { name: '소려로4존', data: t_pv_4, color:"#FF5E00", yAxis:0, marker:{radius:1}},
-				            { name: '소려로5존', data: t_pv_5, color:"#0100FF", yAxis:0, marker:{radius:1}},
-				            { name: 'CP-A', data: cp_pv_1, color:"#000000", yAxis:0, marker:{radius:1}},
-				            { name: 'CP-B', data: cp_pv_2, color:"#5D5D5D", yAxis:0, marker:{radius:1}},
-			        	]
-			        })
-				}
+                if(typeof chart === "undefined"){
+                    createTrendChart();
+                } else {
+                    chart.update({
+                        xAxis: { categories: categories },
+                        series: [
+                            { name: '1존온도 PV', data: vac1_pv },
+                            { name: '2존온도 PV', data: vac2_pv },
+                            { name: '3존온도 PV', data: vac3_pv },
+                            { name: '프로텍터온도 PV', data: protec_pv },
+                            { name: '온도 SP', data: tem_sp },
+                            { name: '온도분포1', data: tem_1 },
+                            { name: '온도분포2', data: tem_2 },
+                            { name: '온도분포3', data: tem_3 },
+                            { name: '온도분포4', data: tem_4 },
+                            { name: '온도분포5', data: tem_5 },
+                            { name: '온도분포6', data: tem_6 },
+                            { name: '온도분포7', data: tem_7 },
+                            { name: '온도분포8', data: tem_8 },
+                            { name: '온도분포9', data: tem_9 },
+                            { name: '온도분포10', data: tem_10 },
+                            { name: '온도분포11', data: tem_11 },
+                            { name: '온도분포12', data: tem_12 }
+                        ]
+                    });
+                }
             }
         },
         error: function (xhr, status, error) {
@@ -431,75 +310,54 @@ function fetchData() {
     });
 }
 
-let chart;
-function getTrend(){
-	chart = Highcharts.chart('container', {
-        chart: { type: 'line'},
+function createTrendChart(){
+    chart = Highcharts.chart('container', {
+        chart: { type: 'line' },
         title: { text: '온도 트렌드' },
         xAxis: {
-        	type: 'datetime',
+            type: 'datetime',
             categories: categories,
             title: { text: '시간' },
             labels: {
-            	formatter:function(){
-            		return dataLabelFormat(this.value);
-            	}
-            },
-            tickInterval:60
+                formatter: function(){
+                    var d = new Date(this.value);
+                    var mm = paddingZero(d.getMonth()+1);
+                    var dd = paddingZero(d.getDate());
+                    var ho = paddingZero(d.getHours());
+                    var mi = paddingZero(d.getMinutes());
+                    return mm+"-"+dd+"</br>"+ho+":"+mi;
+                }
+            }
         },
-        yAxis:[
-            {
-                title: { text : "온도", rotation : 360 },
-                labels:{ align:"left", x:10 },
-                min : 0, max : 2000
-            },
-            {
-            	opposite:true,
-                title: { text : "CP", rotation : 360 },
-                labels:{ align:"left", x:10 },
-                min : 0, max : 2
-		    }
-        ],        
+        yAxis: {
+            title: { text: "온도" },
+            min: 0,
+            max: 2000
+        },
         tooltip: { shared: true, crosshairs: true },
-        plotOptions:{
-        	series:{
-        		dataLabels:{
-        			enabled:true,
-        			formatter:function(){
-        				var rtn = "";
-        				if(this.y == 1000 || this.y == 1200){
-        					rtn = signListObj[this.x];
-        				}
-        				return rtn;
-        			}        			
-        		}
-        	}
-        },
         series: [
-            { name: '소입로1존', data: q_pv_1, color:"#FF0000", yAxis:0, marker:{radius:1}},
-            { name: '소입로2존', data: q_pv_2, color:"#0000FF", yAxis:0, marker:{radius:1}},
-            { name: '소입로3존', data: q_pv_3, color:"#FF00DD", yAxis:0, marker:{radius:1}},
-            { name: '소입로4존', data: q_pv_4, color:"#003399", yAxis:0, marker:{radius:1}},
-            { name: '소입로5존', data: q_pv_5, color:"#980000", yAxis:0, marker:{radius:1}},
-            { name: '소려로1존', data: t_pv_1, color:"#5F00FF", yAxis:0, marker:{radius:1}},
-            { name: '소려로2존', data: t_pv_2, color:"#1DDB16", yAxis:0, marker:{radius:1}},
-            { name: '소려로3존', data: t_pv_3, color:"#99004C", yAxis:0, marker:{radius:1}},
-            { name: '소려로4존', data: t_pv_4, color:"#FF5E00", yAxis:0, marker:{radius:1}},
-            { name: '소려로5존', data: t_pv_5, color:"#0100FF", yAxis:0, marker:{radius:1}},
-            { name: 'CP-A', data: cp_pv_1, color:"#000000", yAxis:0, marker:{radius:1}},
-            { name: 'CP-B', data: cp_pv_2, color:"#5D5D5D", yAxis:0, marker:{radius:1}},
+            { name: '1존온도 PV', data: vac1_pv },
+            { name: '2존온도 PV', data: vac2_pv },
+            { name: '3존온도 PV', data: vac3_pv },
+            { name: '프로텍터온도 PV', data: protec_pv },
+            { name: '온도 SP', data: tem_sp },
+            { name: '온도분포1', data: tem_1 },
+            { name: '온도분포2', data: tem_2 },
+            { name: '온도분포3', data: tem_3 },
+            { name: '온도분포4', data: tem_4 },
+            { name: '온도분포5', data: tem_5 },
+            { name: '온도분포6', data: tem_6 },
+            { name: '온도분포7', data: tem_7 },
+            { name: '온도분포8', data: tem_8 },
+            { name: '온도분포9', data: tem_9 },
+            { name: '온도분포10', data: tem_10 },
+            { name: '온도분포11', data: tem_11 },
+            { name: '온도분포12', data: tem_12 }
         ]
     });
 }
 
-function dataLabelFormat(val){
-	var d = new Date(val);
-	var mm = paddingZero(d.getMonth()+1);
-	var dd = paddingZero(d.getDate());
-	var ho = paddingZero(d.getHours());
-	var mi = paddingZero(d.getMinutes());
-	return mm+"-"+dd+"</br>"+ho+":"+mi;
-}
+
 
 </script>
 

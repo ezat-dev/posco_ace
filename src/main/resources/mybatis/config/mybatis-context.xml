@@ -17,6 +17,7 @@
   	<mapper resource="mybatis/mapper/sparePart.xml"/>
   	<mapper resource="mybatis/mapper/measure.xml"/>
   	<mapper resource="mybatis/mapper/workStandard.xml"/>
+  	<mapper resource="mybatis/mapper/monitoring.xml"/>
 
   	<mapper resource="mybatis/mapper/condition.xml"/>
   	

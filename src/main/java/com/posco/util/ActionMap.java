@@ -11,7 +11,7 @@ public class ActionMap {
 	public String getReturnAction(String tagName) {
 		String result = "";
 		
-		int index = tagName.lastIndexOf("-");
+		int index = tagName.lastIndexOf("");
 
 		String text = tagName.substring(0, index);
 		
@@ -34,25 +34,49 @@ public class ActionMap {
 	}	
 	
 	public String getReturnAction(Map<String, Object> tagInfo) {
-		String result = "";
-		
-		String tagName = tagInfo.get("tagName").toString();
-		String tagType = tagInfo.get("tagType").toString();
-		
-		
-		if("analog".equals(tagType)){
-			//t-tong 또는 b-tong
-			result = "value";			
-		}else{
-			if(tagName.contains("io")){
-				result = "red"; 
-			}else{
-				result = "v"; // v는 .val 포함
-			}
-		}		
-		return result;
-		
-	}	
+	    String tagName = tagInfo.get("tagName").toString();
+	    String tagType = tagInfo.get("tagType").toString();
+	    String result = "";
+
+	   
+	    if("analog".equals(tagType)){
+	        return "value";
+	    }
+
+	    if(tagName.contains("green-")){
+	        return "green";
+	    }
+
+	  
+	    if(tagName.contains("set-")){
+	        return "settext";
+	    }
+	    
+	    if("analog".equals(tagType) || tagName.startsWith("analog-")) {
+            return "value";
+        }
+
+	    if(tagName.contains("alarm")){
+	        result = "c";
+	    } else if(tagName.contains("yello-left")) {
+	        result = "b";
+	    } else if(tagName.contains("yello-right")) {
+	        result = "b";
+	    } else if(tagName.contains("lamp-text")) {
+	        result = "lamp"; 
+	    } else if(tagName.contains("lamp-on")) {
+	        result = "lamp"; 
+	    } else if(tagName.contains("lamp")) {
+	        result = "lamp"; 
+	    } else if(tagName.contains("pen")) {
+	        return "pen";
+	    } else {
+	        result = "v";  // 기본 on/off 표시
+	    }
+
+	    return result;
+	}
+
 	
 	
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="monitoring">
+	
+	
+	<select id="gettrend" parameterType="monitoring" resultType="monitoring">
+	    SELECT 
+	        tdatetime,
+	        vac1_pv, vac2_pv, vac3_pv, protec_pv, tem_sp,
+	        tem_1, tem_2, tem_3, tem_4, tem_5, tem_6,
+	        tem_7, tem_8, tem_9, tem_10, tem_11, tem_12
+	    FROM tb_temp
+	    WHERE tdatetime BETWEEN #{startDate} AND #{endDate}
+	    ORDER BY tdatetime;
+	</select>
+
+
+	
+    
+</mapper>

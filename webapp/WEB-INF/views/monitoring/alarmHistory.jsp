@@ -449,7 +449,7 @@
 	            <input type="text" id="s_edate" class="dayselect daySet"/>
 			</div>
                 <button class="select-button">
-                    <img src="/chunil/css/tabBar/search-icon.png" alt="select" class="button-image">조회
+                    <img src="/posco/css/tabBar/search-icon.png" alt="select" class="button-image">조회
                 </button>
 
                 
@@ -487,7 +487,6 @@
     </main>               
     
 <script>
-let now_page_code = "b03";
 
 var dataTable;
 var selectedRowData = null;
@@ -512,7 +511,7 @@ $(function() {
 
   function fetchAlarm(){
 	    $.ajax({
-	        url: "/chunil/productionManagement/alarmRecordListAll/list",
+	        url: "/posco/monitoring/alarmRecordListAll/list",
 	        method: "POST",
 	        data: {
 	            s_sdate: $("#s_sdate").val(),

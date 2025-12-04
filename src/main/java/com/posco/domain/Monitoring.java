@@ -19,36 +19,47 @@ public class Monitoring {
     private String endDate;
     private String tdatetime;
     
-    private Integer bcf1_cf_pv;
-    private Integer bcf1_cf_sv;
-    private Integer bcf1_oil_pv;
-    private Integer bcf1_oil_sv;
-    private Float bcf1_cp_pv;
-    private Float bcf1_cp_sv;
-    private Integer bcf2_cf_pv;
-    private Integer bcf2_cf_sv;
-    private Integer bcf2_oil_pv;
-    private Integer bcf2_oil_sv;
-    private Float bcf2_cp_pv;
-    private Float bcf2_cp_sv;
-    private Integer bcf3_cf_pv;
-    private Integer bcf3_cf_sv;
-    private Integer bcf3_oil_pv;
-    private Integer bcf3_oil_sv;
-    private Float bcf3_cp_pv;
-    private Float bcf3_cp_sv;
-    private Integer bcf4_cf_pv;
-    private Integer bcf4_cf_sv;
-    private Integer bcf4_oil_pv;
-    private Integer bcf4_oil_sv;
-    private Float bcf4_cp_pv;
-    private Float bcf4_cp_sv;
-    private Integer bcf5_cf_pv;
-    private Integer bcf5_oil_pv;
-    private Float bcf5_cp_pv;
-    private Integer tf1_zone1;
-    private Integer tf1_zone2;
-    private Integer tf1_zone3;
+    
+    
+    private Integer vac1_pv;
+    private Integer vac2_pv;
+    private Integer vac3_pv;
+    private Integer protec_pv;
+    private Integer tem_sp;
+    private Integer tem_1;
+    private Integer tem_2;
+    private Integer tem_3;
+    private Integer tem_4;
+    private Integer tem_5;
+    private Integer tem_6;
+    private Integer tem_7;
+    private Integer tem_8;
+    private Integer tem_9;
+    private Integer tem_10;
+    private Integer tem_11;
+    private Integer tem_12;
+    
+    private String tagname;
+	private String alarmdesc;
+	private String alarmnmae;
+	private String start_time;
+	private String end_time;
+	
+	//알람이력
+	private String a_stime;			//알람 발생시간
+	private String a_etime;			//알람 해제시간
+	private String a_hogi;			//알람 호기
+	private String a_addr;			//알람 주소
+	private String a_desc;			//알람 코멘트
+	private int a_value;			//알람 현재 값
+	private int a_cnt;				//알람 발생 수
+	private String a_sdate;			//알람 조회시작일자
+	private String a_edate;			//알람 조회종료일자
+	private String s_sdate;
+    private String s_edate;
+	 private String s_date;
+	    private String e_date;
+	    private String cnt;
     
 	public String getHogi() {
 		return hogi;
@@ -134,185 +145,221 @@ public class Monitoring {
 	public void setTdatetime(String tdatetime) {
 		this.tdatetime = tdatetime;
 	}
-	public Integer getBcf1_cf_pv() {
-		return bcf1_cf_pv;
+	public Integer getTem_1() {
+		return tem_1;
 	}
-	public void setBcf1_cf_pv(Integer bcf1_cf_pv) {
-		this.bcf1_cf_pv = bcf1_cf_pv;
+	public void setTem_1(Integer tem_1) {
+		this.tem_1 = tem_1;
 	}
-	public Integer getBcf1_cf_sv() {
-		return bcf1_cf_sv;
+	public Integer getTem_2() {
+		return tem_2;
 	}
-	public void setBcf1_cf_sv(Integer bcf1_cf_sv) {
-		this.bcf1_cf_sv = bcf1_cf_sv;
+	public void setTem_2(Integer tem_2) {
+		this.tem_2 = tem_2;
 	}
-	public Integer getBcf1_oil_pv() {
-		return bcf1_oil_pv;
+	public Integer getTem_3() {
+		return tem_3;
 	}
-	public void setBcf1_oil_pv(Integer bcf1_oil_pv) {
-		this.bcf1_oil_pv = bcf1_oil_pv;
+	public void setTem_3(Integer tem_3) {
+		this.tem_3 = tem_3;
 	}
-	public Integer getBcf1_oil_sv() {
-		return bcf1_oil_sv;
+	public Integer getTem_4() {
+		return tem_4;
 	}
-	public void setBcf1_oil_sv(Integer bcf1_oil_sv) {
-		this.bcf1_oil_sv = bcf1_oil_sv;
+	public void setTem_4(Integer tem_4) {
+		this.tem_4 = tem_4;
 	}
-	public Float getBcf1_cp_pv() {
-		return bcf1_cp_pv;
+	public Integer getTem_5() {
+		return tem_5;
 	}
-	public void setBcf1_cp_pv(Float bcf1_cp_pv) {
-		this.bcf1_cp_pv = bcf1_cp_pv;
+	public void setTem_5(Integer tem_5) {
+		this.tem_5 = tem_5;
 	}
-	public Float getBcf1_cp_sv() {
-		return bcf1_cp_sv;
+	public Integer getTem_6() {
+		return tem_6;
 	}
-	public void setBcf1_cp_sv(Float bcf1_cp_sv) {
-		this.bcf1_cp_sv = bcf1_cp_sv;
+	public void setTem_6(Integer tem_6) {
+		this.tem_6 = tem_6;
 	}
-	public Integer getBcf2_cf_pv() {
-		return bcf2_cf_pv;
+	public Integer getTem_7() {
+		return tem_7;
 	}
-	public void setBcf2_cf_pv(Integer bcf2_cf_pv) {
-		this.bcf2_cf_pv = bcf2_cf_pv;
+	public void setTem_7(Integer tem_7) {
+		this.tem_7 = tem_7;
 	}
-	public Integer getBcf2_cf_sv() {
-		return bcf2_cf_sv;
+	public Integer getTem_8() {
+		return tem_8;
 	}
-	public void setBcf2_cf_sv(Integer bcf2_cf_sv) {
-		this.bcf2_cf_sv = bcf2_cf_sv;
+	public void setTem_8(Integer tem_8) {
+		this.tem_8 = tem_8;
 	}
-	public Integer getBcf2_oil_sv() {
-		return bcf2_oil_sv;
+	public Integer getTem_9() {
+		return tem_9;
 	}
-	public void setBcf2_oil_sv(Integer bcf2_oil_sv) {
-		this.bcf2_oil_sv = bcf2_oil_sv;
+	public void setTem_9(Integer tem_9) {
+		this.tem_9 = tem_9;
 	}
-	public Integer getBcf2_oil_pv() {
-		return bcf2_oil_pv;
+	public Integer getTem_10() {
+		return tem_10;
 	}
-	public void setBcf2_oil_pv(Integer bcf2_oil_pv) {
-		this.bcf2_oil_pv = bcf2_oil_pv;
+	public void setTem_10(Integer tem_10) {
+		this.tem_10 = tem_10;
 	}
-	public Float getBcf2_cp_pv() {
-		return bcf2_cp_pv;
+	public Integer getTem_11() {
+		return tem_11;
 	}
-	public void setBcf2_cp_pv(Float bcf2_cp_pv) {
-		this.bcf2_cp_pv = bcf2_cp_pv;
+	public void setTem_11(Integer tem_11) {
+		this.tem_11 = tem_11;
 	}
-	public Float getBcf2_cp_sv() {
-		return bcf2_cp_sv;
+	public Integer getTem_12() {
+		return tem_12;
 	}
-	public void setBcf2_cp_sv(Float bcf2_cp_sv) {
-		this.bcf2_cp_sv = bcf2_cp_sv;
+	public void setTem_12(Integer tem_12) {
+		this.tem_12 = tem_12;
 	}
-	public Integer getBcf3_cf_pv() {
-		return bcf3_cf_pv;
+	public String getTagname() {
+		return tagname;
 	}
-	public void setBcf3_cf_pv(Integer bcf3_cf_pv) {
-		this.bcf3_cf_pv = bcf3_cf_pv;
+	public void setTagname(String tagname) {
+		this.tagname = tagname;
 	}
-	public Integer getBcf3_cf_sv() {
-		return bcf3_cf_sv;
+	public String getAlarmdesc() {
+		return alarmdesc;
 	}
-	public void setBcf3_cf_sv(Integer bcf3_cf_sv) {
-		this.bcf3_cf_sv = bcf3_cf_sv;
+	public void setAlarmdesc(String alarmdesc) {
+		this.alarmdesc = alarmdesc;
 	}
-	public Integer getBcf3_oil_pv() {
-		return bcf3_oil_pv;
+	public String getAlarmnmae() {
+		return alarmnmae;
 	}
-	public void setBcf3_oil_pv(Integer bcf3_oil_pv) {
-		this.bcf3_oil_pv = bcf3_oil_pv;
+	public void setAlarmnmae(String alarmnmae) {
+		this.alarmnmae = alarmnmae;
 	}
-	public Integer getBcf3_oil_sv() {
-		return bcf3_oil_sv;
+	public String getStart_time() {
+		return start_time;
 	}
-	public void setBcf3_oil_sv(Integer bcf3_oil_sv) {
-		this.bcf3_oil_sv = bcf3_oil_sv;
+	public void setStart_time(String start_time) {
+		this.start_time = start_time;
 	}
-	public Float getBcf3_cp_pv() {
-		return bcf3_cp_pv;
+	public String getEnd_time() {
+		return end_time;
 	}
-	public void setBcf3_cp_pv(Float bcf3_cp_pv) {
-		this.bcf3_cp_pv = bcf3_cp_pv;
+	public void setEnd_time(String end_time) {
+		this.end_time = end_time;
 	}
-	public Float getBcf3_cp_sv() {
-		return bcf3_cp_sv;
+	public String getA_stime() {
+		return a_stime;
 	}
-	public void setBcf3_cp_sv(Float bcf3_cp_sv) {
-		this.bcf3_cp_sv = bcf3_cp_sv;
+	public void setA_stime(String a_stime) {
+		this.a_stime = a_stime;
 	}
-	public Integer getBcf4_cf_pv() {
-		return bcf4_cf_pv;
+	public String getA_etime() {
+		return a_etime;
 	}
-	public void setBcf4_cf_pv(Integer bcf4_cf_pv) {
-		this.bcf4_cf_pv = bcf4_cf_pv;
+	public void setA_etime(String a_etime) {
+		this.a_etime = a_etime;
 	}
-	public Integer getBcf4_cf_sv() {
-		return bcf4_cf_sv;
+	public String getA_hogi() {
+		return a_hogi;
 	}
-	public void setBcf4_cf_sv(Integer bcf4_cf_sv) {
-		this.bcf4_cf_sv = bcf4_cf_sv;
+	public void setA_hogi(String a_hogi) {
+		this.a_hogi = a_hogi;
 	}
-	public Integer getBcf4_oil_pv() {
-		return bcf4_oil_pv;
+	public String getA_addr() {
+		return a_addr;
 	}
-	public void setBcf4_oil_pv(Integer bcf4_oil_pv) {
-		this.bcf4_oil_pv = bcf4_oil_pv;
+	public void setA_addr(String a_addr) {
+		this.a_addr = a_addr;
 	}
-	public Integer getBcf4_oil_sv() {
-		return bcf4_oil_sv;
+	public String getA_desc() {
+		return a_desc;
 	}
-	public void setBcf4_oil_sv(Integer bcf4_oil_sv) {
-		this.bcf4_oil_sv = bcf4_oil_sv;
+	public void setA_desc(String a_desc) {
+		this.a_desc = a_desc;
 	}
-	public Float getBcf4_cp_pv() {
-		return bcf4_cp_pv;
+	public int getA_value() {
+		return a_value;
 	}
-	public void setBcf4_cp_pv(Float bcf4_cp_pv) {
-		this.bcf4_cp_pv = bcf4_cp_pv;
+	public void setA_value(int a_value) {
+		this.a_value = a_value;
 	}
-	public Float getBcf4_cp_sv() {
-		return bcf4_cp_sv;
+	public int getA_cnt() {
+		return a_cnt;
 	}
-	public void setBcf4_cp_sv(Float bcf4_cp_sv) {
-		this.bcf4_cp_sv = bcf4_cp_sv;
+	public void setA_cnt(int a_cnt) {
+		this.a_cnt = a_cnt;
 	}
-	public Integer getBcf5_cf_pv() {
-		return bcf5_cf_pv;
+	public String getA_sdate() {
+		return a_sdate;
 	}
-	public void setBcf5_cf_pv(Integer bcf5_cf_pv) {
-		this.bcf5_cf_pv = bcf5_cf_pv;
+	public void setA_sdate(String a_sdate) {
+		this.a_sdate = a_sdate;
 	}
-	public Integer getBcf5_oil_pv() {
-		return bcf5_oil_pv;
+	public String getA_edate() {
+		return a_edate;
 	}
-	public void setBcf5_oil_pv(Integer bcf5_oil_pv) {
-		this.bcf5_oil_pv = bcf5_oil_pv;
+	public void setA_edate(String a_edate) {
+		this.a_edate = a_edate;
 	}
-	public Float getBcf5_cp_pv() {
-		return bcf5_cp_pv;
+	public String getS_date() {
+		return s_date;
 	}
-	public void setBcf5_cp_pv(Float bcf5_cp_pv) {
-		this.bcf5_cp_pv = bcf5_cp_pv;
+	public void setS_date(String s_date) {
+		this.s_date = s_date;
 	}
-	public Integer getTf1_zone1() {
-		return tf1_zone1;
+	public String getE_date() {
+		return e_date;
 	}
-	public void setTf1_zone1(Integer tf1_zone1) {
-		this.tf1_zone1 = tf1_zone1;
+	public void setE_date(String e_date) {
+		this.e_date = e_date;
 	}
-	public Integer getTf1_zone2() {
-		return tf1_zone2;
+	public String getCnt() {
+		return cnt;
 	}
-	public void setTf1_zone2(Integer tf1_zone2) {
-		this.tf1_zone2 = tf1_zone2;
+	public void setCnt(String cnt) {
+		this.cnt = cnt;
 	}
-	public Integer getTf1_zone3() {
-		return tf1_zone3;
+	public String getS_sdate() {
+		return s_sdate;
 	}
-	public void setTf1_zone3(Integer tf1_zone3) {
-		this.tf1_zone3 = tf1_zone3;
+	public void setS_sdate(String s_sdate) {
+		this.s_sdate = s_sdate;
+	}
+	public String getS_edate() {
+		return s_edate;
+	}
+	public void setS_edate(String s_edate) {
+		this.s_edate = s_edate;
+	}
+	public Integer getVac1_pv() {
+		return vac1_pv;
+	}
+	public void setVac1_pv(Integer vac1_pv) {
+		this.vac1_pv = vac1_pv;
+	}
+	public Integer getVac2_pv() {
+		return vac2_pv;
+	}
+	public void setVac2_pv(Integer vac2_pv) {
+		this.vac2_pv = vac2_pv;
+	}
+	public Integer getVac3_pv() {
+		return vac3_pv;
+	}
+	public void setVac3_pv(Integer vac3_pv) {
+		this.vac3_pv = vac3_pv;
+	}
+	public Integer getProtec_pv() {
+		return protec_pv;
+	}
+	public void setProtec_pv(Integer protec_pv) {
+		this.protec_pv = protec_pv;
+	}
+	public Integer getTem_sp() {
+		return tem_sp;
+	}
+	public void setTem_sp(Integer tem_sp) {
+		this.tem_sp = tem_sp;
 	}
 	
 	

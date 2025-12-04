@@ -7,10 +7,15 @@ import com.posco.controller.MainController;
 
 public class CommProcessor {
 
-	
-	//1초주기로 OPC UA 커넥션이 null일경우 연결
-	@Scheduled(fixedRate = 1000)
-	public void handle() {
-	
-	}
+   
+   //1초주기로 OPC UA 커넥션이 null일경우 연결
+   @Scheduled(fixedRate = 1000)
+   public void handle() {
+//      MainController.dbCheck();
+   System.out.println("스케줄 시작");
+      if(MainController.client == null) {
+//         MainController.opcStart();
+         MainController.commCheck();
+      }   
+   }
 }

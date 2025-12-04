@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alarm">
+
+
+
+
+
+
+
+
+
+	
+	
+	
+<select id="alarmRecordListAll" parameterType="monitoring" resultType="monitoring">
+<![CDATA[
+    SELECT 
+        w.TAGNAME AS tagname,
+        w.ALARMNAME AS alarmname,
+        w.ALARMDESC AS alarmdesc,
+        w.TIME AS start_time,
+        (
+            SELECT MIN(c.TIME)
+            FROM ALARMDATA c
+            WHERE c.TAGNAME = w.TAGNAME
+              AND c.ALARMNAME = w.ALARMNAME
+              AND c.ALARMSTATE = 'Clear'
+              AND c.TIME > w.TIME
+        ) AS end_time
+    FROM ALARMDATA w
+    WHERE w.ALARMSTATE = 'Warning'
+      AND NEWTIME BETWEEN #{s_sdate} AND #{s_edate}
+    ORDER BY w.TIME DESC
+]]>
+</select>
+
+
+</mapper>
