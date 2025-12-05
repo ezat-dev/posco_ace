@@ -218,19 +218,12 @@ let chart;
 let trendInterval;
 
 $(document).ready(function () {
-    $(".datetimeSet").datepicker({
-        language: 'ko',
-        timepicker: true,
-        dateFormat: 'yyyy-mm-dd',
-        timeFormat: 'hh:ii',
-        autoClose: true
-    });
-
-    $("#startDate").val(trendStime());
-    $("#endDate").val(trendEtime());
-
-    fetchData();
-    trendInterval = setInterval(trendIntervalFunc, 1000 * 60);
+	var yesterD = yesterDate();
+	   
+	   $("#startDate").val(yesterD);
+	   $("#endDate").val(todayDate());
+     fetchData();
+    trendInterval = setInterval(trendIntervalFunc, 1000*60*5);
 });
 
 $(".select-button").on("click", fetchData);
@@ -248,7 +241,8 @@ function fetchData() {
     $.ajax({
         type: "POST",
         url: "/posco/monitoring/trend/list",
-        data: { startDate, endDate },
+        data: {  startDate: $("#startDate").val(),
+        	endDate: $("#endDate").val() },
         success: function (result) {
             console.log(result); // <-- 먼저 데이터 확인
 

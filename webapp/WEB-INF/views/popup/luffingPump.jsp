@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <head>
 <meta charset="utf-8" />
-<title>러핑펌프</title>
+<title>러핑 펌프</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;}
@@ -34,15 +35,26 @@
 
   /* prevent text selection while long-press */
   .no-select { -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+  
+.btn.active-on {
+  border: 3px solid #00ff00 !important;
+}
+
+.btn.active-off {
+  border: 3px solid #ff0000 !important;
+}
+  
+  
 </style>
 </head>
 <body>
   <div class="container no-select">
-    <div class="header">러핑펌프</div>
+    <div class="header">러핑 펌프</div>
 
     <div class="controls" style="margin-top:8px;">
-      <button id="btnOff" class="btn off">OFF</button>
-      <button id="btnOn" class="btn on">ON</button>
+      <button class="btn ctrl-btn" data-tag="luffing-pump-off">OFF</button>
+	  <button class="btn ctrl-btn" data-tag="luffing-pump-on">ON</button>
+
     </div>
 
     <div class="progress-wrap" aria-hidden="true" title="길게 누르세요">
@@ -52,9 +64,12 @@
 
   <div id="toast" class="toast"></div>
 
+
 <script>
 (function(){
-  const DURATION = 2000; // 3초
+  console.log("### Trend Popup Script Loaded");
+
+  const DURATION = 2000;
   let timerInterval = null;
   let startTime = 0;
   let activeButton = null;
@@ -62,110 +77,177 @@
   const progressBar = document.getElementById('progressBar');
   const toast = document.getElementById('toast');
 
-  
-  const btnOff = document.getElementById('btnOff');
-  const btnOn = document.getElementById('btnOn');
+  const ctrlButtons = document.querySelectorAll('.ctrl-btn');
+  console.log("### ctrlButtons count:", ctrlButtons.length);
 
-  
+  if (!progressBar) console.error("❌ progressBar 요소를 찾을 수 없습니다.");
+  if (!toast) console.error("❌ toast 요소를 찾을 수 없습니다.");
+  if (ctrlButtons.length === 0) {
+    console.error("❌ .ctrl-btn 버튼이 없습니다. HTML을 확인하세요.");
+    return;
+  }
+
+  // ▼ 롱프레스 시작
   function startPress(btn, event){
-    event.preventDefault(); 
-    if (timerInterval) return; 
+    event.preventDefault();
+    if (timerInterval) return;
+
     activeButton = btn;
     startTime = Date.now();
     progressBar.style.width = '0%';
 
-    
+    const tag = btn.dataset.tag || 'unknown';
+    console.log("### LongPress START - tag:", tag, "time:", new Date().toISOString());
+
     timerInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const pct = Math.min(1, elapsed / DURATION);
       progressBar.style.width = (pct * 100) + '%';
 
       if (pct >= 1) {
-        completeAction(btn);
         clearInterval(timerInterval);
         timerInterval = null;
+
+        console.log("### LongPress COMPLETED - 실행 준비됨");
+        completeAction(btn);
       }
     }, 20);
   }
 
-  
+  // ▼ 롱프레스 취소
   function cancelPress(){
     if (timerInterval) {
       clearInterval(timerInterval);
       timerInterval = null;
+      console.log("### LongPress CANCELED - user stopped");
     }
     startTime = 0;
     activeButton = null;
     progressBar.style.width = '0%';
   }
 
-  
+  // ▼ 롱프레스 완료 → 실제 명령 실행
   function completeAction(btn){
-    const label = btn.id === 'btnOff' ? 'OFF' : 'ON';
-    showToast(label + ' 작업 완료');
+    const tagName = btn.dataset.tag;
 
-    
+    console.log("### completeAction 실행됨 - tagName:", tagName, "time:", new Date().toISOString());
+
+    showToast("명령 실행");
+
+    console.log("### AJAX 호출: tag =", tagName, ", value=1");
+
+    $.ajax({
+      url: "/posco/monitoring/write",
+      type: "post",
+      data: { tagName: tagName, value: 1 },
+      success: function(res){
+        console.log("### PLC 쓰기 성공:", res);
+      },
+      error: function(err){
+        console.error("### PLC 쓰기 실패:", err);
+      }
+    });
+
     try {
       if (window.opener && !window.opener.closed) {
-        
+        console.log("### opener 통신 시도");
         if (typeof window.opener.onPopupResult === 'function') {
-          window.opener.onPopupResult({ target: 'luffingPump', action: label, time: new Date().toISOString() });
+          window.opener.onPopupResult({ target: tagName, action: "command", time: new Date().toISOString() });
         } else {
-          
-          window.opener.postMessage({ target: 'luffingPump', action: label }, '*');
+          window.opener.postMessage({ target: tagName, action: "command" }, '*');
         }
       }
     } catch(e) {
-      
       console.warn('opener 통신 실패', e);
     }
   }
 
- 
+
+  
   function showToast(msg, duration = 1400){
     toast.textContent = msg;
     toast.style.display = 'block';
-    setTimeout(()=> {
-      toast.style.opacity = '1';
-    }, 20);
+    setTimeout(()=> toast.style.opacity = '1', 20);
     setTimeout(()=> {
       toast.style.opacity = '0';
       setTimeout(()=> toast.style.display = 'none', 200);
     }, duration);
   }
 
- 
-  function bindLongPress(el){
-    // mouse
-    el.addEventListener('mousedown', (e)=> startPress(el, e));
-    el.addEventListener('mouseup', cancelPress);
-    el.addEventListener('mouseleave', cancelPress);
+  // ▼ 버튼 이벤트 바인딩
+  ctrlButtons.forEach(btn => {
+    btn.addEventListener('mousedown', (e) => startPress(btn, e));
+    btn.addEventListener('mouseup', cancelPress);
+    btn.addEventListener('mouseleave', cancelPress);
 
-    // touch
-    el.addEventListener('touchstart', (e)=> startPress(el, e), {passive:false});
-    el.addEventListener('touchend', cancelPress);
-    el.addEventListener('touchcancel', cancelPress);
-  }
+    btn.addEventListener('touchstart', (e) => startPress(btn, e), {passive:false});
+    btn.addEventListener('touchend', cancelPress);
+    btn.addEventListener('touchcancel', cancelPress);
 
-  bindLongPress(btnOff);
-  bindLongPress(btnOn);
-
-  
-  [btnOff, btnOn].forEach(btn=>{
-    btn.addEventListener('keydown', (e)=>{
+    btn.addEventListener('keydown', (e) => {
       if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
         startPress(btn, e);
       }
     });
-    btn.addEventListener('keyup', (e)=>{
-      if (e.key === ' ' || e.key === 'Enter') {
-        cancelPress();
-      }
-    });
+    btn.addEventListener('keyup', cancelPress);
   });
 
 })();
+
+//==============================
+//PLC Lamp 상태 폴링
+//==============================
+function pollLampStatus() {
+
+ // ON Lamp
+ $.ajax({
+     url: "/posco/monitoring/read/bit",
+     type: "get",
+     data: { tagName: "luffing-pump-lamp-on" },
+     success: function(res) {
+         if (res.status === "OK") {
+             const isOn = res.value === true;
+
+             const onBtn = document.querySelector("[data-tag='luffing-pump-on']");
+             if (isOn) {
+                 onBtn.classList.add("active-on");
+             } else {
+                 onBtn.classList.remove("active-on");
+             }
+         }
+     }
+ });
+
+ // OFF Lamp
+ $.ajax({
+     url: "/posco/monitoring/read/bit",
+     type: "get",
+     data: { tagName: "luffing-pump-lamp-off" },
+     success: function(res) {
+         if (res.status === "OK") {
+             const isOff = res.value === true;
+
+             const offBtn = document.querySelector("[data-tag='luffing-pump-off']");
+             if (isOff) {
+                 offBtn.classList.add("active-off");
+             } else {
+                 offBtn.classList.remove("active-off");
+             }
+         }
+     }
+ });
+}
+
+//1초마다 PLC 상태 갱신
+setInterval(pollLampStatus, 1000);
+
+//첫 실행
+pollLampStatus();
+
 </script>
+
+
+
 </body>
 </html>

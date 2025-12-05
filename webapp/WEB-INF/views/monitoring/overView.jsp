@@ -17,17 +17,20 @@
 			/* 📑 탭 스타일 */
 	
 .box14,.auto-run-off-box,.auto-run-on-box,.auto-value,
-.set-vacuum,.set-heat,.set-cool-switch-1,.set-cool-switch-2,.set-cool-switch-3,.set-cool-switch-4{
+.set-vacuum,.set-heat,.set-cool-switch-1,.set-cool-switch-2,.set-cool-switch-3,.set-cool-switch-4
+,.analog-vacuum-pv-1,.analog-hivacuum-pv-1,.analog-heat-pv-1,.analog-vacuum-pv-2,.analog-hivacuum-pv-2
+,.analog-heat-pv-2,.analog-timer-sv,.analog-timer-pv,.box12,.box13,.box17,.ok-auto{
 	 display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
     text-align: center;
 }
+
 	
 	/* 모든 클릭 가능한 오버뷰 요소 기본 스타일 */
 .vacuum-heat,
- .box14,.box13,.box12, 
+ .box14,.box13,.box12,.box17, 
  .luffing-pump,
  .booster-pump,
  .diff-pump,
@@ -55,8 +58,11 @@
 }
 .box14:hover,
 .box13:hover,
-.box12:hover{
+.box12:hover,
+.box17:hover{
 	filter: brightness(1.2);
+	border: 1px solid red;
+}
 }
 
 /* 클릭 시 (마우스 다운) */
@@ -199,8 +205,8 @@ h1{
   <div class="box9"></div>
   <div class="box10"></div>
   <div class="box11"></div>
-  <div class="box12">고진공-SET</div>
-  <div class="box13">히팅-SET</div>
+  <div class="box12">히팅-SET</div>
+  <div class="box13">고진공-SET</div>
   <div class="box14">운전 선택</div>
   <div class="auto-run-off-box">자동운전 정지</div>
   <div class="auto-run-on-box">자동운전 시작</div>
@@ -214,7 +220,7 @@ h1{
   <div class="bx"></div>
   <div class="box15"></div>
   <div class="box16"></div>
-  <div class="box17"></div>
+  <div class="box17">설정치</div>
   <div class="box18"></div>
   <div class="box19"></div>
   <div class="analog-vacuum-pv-1"></div>
@@ -225,7 +231,7 @@ h1{
   <div class="analog-heat-pv-2"></div>
   <div class="analog-timer-sv"></div>
   <div class="analog-timer-pv"></div>
-  <div class="auto-value">자동운전 미완료</div>
+  <div class="ok-auto"></div>
   
   <div class="text">냉각수 유량스위치-1</div>
   <div class="text2">냉각수 유량스위치-2</div>
@@ -241,7 +247,6 @@ h1{
   <!-- <div class="text12">고진공-SET</div>
   <div class="text13">히팅-SET</div> -->
   <div class="text14">냉각타이머</div>
-  <div class="text15">설정치</div>
   <div class="text16">분</div>
   <div class="text17">분</div>
   <div class="text18">현재치</div>
@@ -283,7 +288,7 @@ $(document).ready(function () {
 
 	//자동운전선택
     $(".box14").on("click", function () {
-        openPopup("/posco/popup/autoRun", 350, 140);
+        openPopup("/posco/popup/autoRun", 380, 150);
     });
 
 	//러핑펌프
@@ -325,6 +330,31 @@ $(document).ready(function () {
     $(".gas-valve").on("click", function () {
         openPopup("/posco/popup/gasValve", 350, 140);
     });
+
+ 	 //히팅SET
+    $(".box12").on("click", function () {
+        openPopup("/posco/popup/heatingSet", 460, 190);
+    });
+
+  	//고진공SET
+    $(".box13").on("click", function () {
+        openPopup("/posco/popup/vacuumSet", 460, 190);
+    });
+
+  	//냉각타이머 설정치
+    $(".box17").on("click", function () {
+        openPopup("/posco/popup/coolTimerSet", 460, 190);
+    });
+
+ 	 //자동운전 정지
+    $(".auto-run-off-box").on("click", function () {
+        openPopup("/posco/popup/autoStop", 350, 140);
+    });
+
+    //자동운전 시작
+    $(".auto-run-on-box").on("click", function () {
+        openPopup("/posco/popup/autoStart", 350, 140);
+    });
 });
 
 
@@ -343,8 +373,6 @@ function openPopup(url, w, h) {
 
     window.open(url, "_blank", options);
 }
-
-
 
 
 
@@ -401,6 +429,14 @@ function setText(key, value){
 
     Array.from(els).forEach(el => {
         el.innerText = (value == 1 ? "ON" : "OFF");
+    });
+}
+function ok(key, value){
+    const els = document.getElementsByClassName(key);
+    if(!els || els.length === 0) return;
+
+    Array.from(els).forEach(el => {
+        el.innerText = (value == 1 ? "자동운전 완료" : "자동운전 미완료");
     });
 }
 
@@ -480,13 +516,13 @@ function overviewListView() {
         type: "post",
         dataType: "json",
         success: function(result) {
-            console.log("✅ Ajax 응답 전체:", result); 
+            /* console.log("✅ Ajax 응답 전체:", result);  */
 
             const data = result.multiValues;
-            console.log("▶ multiValues:", data); 
+           /*  console.log("▶ multiValues:", data);  */
 
             for(const item of data){
-                console.log("item:", item); 
+                /* console.log("item:", item);  */
                 for(const [tagName, tagData] of Object.entries(item)){
                     console.log("tagName:", tagName, "tagData:", tagData); 
                     if(!tagName) continue;
@@ -500,6 +536,7 @@ function overviewListView() {
 	                    case "vs":    vs(tagName, value); break;
 	                    case "value": valueDisplay(tagName, value); break;
 	                    case "green": green(tagName, value); break;
+	                    case "ok": ok(tagName, value); break;
 	                    case "settext": setText(tagName, value); break;
                     }
                 }
@@ -523,7 +560,7 @@ function overviewListViewString() {
             console.log("✅ Ajax 응답 전체:", result);
 
             const data = result.multiValues;
-            console.log("▶ 스트링:", data);
+            /* console.log("▶ 스트링:", data); */
 
             for (const item of data) {
                 console.log("item:", item);

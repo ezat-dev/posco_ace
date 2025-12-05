@@ -4,7 +4,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <head>
 <meta charset="utf-8" />
-<title>냉각 팬</title>
+<title>자동운전 시작</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;}
@@ -36,24 +36,18 @@
   /* prevent text selection while long-press */
   .no-select { -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
   
-  .btn.active-on {
+   .btn.active-on {
   border: 3px solid #00ff00 !important;
 }
 
-.btn.active-off {
-  border: 3px solid #ff0000 !important;
-}
-  
-  
 </style>
 </head>
 <body>
   <div class="container no-select">
-    <div class="header">냉각 팬</div>
+    <div class="header">자동운전 시작</div>
 
     <div class="controls" style="margin-top:8px;">
-      <button class="btn ctrl-btn" data-tag="cool-pen-off">OFF</button>
-	  <button class="btn ctrl-btn" data-tag="cool-pen-on">ON</button>
+	  <button class="btn ctrl-btn" data-tag="auto-start">시작</button>
 
     </div>
 
@@ -162,8 +156,6 @@
     }
   }
 
-
-  
   function showToast(msg, duration = 1400){
     toast.textContent = msg;
     toast.style.display = 'block';
@@ -204,12 +196,12 @@ function pollLampStatus() {
 $.ajax({
    url: "/posco/monitoring/read/bit",
    type: "get",
-   data: { tagName: "cool-pen-lamp-on" },
+   data: { tagName: "auto-start-lamp" },
    success: function(res) {
        if (res.status === "OK") {
            const isOn = res.value === true;
 
-           const onBtn = document.querySelector("[data-tag='cool-pen-on']");
+           const onBtn = document.querySelector("[data-tag='auto-start']");
            if (isOn) {
                onBtn.classList.add("active-on");
            } else {
@@ -219,24 +211,6 @@ $.ajax({
    }
 });
 
-// OFF Lamp
-$.ajax({
-   url: "/posco/monitoring/read/bit",
-   type: "get",
-   data: { tagName: "cool-pen-lamp-off" },
-   success: function(res) {
-       if (res.status === "OK") {
-           const isOff = res.value === true;
-
-           const offBtn = document.querySelector("[data-tag='cool-pen-off']");
-           if (isOff) {
-               offBtn.classList.add("active-off");
-           } else {
-               offBtn.classList.remove("active-off");
-           }
-       }
-   }
-});
 }
 
 //1초마다 PLC 상태 갱신

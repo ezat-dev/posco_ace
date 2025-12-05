@@ -26,7 +26,7 @@
     <!-- MariaDB DataSource -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
-        <property name="url" value="jdbc:mariadb://192.168.1.20:3306/posco"/>
+        <property name="url" value="jdbc:mariadb://192.168.1.184:3306/posco"/>
         <property name="username" value="root"/>
         <property name="password" value="1234"/>
     </bean>

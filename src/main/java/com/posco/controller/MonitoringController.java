@@ -9,6 +9,13 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.milo.opcua.stack.core.UaException;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
+import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
+import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
+import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
+import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +45,10 @@ public class MonitoringController {
 		returnMap = opcDataMap.getOpcDataListMap("ace_posco.OVERVIEW");
 
 		// System.out으로 찍기
-		System.out.println("manualOperationView 호출됨");
-		System.out.println("returnMap 내용: " + returnMap);
+		/*
+		 * System.out.println("manualOperationView 호출됨");
+		 * System.out.println("returnMap 내용: " + returnMap);
+		 */
 
 		return returnMap;       
 	}
@@ -55,8 +64,10 @@ public class MonitoringController {
 		returnMap = opcDataMap.getOpcDataListMap("ace_posco.OVERVIEW");
 
 		//  System.out으로 찍기
-		System.out.println("monitoring view 호출됨");
-		System.out.println("returnMap 내용: " + returnMap);
+		/*
+		 * System.out.println("monitoring view 호출됨");
+		 * System.out.println("returnMap 내용: " + returnMap);
+		 */
 
 		return returnMap;       
 	}
@@ -77,6 +88,262 @@ public class MonitoringController {
 
 		return returnMap;       
 	}
+	
+	
+	
+	//PLC 팝업 비트 읽기
+	@RequestMapping(value = "/monitoring/read/bit", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> readBitValue(@RequestParam String tagName) {
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        String fullNodeId = "ace_posco.POPUP." + tagName;
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+	        DataValue dataValue = MainController.client.readValue(0, TimestampsToReturn.Neither, nodeId).get();
+	        boolean value = (boolean) dataValue.getValue().getValue();
+
+	        result.put("status", "OK");
+	        result.put("value", value);
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("value", false);
+	    }
+	    return result;
+	}
+
+	
+	
+	//PLC 값써주기 비트
+	@RequestMapping(value = "/monitoring/write", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean writeOpcValue(String tagName, int value) {
+	    try {
+	        String fullNodeId = "ace_posco.POPUP." + tagName;
+	        System.out.println("Write NodeId = ns=2;s=" + fullNodeId);
+
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+	        boolean boolVal = (value == 1);
+	        DataValue dataValue = new DataValue(new Variant(boolVal));
+
+	        System.out.println("Write Value = " + boolVal);	      
+	        StatusCode statusCode = MainController.client.writeValue(nodeId, dataValue).get();
+	        System.out.println("Write Status = " + statusCode);
+
+	        if (!statusCode.isGood()) return false;
+
+	       
+	        if (boolVal) {
+	            new Thread(() -> {
+	                try {
+	                    Thread.sleep(2000); // 2초 슬립
+
+	                    System.out.println("### Auto Reset → tag=" + fullNodeId + ", value=0");
+
+	                    DataValue resetValue = new DataValue(new Variant(false));
+	                    StatusCode resetStatus =
+	                        MainController.client.writeValue(nodeId, resetValue).get();
+
+	                    System.out.println("Auto Reset Status = " + resetStatus);
+
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }).start();
+	        }
+
+	        return true;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	// PLC 아날로그값 READ
+	@RequestMapping(value = "/monitoring/read/analog", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> readOpcAnalog(@RequestParam String tagName) {
+
+	    Map<String, Object> result = new HashMap<>();
+
+	    try {
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+
+	        System.out.println("Analog Read NodeId = ns=2;s=" + fullNodeId);
+
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+	        DataValue dataValue = MainController.client
+	                .readValue(0, TimestampsToReturn.Neither, nodeId)
+	                .get();
+
+	        Object value = dataValue.getValue().getValue();
+
+	        System.out.println("Analog Read Value = " + value);
+
+	        result.put("status", "OK");
+	        result.put("value", value);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        result.put("status", "NG");
+	    }
+
+	    return result;
+	}
+
+	
+	//PLC 아날로그값 WRITE
+	@RequestMapping(value = "/monitoring/write/popInput", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean writePopupValue(@RequestParam String tagName, @RequestParam String value) {
+
+	    try {
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        String fullNodeId = "ace_posco.POPUP." + tagName;
+
+	        System.out.println("Popup Write NodeId = ns=2;s=" + fullNodeId);
+
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+	        Variant writeValue;
+
+	        // =======================
+	        // ★ Int16 처리해야 하는 태그
+	        // =======================
+	        if (tagName.equals("input-heat-2") ||
+	            tagName.equals("input-hivacuum-2") ||
+	            tagName.equals("input-cool-sv")) 
+	        {
+	            try {
+	                short v = Short.parseShort(value);
+	                writeValue = new Variant(v);
+	            } catch(Exception e) {
+	                System.out.println("Int16 변환 실패");
+	                return false;
+	            }
+	        }
+
+	        // =======================
+	        // ★ Float (소수점 1자리 반올림)
+	        // =======================
+	        else {
+	            try {
+	                float v = Float.parseFloat(value);
+
+	                // ★ 소수점 1자리 반올림 처리
+	                v = Math.round(v * 10) / 10.0f;
+
+	                writeValue = new Variant(v);
+	            } catch(Exception e) {
+	                writeValue = new Variant(value);
+	            }
+	        }
+
+	        System.out.println("Popup Write Value = " + writeValue);
+
+	        StatusCode status = MainController.client
+	                .writeValue(nodeId, new DataValue(writeValue))
+	                .get();
+
+	        System.out.println("Write Status = " + status);
+
+	        return status.isGood();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+
+
+
+
+	
+	
+	
+	// PLC 오버뷰 아날로그 값 바로 쓰기
+	/*
+	 * @RequestMapping(value = "/monitoring/write/analog", method =
+	 * RequestMethod.POST)
+	 * 
+	 * @ResponseBody public boolean writeOpcAnalog(String tagName, String value) {
+	 * 
+	 * try { String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+	 * System.out.println("Analog Write NodeId = ns=2;s=" + fullNodeId);
+	 * 
+	 * UShort namespaceIndex = Unsigned.ushort(2); NodeId nodeId = new
+	 * NodeId(namespaceIndex, fullNodeId);
+	 * 
+	 * // PLC 태그 타입 설정 (태그별 타입 매핑) Variant writeValue;
+	 * 
+	 * switch (tagName) {
+	 * 
+	 * // FLOAT case "analog-hivacuum-pv-1": case "analog-heat-pv-1": writeValue =
+	 * new Variant(Float.parseFloat(value)); break;
+	 * 
+	 * // INT16 case "analog-hivacuum-pv-2": case "analog-heat-pv-2": case
+	 * "analog-timer-sv": writeValue = new Variant(Short.valueOf((short)
+	 * Integer.parseInt(value))); break;
+	 * 
+	 * default: throw new RuntimeException("지원하지 않는 태그: " + tagName); }
+	 * 
+	 * System.out.println("Analog Write Value = " + writeValue);
+	 * 
+	 * StatusCode status = MainController.client.writeValue(nodeId, new
+	 * DataValue(writeValue)).get(); System.out.println("Write Status = " + status);
+	 * 
+	 * return status.isGood();
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); return false; } }
+	 */
+
+
+
+
+	
+	
+	
+	/*
+	 * //램프값 읽어오기
+	 * 
+	 * @RequestMapping(value = "/monitoring/read", method = RequestMethod.POST)
+	 * 
+	 * @ResponseBody public Map<String, Object> readOpcValue(@RequestParam String
+	 * tagName) {
+	 * 
+	 * Map<String, Object> result = new HashMap<>();
+	 * 
+	 * try { String fullNodeId = "ace_posco.POPUP." + tagName; UShort ns =
+	 * Unsigned.ushort(2); NodeId nodeId = new NodeId(ns, fullNodeId);
+	 * 
+	 * DataValue dv = MainController.client.readValue(0, null, nodeId).get();
+	 * 
+	 * boolean value = false;
+	 * 
+	 * if (!dv.getStatusCode().isGood()) { result.put("success", false); return
+	 * result; }
+	 * 
+	 * if (dv.getValue() != null && dv.getValue().getValue() instanceof Boolean) {
+	 * value = (boolean) dv.getValue().getValue(); }
+	 * 
+	 * result.put("success", true); result.put("value", value); return result;
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); result.put("success", false);
+	 * return result; } }
+	 */
+
+
+
+
+
+
 
 	
 	@RequestMapping(value = "/monitoring/overView", method = RequestMethod.GET)
@@ -167,12 +434,41 @@ public class MonitoringController {
 		return "/popup/vacuumValve.jsp"; 
 	}
 	
-	//고진공밸브
+	//가스밸브
 	@RequestMapping(value = "/popup/gasValve", method = RequestMethod.GET)
 	public String gasValve(Users users) {
 		return "/popup/gasValve.jsp"; 
 	}
 	
+	//히팅SET
+	@RequestMapping(value = "/popup/heatingSet", method = RequestMethod.GET)
+	public String heatingSet(Users users) {
+		return "/popup/heatingSet.jsp"; 
+	}
+	
+	//고진공SET
+	@RequestMapping(value = "/popup/vacuumSet", method = RequestMethod.GET)
+	public String vacuumSet(Users users) {
+		return "/popup/vacuumSet.jsp"; 
+	}
+	
+	//냉각타이머 설정치
+	@RequestMapping(value = "/popup/coolTimerSet", method = RequestMethod.GET)
+	public String coolTimerSet(Users users) {
+		return "/popup/coolTimerSet.jsp"; 
+	}
+	
+	//자동운전 시작
+	@RequestMapping(value = "/popup/autoStart", method = RequestMethod.GET)
+	public String autoStart(Users users) {
+		return "/popup/autoStart.jsp"; 
+	}
+	
+	//자동운전 정지
+	@RequestMapping(value = "/popup/autoStop", method = RequestMethod.GET)
+	public String autoStop(Users users) {
+		return "/popup/autoStop.jsp"; 
+	}
 	///////////////////////////////////////////////
 	
 	

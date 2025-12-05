@@ -70,7 +70,10 @@ public class ActionMap {
 	        result = "lamp"; 
 	    } else if(tagName.contains("pen")) {
 	        return "pen";
-	    } else {
+	    }else if(tagName.contains("ok")) {
+	        return "ok";
+	    }
+	    else {
 	        result = "v";  // 기본 on/off 표시
 	    }
 

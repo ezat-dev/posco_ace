@@ -139,6 +139,49 @@ public class OpcDataMap {
    
    
    
+   
+   
+   
+   
+   public boolean writeOpcValue(String tagName, Object value) {
+	    try {
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        NodeId nodeId = new NodeId(namespaceIndex, tagName);
+
+	        DataValue dataValue;
+
+	        if (value instanceof Integer) {
+	            dataValue = new DataValue(new Variant(((int) value) == 1));
+	        } 
+	        else if (value instanceof Boolean) {
+	            dataValue = new DataValue(new Variant((boolean) value));
+	        }
+	        else if (value instanceof String) {
+	            boolean boolVal = value.toString().equals("1") || value.toString().equalsIgnoreCase("true");
+	            dataValue = new DataValue(new Variant(boolVal));
+	        }
+	        else {
+	            throw new RuntimeException("지원하지 않는 타입: " + value.getClass());
+	        }
+
+	        System.out.println("Write Value = " + dataValue.getValue());
+
+	        StatusCode statusCode = MainController.client.writeValue(nodeId, dataValue).get();
+	        System.out.println("Write Status = " + statusCode);
+
+	        return statusCode.isGood();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+
+
+
+   
+   
    public void setOpcDataUShort(String opcGroup, int value) throws InterruptedException, ExecutionException {
        UShort namespaceIndex = Unsigned.ushort(2);
        NodeId nodeId = new NodeId(namespaceIndex, opcGroup);
@@ -385,7 +428,7 @@ public class OpcDataMap {
       CompletableFuture<StatusCode> writeFuture = MainController.client.writeValue(nodeId, dataValue);
       
         StatusCode statusCode = writeFuture.get();
-
+        
         // 값이 성공적으로 쓰여졌는지 확인
         if (statusCode.isGood()) {
 //            System.out.println("Value written successfully");

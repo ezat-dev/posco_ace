@@ -12,7 +12,7 @@ public class CommProcessor {
    @Scheduled(fixedRate = 1000)
    public void handle() {
 //      MainController.dbCheck();
-   System.out.println("스케줄 시작");
+		/* System.out.println("스케줄 시작"); */
       if(MainController.client == null) {
 //         MainController.opcStart();
          MainController.commCheck();

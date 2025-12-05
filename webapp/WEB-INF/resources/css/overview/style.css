@@ -1074,7 +1074,9 @@
   top: 718px;
 }
 .analog-vacuum-pv-1 {
-  background: #696d69;
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
@@ -1082,7 +1084,9 @@
   top: 694px;
 }
 .analog-hivacuum-pv-1 {
-  background: #696d69;
+ font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
@@ -1090,7 +1094,9 @@
   top: 723px;
 }
 .analog-heat-pv-1 {
-  background: #696d69;
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
@@ -1098,7 +1104,9 @@
   top: 752px;
 }
 .analog-vacuum-pv-2 {
-  background: #696d69;
+ font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
@@ -1106,7 +1114,9 @@
   top: 694px;
 }
 .analog-hivacuum-pv-2 {
-  background: #696d69;
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
@@ -1114,7 +1124,9 @@
   top: 723px;
 }
 .analog-heat-pv-2 {
-  background: #696d69;
+ font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
@@ -1122,7 +1134,9 @@
   top: 752px;
 }
 .analog-timer-sv {
-  background: #696d69;
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 69px;
   height: 19px;
   position: absolute;
@@ -1130,14 +1144,16 @@
   top: 723px;
 }
 .analog-timer-pv {
-  background: #696d69;
+ font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
   width: 69px;
   height: 19px;
   position: absolute;
   left: 702px;
   top: 752px;
 }
-.auto-value {
+.ok-auto {
   width: 179px;
   height: 56px;
   position: absolute;
