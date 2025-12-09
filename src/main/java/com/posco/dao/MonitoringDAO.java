@@ -8,6 +8,8 @@ public interface MonitoringDAO {
 	
 	List<Monitoring> alarmRecordListAll(Monitoring monitoring);
 	
+	List<Monitoring> alarmRecordListOver();
+	
 	List<Monitoring> gettrend(Monitoring monitoring); 
 	
 }

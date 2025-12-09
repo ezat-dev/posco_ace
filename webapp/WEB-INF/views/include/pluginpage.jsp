@@ -198,27 +198,27 @@ function pageObject(paramKey){
 	//console.log("받은 키값 : "+paramKey);
 	var obj = {
 			//모니터링
-			"a01":["/posco/monitoring/overView","통합 모니터링"],
+			"a01":["/posco/monitoring/overView","운용화면"],
 			"a02":["/posco/monitoring/alarm","알람현황"],
 			"a03":["/posco/monitoring/alarmHistory","알람이력"],
-			"a04":["/posco/monitoring/alarmRanking","알람랭킹"],
-			"a05":["/posco/monitoring/trend","트렌드"],
+			"a04":["/posco/monitoring/trend","트렌드"],
+			"a05":"",
 			"a06":"",
 			"a07":"",
 			//생산관리
-			"b01":["/posco/productionManagement/lotReport","LOT보고서"],
-			"b02":["/posco/productionManagement/integrationProduction","종합생산현황"],
-			"b03":["/posco/productionManagement/integrationProduction","작업일보"],
+			"b01":"",
+			"b02":"",
+			"b03":"",
 			"b04":"",
 			"b05":"",
 			"b06":"",
 			"b07":"",
-			//조건관리
-			"c01":["/posco/condition/thermocoupleChange","열전대교체이력"],
-			"c02":["/posco/condition/tempCorrection","온도조절계보정현황"],
-			"c03":["/posco/condition/heatTreatingOil","열처리유성상분석"],
-			"c04":["/posco/condition/dailyCheck","일상점검일지"],
-			"c05":"",
+			//유지보수
+			"c01":["/posco/user/userInsert","사용자등록"],
+			"c02":["/posco/user/userPermission","사용자권한부여"],
+			"c03":["/posco/standardManagement/productInsert","제품등록"],
+			"c04":["/posco/preservation/sparePart","스페어등록"],
+			"c05":["/posco/preservation/suriHistory","설비수리이력"],
 			"c06":"",
 			"c07":"",
 			//설비보존관리

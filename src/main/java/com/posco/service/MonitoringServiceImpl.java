@@ -18,6 +18,10 @@ public class MonitoringServiceImpl implements MonitoringService{
 	 
 	 return monitoringDAO.alarmRecordListAll(monitoring); }
 	 
+	 @Override public List<Monitoring> alarmRecordListOver() {
+		 
+		 return monitoringDAO.alarmRecordListOver(); }
+	 
 	
 	@Override
 	public List<Monitoring > gettrend(Monitoring monitoring) {

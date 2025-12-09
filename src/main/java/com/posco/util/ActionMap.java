@@ -55,6 +55,10 @@ public class ActionMap {
 	    if("analog".equals(tagType) || tagName.startsWith("analog-")) {
             return "value";
         }
+	    
+	    if (tagName.contains("icon-stop") || tagName.contains("icon-reset")) {
+	        return "value";   // 또는 고정 동작
+	    }
 
 	    if(tagName.contains("alarm")){
 	        result = "c";

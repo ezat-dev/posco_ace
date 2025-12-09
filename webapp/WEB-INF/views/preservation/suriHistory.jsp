@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>설비수리이력관리</title>
-    <link rel="stylesheet" href="/mibogear/css/management/productInsert.css">
-    <link rel="stylesheet" href="/mibogear/css/tabBar/tabBar.css">
+    <link rel="stylesheet" href="/posco/css/management/productInsert.css">
+    <link rel="stylesheet" href="/posco/css/tabBar/tabBar.css">
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
@@ -262,19 +262,19 @@
 	</div>
     <div class="button-container">
         <button class="select-button" onclick="getSuriHistoryList();">
-            <img src="/mibogear/image/search-icon.png" alt="select" class="button-image">
+            <img src="/posco/image/search-icon.png" alt="select" class="button-image">
            조회
         </button>
         <button class="insert-button">
-            <img src="/mibogear/image/insert-icon.png" alt="insert" class="button-image">
+            <img src="/posco/image/insert-icon.png" alt="insert" class="button-image">
          입력 
         </button>
         <button class="excel-button">
-            <img src="/mibogear/image/excel-icon.png" alt="excel" class="button-image">
+            <img src="/posco/image/excel-icon.png" alt="excel" class="button-image">
         엑셀    
         </button>
         <button class="printer-button">
-            <img src="/mibogear/image/printer-icon.png" alt="printer" class="button-image">
+            <img src="/posco/image/printer-icon.png" alt="printer" class="button-image">
        보고서출력     
         </button>
     </div>
@@ -386,7 +386,7 @@
 		    headerHozAlign:"center",
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
-		    ajaxURL:"/mibogear/preservation/suriHistory/getSuriHistoryList",
+		    ajaxURL:"/posco/preservation/suriHistory/getSuriHistoryList",
 		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 		    	"sdate": $("#sdate").val(),
@@ -452,7 +452,7 @@
 
 	function suriHistoryDetail(ffx_no){
 		$.ajax({
-			url:"/mibogear/preservation/suriHistory/suriHistoryDetail",
+			url:"/posco/preservation/suriHistory/suriHistoryDetail",
 			type:"post",
 			dataType:"json",
 			data:{
@@ -552,7 +552,7 @@
 	    }
 
 	    $.ajax({
-	        url: "/mibogear/preservation/suriHistory/suriHistorySave",
+	        url: "/posco/preservation/suriHistory/suriHistorySave",
 	        type: "POST",
 	        data: formData,
 	        contentType: false,
@@ -581,7 +581,7 @@
 	    }
 
 	    $.ajax({
-	        url: "/mibogear/preservation/suriHistory/suriHistoryDelete",
+	        url: "/posco/preservation/suriHistory/suriHistoryDelete",
 	        type: "POST",
 	        data: {
 	        	ffx_no: selectedRowData.ffx_no
@@ -620,7 +620,7 @@
             height:"450px",
             layout:"fitColumns",
             selectable:true,
-            ajaxURL:"/mibogear/standardManagement/facInsert/getFacList",
+            ajaxURL:"/posco/standardManagement/facInsert/getFacList",
             ajaxConfig:"POST",
             ajaxParams:{
                 "fac_code": "",

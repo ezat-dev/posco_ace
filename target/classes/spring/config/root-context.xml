@@ -54,7 +54,7 @@
     
 		<bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		    <property name="driverClassName" value="org.sqlite.JDBC" /> 
-		    <property name="url" value="jdbc:sqlite:C:/Users/mh/Desktop/CHUNIL/Data/Alarm/CHUNIL_AlarmData.db" />
+		    <property name="url" value="jdbc:sqlite:D:\project\ace_posco\Data\Alarm/ace_posco_AlarmData.db" />
 		</bean>
 
 	

@@ -555,6 +555,8 @@ $(function() {
 	            console.error("fetchAlarm error", xhr);
 	        }
 	    });
+
+	    
 	}
 
 </script>

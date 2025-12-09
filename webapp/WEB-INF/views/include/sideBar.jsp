@@ -224,16 +224,14 @@
 <!--  a1 ~ a7 -->
 			<div class="nav__link collapse">
 				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-				<span class="nav_name">모니터링</span>
+				<span class="nav_name">진공로제어</span>
 				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 				<ul class="collapse__menu" id="aMenu"></ul>
 			</div>
 <!--  b1 ~ b7 -->
 			<div class="nav__link collapse">
 				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-				<span class="nav_name">생산관리</span>
-				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-				<ul class="collapse__menu" id="bMenu"></ul>
+				<span class="nav_name">패턴프로그램</span>
 			</div>
 <!--  c1 ~ c7 -->
 			<div class="nav__link collapse">

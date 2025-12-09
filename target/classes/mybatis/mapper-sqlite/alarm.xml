@@ -27,5 +27,20 @@
 ]]>
 </select>
 
+<select id="alarmRecordListOver" parameterType="monitoring" resultType="monitoring">
+<![CDATA[
+    SELECT 
+        w.TAGNAME AS tagname,
+        w.ALARMNAME AS alarmname,
+        w.ALARMDESC AS alarmdesc,
+        w.TIME AS start_time,
+        NULL AS end_time
+    FROM ALARMDATA w
+    WHERE w.ALARMSTATE = 'Warning'
+    ORDER BY w.TIME DESC
+]]>
+</select>
+
+
 
 </mapper>

@@ -114,7 +114,48 @@ public class MonitoringController {
 	}
 
 	
-	
+	//오버뷰 경보 표시
+	@RequestMapping(value = "/monitoring/writeOverview", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean writeOpcValueOverview(String tagName, int value) {
+	    try {
+	        String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+	        System.out.println("Write NodeId = ns=2;s=" + fullNodeId);
+
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+	        boolean boolVal = (value == 1);
+	        DataValue dataValue = new DataValue(new Variant(boolVal));
+
+	        StatusCode statusCode = MainController.client.writeValue(nodeId, dataValue).get();
+	        if (!statusCode.isGood()) return false;
+
+	        // ▼ 2초 후 자동 리셋
+	        if (boolVal) {
+	            new Thread(() -> {
+	                try {
+	                    Thread.sleep(2000);
+	                    System.out.println("### Auto Reset: " + fullNodeId);
+
+	                    DataValue resetValue = new DataValue(new Variant(false));
+	                    MainController.client.writeValue(nodeId, resetValue).get();
+
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }).start();
+	        }
+
+	        return true;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+
 	//PLC 값써주기 비트
 	@RequestMapping(value = "/monitoring/write", method = RequestMethod.POST)
 	@ResponseBody
@@ -162,6 +203,8 @@ public class MonitoringController {
 	        return false;
 	    }
 	}
+	
+	
 	
 	// PLC 아날로그값 READ
 	@RequestMapping(value = "/monitoring/read/analog", method = RequestMethod.GET)
@@ -491,7 +534,7 @@ public class MonitoringController {
 
 		List<Monitoring> alarmList = monitoringService.alarmRecordListAll(monitoring);
 
-		System.out.println("검색된 행 수: " + alarmList.size());
+		
 
 		List<HashMap<String, Object>> rtnList = new ArrayList<>();
 		for (int i = 0; i < alarmList.size(); i++) {
@@ -512,6 +555,37 @@ public class MonitoringController {
 		return rtnMap;
 	}
 	
+	
+	@RequestMapping(value = "/monitoring/alarmRecordListOver/list", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> alarmRecordListOver() {
+
+
+		Map<String, Object> rtnMap = new HashMap<>();
+
+
+		List<Monitoring> alarmList = monitoringService.alarmRecordListOver();
+
+		
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<>();
+		for (int i = 0; i < alarmList.size(); i++) {
+			Monitoring a = alarmList.get(i);
+			HashMap<String, Object> rowMap = new HashMap<>();
+			rowMap.put("idx", (i + 1));
+			rowMap.put("a_addr", a.getTagname());
+			rowMap.put("a_desc", a.getAlarmdesc());
+			rowMap.put("a_stime", a.getStart_time());
+			rowMap.put("a_etime", a.getEnd_time());
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("data", rtnList);
+		rtnMap.put("last_page", 1);
+		rtnMap.put("total_count", alarmList.size());
+
+		return rtnMap;
+	}
 	
 	@RequestMapping(value = "/monitoring/trend/list", method = RequestMethod.POST)
 	@ResponseBody

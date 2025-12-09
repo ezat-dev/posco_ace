@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스페어관리</title>
-    <link rel="stylesheet" href="/mibogear/css/preservation/sparePart.css">
-    <link rel="stylesheet" href="/mibogear/css/tabBar/tabBar.css">
+    <link rel="stylesheet" href="/posco/css/preservation/sparePart.css">
+    <link rel="stylesheet" href="/posco/css/tabBar/tabBar.css">
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
@@ -349,19 +349,19 @@ textarea {
     
     <div class="button-container">
         <button class="select-button" onclick="getSparePartList();">
-            <img src="/mibogear/image/search-icon.png" alt="select" class="button-image">
+            <img src="/posco/image/search-icon.png" alt="select" class="button-image">
            
         </button>
         <button class="insert-button">
-            <img src="/mibogear/image/insert-icon.png" alt="insert" class="button-image">
+            <img src="/posco/image/insert-icon.png" alt="insert" class="button-image">
           
         </button>
         <button class="excel-button">
-            <img src="/mibogear/image/excel-icon.png" alt="excel" class="button-image">
+            <img src="/posco/image/excel-icon.png" alt="excel" class="button-image">
             
         </button>
         <button class="printer-button">
-            <img src="/mibogear/image/printer-icon.png" alt="printer" class="button-image">
+            <img src="/posco/image/printer-icon.png" alt="printer" class="button-image">
             
         </button>
     </div>
@@ -474,7 +474,7 @@ textarea {
 		    headerHozAlign:"center",
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
-		    ajaxURL:"/mibogear/preservation/sparePart/getSparePartList",
+		    ajaxURL:"/posco/preservation/sparePart/getSparePartList",
 		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 			    },
@@ -555,7 +555,7 @@ textarea {
 	// 상세 조회
 	function sparePartDetail(spp_code) {
     $.ajax({
-        url: "/mibogear/preservation/sparePart/sparePartDetail",
+        url: "/posco/preservation/sparePart/sparePartDetail",
         type: "post",
         dataType: "json",
         data: { "spp_code": spp_code },
@@ -659,7 +659,7 @@ textarea {
             height:"450px",
             layout:"fitColumns",
             selectable:true,
-            ajaxURL:"/mibogear/standardManagement/cutumInsert/cutumInsertList",
+            ajaxURL:"/posco/standardManagement/cutumInsert/cutumInsertList",
             ajaxConfig:"POST",
             ajaxParams:{
             	"corp_name": "",
@@ -732,7 +732,7 @@ textarea {
     }
 
     $.ajax({
-        url: "/mibogear/preservation/sparePart/sparePartSave",
+        url: "/posco/preservation/sparePart/sparePartSave",
         type: "POST",
         data: formData,
         contentType: false,
@@ -776,7 +776,7 @@ textarea {
 	    }
 
 	    $.ajax({
-	        url: "/mibogear/preservation/sparePart/sparePartSave",
+	        url: "/posco/preservation/sparePart/sparePartSave",
 	        type: "POST",
 	        data: formData,
 	        contentType: false,
@@ -806,7 +806,7 @@ textarea {
 	    }
 
 	    $.ajax({
-	        url: "/mibogear/preservation/sparePart/sparePartDelete",
+	        url: "/posco/preservation/sparePart/sparePartDelete",
 	        type: "POST",
 	        data: {
 	        	spp_code: selectedRowData.spp_code

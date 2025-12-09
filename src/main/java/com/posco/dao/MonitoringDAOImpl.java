@@ -32,5 +32,8 @@ public class MonitoringDAOImpl implements MonitoringDAO{
 	 return sessionSQLite.selectList("alarm.alarmRecordListAll", monitoring);
 	 }
 	 
+	 @Override public List<Monitoring> alarmRecordListOver( ) {
+		 return sessionSQLite.selectList("alarm.alarmRecordListOver");
+		 }
 
 }

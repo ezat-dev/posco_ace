@@ -206,48 +206,84 @@
                 </button>
                 
 			</div>
-			<div id="container" style="width: 100%; height: 700px; margin-top:100px;"></div>
+			<div id="container" style="width: 100%; height: 600px; margin-top:100px;"></div>
 
 <script>
 
+// ---------------------------
+// 날짜 유틸 함수 (시:분:초 자동 포함)
+// ---------------------------
+function paddingZero(n) {
+    return n < 10 ? "0" + n : n;
+}
+
+function trendToday() {
+    const d = new Date();
+    return d.getFullYear()
+        + "-" + paddingZero(d.getMonth() + 1)
+        + "-" + paddingZero(d.getDate())
+        + " " + paddingZero(d.getHours())
+        + ":" + paddingZero(d.getMinutes());
+}
+
+function trendYester() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.getFullYear()
+        + "-" + paddingZero(d.getMonth() + 1)
+        + "-" + paddingZero(d.getDate())
+        + " " + paddingZero(d.getHours())
+        + ":" + paddingZero(d.getMinutes());
+}
+
+
+
+// ---------------------------
+// 변수 선언
+// ---------------------------
 let categories;
 let vac1_pv, vac2_pv, vac3_pv, protec_pv, tem_sp;
 let tem_1, tem_2, tem_3, tem_4, tem_5, tem_6;
 let tem_7, tem_8, tem_9, tem_10, tem_11, tem_12;
+
 let chart;
 let trendInterval;
 
+// ---------------------------
+// 최초 로딩
+// ---------------------------
 $(document).ready(function () {
-	var yesterD = yesterDate();
-	   
-	   $("#startDate").val(yesterD);
-	   $("#endDate").val(todayDate());
-     fetchData();
-    trendInterval = setInterval(trendIntervalFunc, 1000*60*5);
+    $("#startDate").val(trendYester());
+    $("#endDate").val(trendToday());
+    fetchData();
 });
 
+// 조회 버튼
 $(".select-button").on("click", fetchData);
 
+// 자동 갱신용 시간 설정
 function trendIntervalFunc() {
-    $("#startDate").val(trendStime());
-    $("#endDate").val(trendEtime());
+    $("#startDate").val(yesterDate());
+    $("#endDate").val(todayDate());
     fetchData();
 }
 
+// ---------------------------
+// 데이터 조회 AJAX
+// ---------------------------
 function fetchData() {
-    const startDate = $('#startDate').val();
-    const endDate = $('#endDate').val();
 
     $.ajax({
         type: "POST",
         url: "/posco/monitoring/trend/list",
-        data: {  startDate: $("#startDate").val(),
-        	endDate: $("#endDate").val() },
+        data: {  
+            startDate: $("#startDate").val(),
+            endDate: $("#endDate").val()
+        },
         success: function (result) {
-            console.log(result); // <-- 먼저 데이터 확인
 
             if(result.length > 0 ){
-                // x축 categories를 timestamp로 변환
+
                 categories = result.map(r => new Date(r.tdatetime).getTime());
 
                 vac1_pv = result.map(r => Number(r.vac1_pv));
@@ -269,7 +305,7 @@ function fetchData() {
                 tem_11 = result.map(r => Number(r.tem_11));
                 tem_12 = result.map(r => Number(r.tem_12));
 
-                if(typeof chart === "undefined"){
+                if(!chart){
                     createTrendChart();
                 } else {
                     chart.update({
@@ -297,38 +333,40 @@ function fetchData() {
                 }
             }
         },
-        error: function (xhr, status, error) {
-            console.error("❌ 에러:", error);
+        error: function () {
             alert("데이터 조회 중 오류가 발생했습니다.");
         }
     });
 }
 
+// ---------------------------
+// HighCharts 생성
+// ---------------------------
 function createTrendChart(){
     chart = Highcharts.chart('container', {
         chart: { type: 'line' },
         title: { text: '온도 트렌드' },
+
         xAxis: {
             type: 'datetime',
             categories: categories,
-            title: { text: '시간' },
             labels: {
                 formatter: function(){
-                    var d = new Date(this.value);
-                    var mm = paddingZero(d.getMonth()+1);
-                    var dd = paddingZero(d.getDate());
-                    var ho = paddingZero(d.getHours());
-                    var mi = paddingZero(d.getMinutes());
-                    return mm+"-"+dd+"</br>"+ho+":"+mi;
-                }
+                    return Highcharts.dateFormat(this.value);
+                },
+                step: 1,
             }
         },
+
         yAxis: {
-            title: { text: "온도" },
+            title: { text: "온도",rotation:360 },
+            labels:{align:"left",x:10},
             min: 0,
-            max: 2000
+            max: 1200
         },
+
         tooltip: { shared: true, crosshairs: true },
+
         series: [
             { name: '1존온도 PV', data: vac1_pv },
             { name: '2존온도 PV', data: vac2_pv },
@@ -351,9 +389,8 @@ function createTrendChart(){
     });
 }
 
-
-
 </script>
+
 
 </body>
 </html>
