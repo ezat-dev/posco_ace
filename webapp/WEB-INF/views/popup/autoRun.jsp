@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<%@include file="../include/pluginpage.jsp" %> 
 <head>
 <meta charset="utf-8" />
 <title>운전선택</title>
@@ -10,7 +10,13 @@
   html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;}
   .container{box-sizing:border-box;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;}
   .header{width:100%;text-align:center;background:#33363d;color:#fff;padding:6px 0;font-size:16px;border-radius:4px;}
-  .controls{margin-top:8px;display:flex;gap:10px;align-items:center;flex-direction:row;}
+  .controls{
+  margin-top:8px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-direction:row;
+}
   .btn{
     width:120px;height:36px;border-radius:4px;border:none;font-weight:700;cursor:pointer;
     display:inline-flex;align-items:center;justify-content:center;user-select:none;
@@ -51,8 +57,13 @@
     <div class="controls" style="margin-top:8px;">
       <button class="btn manual ctrl-btn" data-tag="manual-run-on">수동모드</button>
       <button class="btn auto ctrl-btn" data-tag="auto-run-on">자동모드</button>
-      <button class="btn end ctrl-btn" data-tag="auto-end-on">자동운전종료</button>
+      <button class="btn end ctrl-btn" data-tag="auto-end-on">즉시정지</button>
     </div>
+    
+     <div class="controls" style="margin-top:6px;">
+	    <button class="btn n2 ctrl-btn" data-tag="auto-n2-on">질소공정</button>
+	    <button class="btn nomal ctrl-btn" data-tag="auto-nomal-on">일반공정</button>
+  	</div>
 
     <div class="progress-wrap" aria-hidden="true" title="길게 누르세요">
       <div id="progressBar" class="progress-bar"></div>
@@ -66,7 +77,7 @@
 (function(){
   console.log("### Trend Popup Script Loaded");
 
-  const DURATION = 2000;
+  const DURATION = 1000;
   let timerInterval = null;
   let startTime = 0;
   let activeButton = null;
@@ -200,7 +211,9 @@ function pollLampStatus() {
  const lampMap = [
      { tag: "manual-run-lamp-on", btn: "[data-tag='manual-run-on']" },
      { tag: "auto-run-lamp-on", btn: "[data-tag='auto-run-on']" },
-     { tag: "auto-end-lamp-on", btn: "[data-tag='auto-end-on']" }
+     { tag: "auto-end-lamp-on", btn: "[data-tag='auto-end-on']" },
+     { tag: "auto-n2-lamp-on", btn: "[data-tag='auto-n2-on']" },
+     { tag: "auto-nomal-lamp-on", btn: "[data-tag='auto-nomal-on']" }
  ];
 
  lampMap.forEach(item => {

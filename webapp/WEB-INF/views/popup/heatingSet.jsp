@@ -6,7 +6,7 @@
 <title>히팅 설정</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<%@include file="../include/pluginpage.jsp" %> 
 
 <style>
     html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;}

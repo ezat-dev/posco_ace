@@ -231,7 +231,9 @@
 <!--  b1 ~ b7 -->
 			<div class="nav__link collapse">
 				<ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-				<span class="nav_name">패턴프로그램</span>
+				<span class="nav_name">패턴관리</span>
+				<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+				<ul class="collapse__menu" id="bMenu"></ul>
 			</div>
 <!--  c1 ~ c7 -->
 			<div class="nav__link collapse">
@@ -330,7 +332,7 @@
 								_group = "모니터링";
 								_groupID = "aMenu";
 							}else if(key.indexOf("b") != -1){
-								_group = "생산관리";
+								_group = "패턴관리";
 								_groupID = "bMenu";
 							}else if(key.indexOf("c") != -1){
 								_group = "유지보수";

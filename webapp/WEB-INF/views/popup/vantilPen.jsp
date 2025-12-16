@@ -4,7 +4,7 @@
 <%@include file="../include/pluginpage.jsp" %> 
 <head>
 <meta charset="utf-8" />
-<title>저진공 펌프</title>
+<title>배기 팬</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;}
@@ -36,7 +36,7 @@
   /* prevent text selection while long-press */
   .no-select { -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
   
-.btn.active-on {
+  .btn.active-on {
   border: 3px solid #00ff00 !important;
 }
 
@@ -49,11 +49,11 @@
 </head>
 <body>
   <div class="container no-select">
-    <div class="header">저진공 펌프</div>
+    <div class="header">배기 팬</div>
 
     <div class="controls" style="margin-top:8px;">
-      <button class="btn ctrl-btn" data-tag="luffing-pump-off">OFF</button>
-	  <button class="btn ctrl-btn" data-tag="luffing-pump-on">ON</button>
+      <button class="btn ctrl-btn" data-tag="vantil-pen-off">OFF</button>
+	  <button class="btn ctrl-btn" data-tag="vantil-pen-on">ON</button>
 
     </div>
 
@@ -200,43 +200,43 @@
 //==============================
 function pollLampStatus() {
 
- // ON Lamp
- $.ajax({
-     url: "/posco/monitoring/read/bit",
-     type: "get",
-     data: { tagName: "luffing-pump-lamp-on" },
-     success: function(res) {
-         if (res.status === "OK") {
-             const isOn = res.value === true;
+// ON Lamp
+$.ajax({
+   url: "/posco/monitoring/read/bit",
+   type: "get",
+   data: { tagName: "vantil-pen-lamp-on" },
+   success: function(res) {
+       if (res.status === "OK") {
+           const isOn = res.value === true;
 
-             const onBtn = document.querySelector("[data-tag='luffing-pump-on']");
-             if (isOn) {
-                 onBtn.classList.add("active-on");
-             } else {
-                 onBtn.classList.remove("active-on");
-             }
-         }
-     }
- });
+           const onBtn = document.querySelector("[data-tag='vantil-pen-on']");
+           if (isOn) {
+               onBtn.classList.add("active-on");
+           } else {
+               onBtn.classList.remove("active-on");
+           }
+       }
+   }
+});
 
- // OFF Lamp
- $.ajax({
-     url: "/posco/monitoring/read/bit",
-     type: "get",
-     data: { tagName: "luffing-pump-lamp-off" },
-     success: function(res) {
-         if (res.status === "OK") {
-             const isOff = res.value === true;
+// OFF Lamp
+$.ajax({
+   url: "/posco/monitoring/read/bit",
+   type: "get",
+   data: { tagName: "vantil-pen-lamp-off" },
+   success: function(res) {
+       if (res.status === "OK") {
+           const isOff = res.value === true;
 
-             const offBtn = document.querySelector("[data-tag='luffing-pump-off']");
-             if (isOff) {
-                 offBtn.classList.add("active-off");
-             } else {
-                 offBtn.classList.remove("active-off");
-             }
-         }
-     }
- });
+           const offBtn = document.querySelector("[data-tag='vantil-pen-off']");
+           if (isOff) {
+               offBtn.classList.add("active-off");
+           } else {
+               offBtn.classList.remove("active-off");
+           }
+       }
+   }
+});
 }
 
 //1초마다 PLC 상태 갱신
@@ -244,7 +244,6 @@ setInterval(pollLampStatus, 1000);
 
 //첫 실행
 pollLampStatus();
-
 </script>
 
 

@@ -206,8 +206,8 @@ function pageObject(paramKey){
 			"a06":"",
 			"a07":"",
 			//생산관리
-			"b01":"",
-			"b02":"",
+			"b01":["/posco/monitoring/pattern","패턴관리"],
+			"b02":["/posco/monitoring/batchReport","배치리포트"],
 			"b03":"",
 			"b04":"",
 			"b05":"",
@@ -216,9 +216,9 @@ function pageObject(paramKey){
 			//유지보수
 			"c01":["/posco/user/userInsert","사용자등록"],
 			"c02":["/posco/user/userPermission","사용자권한부여"],
-			"c03":["/posco/standardManagement/productInsert","제품등록"],
-			"c04":["/posco/preservation/sparePart","스페어등록"],
-			"c05":["/posco/preservation/suriHistory","설비수리이력"],
+			"c03":["/posco/preservation/suriHistory","설비수리이력"],
+			"c04":"",
+			"c05":"",
 			"c06":"",
 			"c07":"",
 			//설비보존관리

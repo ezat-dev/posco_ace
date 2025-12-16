@@ -47,7 +47,10 @@ public class ActionMap {
 	        return "green";
 	    }
 
-	  
+	    if(tagName.contains("water-")){
+	        return "water";
+	    }
+	    
 	    if(tagName.contains("set-")){
 	        return "settext";
 	    }

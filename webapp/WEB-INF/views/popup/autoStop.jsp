@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<%@include file="../include/pluginpage.jsp" %> 
 <head>
 <meta charset="utf-8" />
 <title>자동운전 정지</title>
@@ -63,7 +63,7 @@
 (function(){
   console.log("### Trend Popup Script Loaded");
 
-  const DURATION = 2000;
+  const DURATION = 1000;
   let timerInterval = null;
   let startTime = 0;
   let activeButton = null;

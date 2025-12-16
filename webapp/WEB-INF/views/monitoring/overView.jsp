@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/posco/css/login/style.css">
      <link rel="stylesheet" href="/posco/css/tabBar/tabBar.css">
      <link rel="stylesheet" href="/posco/css/overview/style.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    
 <%@include file="../include/pluginpage.jsp" %>     
     
     <style>
@@ -19,7 +19,8 @@
 .box14,.auto-run-off-box,.auto-run-on-box,.auto-value,
 .set-vacuum,.set-heat,.set-cool-switch-1,.set-cool-switch-2,.set-cool-switch-3,.set-cool-switch-4
 ,.analog-vacuum-pv-1,.analog-hivacuum-pv-1,.analog-heat-pv-1,.analog-vacuum-pv-2,.analog-hivacuum-pv-2
-,.analog-heat-pv-2,.analog-timer-sv,.analog-timer-pv,.box12,.box13,.box17,.ok-auto{
+,.analog-heat-pv-2,.analog-timer-sv,.analog-timer-pv,.box12,.box10,.box13,.box17,.ok-auto,.box20,.set-lowVacuum,.box22,
+.analog-lowvacuum-pv-1,.analog-lowvacuum-pv-2{
 	 display: flex;
     justify-content: center;
     align-items: center;
@@ -33,7 +34,12 @@
  .luffing-valve,
  .vacuum-valve,
  .fourline-valve,
- .gas-valve{
+ .gas-valve,
+ .vantil-pen,
+ .water-cool-switch-1,
+ .water-cool-switch-2,
+ .water-cool-switch-3,
+ .water-cool-switch-4{
 	 display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +58,8 @@
  .luffing-valve,
  .vacuum-valve,
  .fourline-valve,
- .gas-valve{
+ .gas-valve,
+ .vantil-pen{
     cursor: pointer;      /* 마우스 포인터 손가락 모양 */
     transition: transform 0.1s, filter 0.1s; /* 부드러운 효과 */
 }
@@ -66,7 +73,8 @@
  .luffing-valve:hover,
  .vacuum-valve:hover,
  .fourline-valve:hover,
- .gas-valve:hover {
+ .gas-valve:hover,
+ .vantil-pen:hover {
     filter: brightness(1.2);   /* 밝게 */
     transform: scale(1.05);    /* 살짝 확대 */
 }
@@ -95,7 +103,8 @@
  .gas-valve:active,
  .auto-run-off-box:active,.auto-run-on-box:active,
  .bell-alarm-reset:active,
- .bell-alarm-stop:active {
+ .bell-alarm-stop:active,
+ .vantil-pen:active {
     filter: brightness(0.8);   /* 어둡게 */
     transform: scale(0.95);    /* 살짝 줄어듦 */
 }
@@ -233,12 +242,12 @@ h1{
 .st-table-wrap {
     position: absolute;
     left: 40px;
-    top: 15px;
+    top: 10px;
 }
 
 .st-table {
     border-collapse: collapse;
-    width: 320px;
+    width: 820px;
 }
 
 .st-table th {
@@ -260,35 +269,7 @@ h1{
 }
 
 
-/* 온도분포 */
-.tus-table-wrap {
-    position: absolute;
-    left: 390px;
-    top: 15px;
-}
 
-.tus-table {
-    border-collapse: collapse;
-    width: 520px;
-}
-
-.tus-table th {
-    background: #f3f6fb;
-    border: 1px solid #d0d3d8;
-    text-align: center;
-    font-size: 13px;
-    font-weight: bold;
-    color: #0b63ce;
-}
-
-.tus-table td {
-    border: 1px solid #d0d3d8;
-    height: 30px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: bold;
-    color: #333;
-}
 
 
 
@@ -301,10 +282,10 @@ h1{
 /* 오버뷰 전용 트렌드 스타일 (사이즈 축소) */
 .ov-trend-wrap {
   position: absolute;
-  left: 968px; /* 필요 시 오버뷰 위치에 맞게 조정 */
-  top: 15px;
-  width: 700px; /* 기존 요청 크기 */
-  height: 340px;
+  left: 1120px; /* 필요 시 오버뷰 위치에 맞게 조정 */
+  top: 410px;
+  width: 550px; /* 기존 요청 크기 */
+  height: 300px;
   background: #fff;
   border-radius: 8px;
   border: 1px solid #e3e7ee;
@@ -371,32 +352,20 @@ h1{
     <body>
     
   
-  <div class="st-table-wrap">
+ <div class="st-table-wrap">
     <table class="st-table">
         <tr>
             <th>ZONE PV 1</th>
             <th>ZONE PV 2</th>
             <th>ZONE PV 3</th>
+            <th>SET POINT</th>
         </tr>
         <tr>
             <td class="analog-vac1_pv"></td>
             <td class="analog-vac2_pv"></td>
-            <td class="analog-vac3_pv"></td>            
+            <td class="analog-vac3_pv"></td>   
+            <td class="analog-tem_sp"></td>         
         </tr>
-        <tr>
-            <th>PROTECTER PV</th>
-            <th>SET POINT</th>
-        </tr>
-        <tr>
-            <td class="analog-protec_pv"></td>
-            <td class="analog-tem_sp"></td>
-        </tr>        
-    </table>
-</div>
-
-  
-  <div class="tus-table-wrap"> <!-- 위치 조정 원하면 수정 -->
-    <table class="tus-table">
         <tr>
             <th>온도분포 1</th>
             <th>온도분포 2</th>
@@ -404,6 +373,9 @@ h1{
             <th>온도분포 4</th>
             <th>온도분포 5</th>
             <th>온도분포 6</th>
+            <th>온도분포 7</th>
+            <th>온도분포 8</th>
+            <th>온도분포 9</th>
         </tr>
         <tr>
             <td class="analog-tem_1"></td>
@@ -412,39 +384,43 @@ h1{
             <td class="analog-tem_4"></td>
             <td class="analog-tem_5"></td>
             <td class="analog-tem_6"></td>
-        </tr>
-
-        <tr>
-            <th>온도분포 7</th>
-            <th>온도분포 8</th>
-            <th>온도분포 9</th>
-            <th>온도분포 10</th>
-            <th>온도분포 11</th>
-            <th>온도분포 12</th>
-        </tr>
-        <tr>
             <td class="analog-tem_7"></td>
             <td class="analog-tem_8"></td>
             <td class="analog-tem_9"></td>
-            <td class="analog-tem_10"></td>
-            <td class="analog-tem_11"></td>
-            <td class="analog-tem_12"></td>
-        </tr>
+        </tr>        
     </table>
 </div>
+
   
+  <div class="line-1"></div>
+  <div class="line-2"></div>
+  <div class="line-3"></div>
+  <div class="line-4"></div>
+  <div class="line-5"></div>
+  <div class="water-cool-switch-1">냉각수 유량 1</div>
+  <div class="water-cool-switch-2">냉각수 유량 2</div>
+  <div class="water-cool-switch-3">냉각수 유량 3</div>
+  <div class="water-cool-switch-4">냉각수 유량 4</div>
   
-    
+  <div class="vantil-pen">배기 펜</div>  
   <div class="vacuum-heat">진공로 히터</div>
   <div class="vacuum-valve">고진공 밸브</div>
   <div class="cold-pen">냉각 펜</div>
-  <div class="luffing-pump">러핑 펌프</div>
-  <div class="diff-pump">확산 펌프</div>
-  <div class="booster-pump">부스터 펌프</div>
+  <div class="luffing-pump">저진공 펌프</div>
+  <div class="diff-pump">고진공 펌프</div>
+  <div class="booster-pump">저진공 보조 펌프</div>
   <div class="fourline-valve">포라인 밸브</div>
-  <div class="luffing-valve">러핑 밸브</div>
-  <div class="gas-valve">가스 밸브</div>
-  <img class="mainIMG" src="/posco/image/overview/1010.png" />
+  <div class="luffing-valve">저진공 밸브</div>
+  <div class="gas-valve">질소 가스 밸브</div>
+  
+  <img class="mainIMG" src="/posco/image/overview/poscoMain.png" />
+  
+  <div class="nomal-heat">HEATPOWER<br>OFF</div>
+  <div class="heatpower-red">HEATPOWER<br>ON</div>
+
+  
+  
+  
   <!-- <div class="footer"></div>
   <div class="rectangle-91"></div>
   <div class="rectangle-92"></div>
@@ -470,8 +446,7 @@ h1{
   <img class="object9" src="/posco/image/overview/object8.png" />
   <img class="object10" src="/posco/image/overview/object9.png" />
   <img class="object11" src="/posco/image/overview/object10.png" /> -->
-  <img class="nomal-heat" src="/posco/image/overview/nomal-heat.png" />
-  <img class="heatpower-red" src="/posco/image/overview/heatpower-red.png" />
+  
   <!-- <img class="object12" src="/posco/image/overview/object11.png" />
   <img class="object13" src="/posco/image/overview/object12.png" />
   <img class="object14" src="/posco/image/overview/object13.png" />
@@ -483,10 +458,10 @@ h1{
   <img class="object20" src="/posco/image/overview/object19.png" /> -->
   <img class="object21" src="/posco/image/overview/object20.png" />
   <img class="object22" src="/posco/image/overview/object21.png" />
-  <img class="object23" src="/posco/image/overview/object22.png" />
+  <!-- <img class="object23" src="/posco/image/overview/object22.png" /> -->
   <img class="object24" src="/posco/image/overview/object23.png" />
   <img class="object25" src="/posco/image/overview/object24.png" />
-  <img class="object26" src="/posco/image/overview/object25.png" />
+  <!-- <img class="object26" src="/posco/image/overview/object25.png" /> -->
   <!-- <img class="object27" src="/posco/image/overview/object26.png" />
   <img class="object28" src="/posco/image/overview/object27.png" />
   <img class="object29" src="/posco/image/overview/object28.png" />
@@ -526,6 +501,7 @@ h1{
   <div class="box5"></div>
   <div class="box6"></div>
   <div class="box7"></div>
+  
   <div class="time-zone-2"></div>
   <div class="bell-box"></div>
   <div class="bell-alarm-stop">
@@ -546,16 +522,21 @@ h1{
   <div class="auto-run-on-box">자동운전 시작</div>
   <div class="set-vacuum">OFF</div>
   <div class="set-heat">OFF</div>
-  <div class="set-low-vacuum"></div>
-  <!-- <div class="set-cool-switch-1">OFF</div>
-  <div class="set-cool-switch-2">OFF</div>
-  <div class="set-cool-switch-3">OFF</div>
-  <div class="set-cool-switch-4">OFF</div> -->
-  <div class="bx"></div>
+  <!-- <div class="set-low-vacuum"></div> -->
+  
+  <div class="box20">저진공 도달</div>
+  <div class="box21"></div>
+  <div class="set-lowVacuum">미적용</div>
+  
+  <div class="box22">저진공 SP</div>
+  <div class="box23"></div>
+  
+  <!-- <div class="bx"></div> -->
   <div class="box15"></div>
-  <div class="box16"></div>
+  
   <div class="box17">설정치</div>
-  <div class="box18"></div>
+ <!--  <div class="box16"></div>
+  <div class="box18"></div> -->
   <div class="box19"></div>
   <div class="analog-vacuum-pv-1"></div>
   <div class="analog-hivacuum-pv-1"></div>
@@ -564,8 +545,10 @@ h1{
   <div class="analog-hivacuum-pv-2"></div>
   <div class="analog-heat-pv-2"></div>
   <div class="analog-timer-sv"></div>
-  <div class="analog-timer-pv"></div>
+  <!-- <div class="analog-timer-pv"></div> -->
   <div class="ok-auto"></div>
+  <div class="analog-lowvacuum-pv-1"></div>
+  <div class="analog-lowvacuum-pv-2"></div>
   
   <!-- <div class="text">냉각수 유량스위치-1</div>
   <div class="text2">냉각수 유량스위치-2</div>
@@ -574,6 +557,7 @@ h1{
   <div class="text5">Torr</div>
   <div class="text6">Torr</div>
   <div class="text7">Torr</div>
+  <div class="text19">Torr</div>
   <div class="text8">고진공 도달</div>
   <div class="text9">히팅 도달</div>
   <div class="text10">로내 압력</div>
@@ -582,19 +566,27 @@ h1{
   <div class="text13">히팅-SET</div> -->
   <div class="text14">냉각타이머</div>
   <div class="text16">분</div>
-  <div class="text17">분</div>
-  <div class="text18">현재치</div>
+  <!-- <div class="text17">분</div>
+  <div class="text18">현재치</div> -->
   <div class="div">E</div>
   <div class="div2">E</div>
   <div class="div3">E</div>
+  <div class="div4">E</div>
 
-
+	<!-- 냉각수 유량 스위치 -->
+	
+	
+  <!-- <div class="text20">Water in Electrode 3</div>
+  <div class="text21">Water in Electrode 2</div>
+  <div class="text22">Water in Diffusion Pump</div>
+  <div class="text23">Water in Electrode 1</div> -->	
+  
 		
 		
 		
 		
 		
-   <!-- 알람 내역 영역  -->	
+<!--   
    <div class="area-alarm">
     <div class="alarm-title">알람 내역</div>
 
@@ -612,9 +604,9 @@ h1{
         </table>
     </div>
 </div>
+-->
 
-
-<div class="ov-trend-wrap" id="ovTrendArea">
+<!-- <div class="ov-trend-wrap" id="ovTrendArea">
   <div class="ov-trend-header">
     <div class="ov-trend-title">온도 트렌드</div>
     <div class="ov-trend-controls">
@@ -625,17 +617,17 @@ h1{
     </div>
   </div>
 
-  <!-- 차트가 그려질 컨테이너 -->
+
   <div id="ov-trend-container"></div>
-</div>
+</div>  -->
 
 
 	    
 	    
 <script>
 
-
-(function(){
+/////////////////////////////////////////////////////////////////////////////////////
+/* (function(){
 	  // 안전을 위해 전역 오염 최소화: ov-prefixed 이름 사용
 	  function ov_paddingZero(n){ return n < 10 ? "0"+n : n; }
 
@@ -824,8 +816,8 @@ h1{
 	    ov_init();
 	  }
 
-	})();
-
+	})(); */
+//////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -861,6 +853,11 @@ $(document).ready(function () {
   	//냉각팬
     $(".cold-pen").on("click", function () {
         openPopup("/posco/popup/coldPen", 350, 140);
+    });
+
+  	//냉각팬
+    $(".vantil-pen").on("click", function () {
+        openPopup("/posco/popup/vantilPen", 350, 140);
     });
 
   	//러핑밸브
@@ -974,7 +971,7 @@ function pen(key, value){
     });
 }
 
-//on,off 텍스트 변환
+
 function setText(key, value){
     const els = document.getElementsByClassName(key);
     if(!els || els.length === 0) return;
@@ -983,6 +980,9 @@ function setText(key, value){
         el.innerText = (value == 1 ? "ON" : "OFF");
     });
 }
+
+
+
 function ok(key, value){
     const els = document.getElementsByClassName(key);
     if(!els || els.length === 0) return;
@@ -1007,6 +1007,18 @@ function green(key, value){
     });
 }
 
+function water(key, value){
+    const els = document.getElementsByClassName(key);
+    if(!els || els.length === 0) return;
+
+    Array.from(els).forEach(el => {
+        if(value == 1){
+            el.style.backgroundColor = "#00FF00"; // 초록
+        } else {
+            el.style.backgroundColor = "#ff0000"; // 기본 회색
+        }
+    });
+}
 
 
 function vs(key, value){
@@ -1093,7 +1105,7 @@ function overviewListView() {
             for(const item of data){
                 /* console.log("item:", item);  */
                 for(const [tagName, tagData] of Object.entries(item)){
-                    console.log("tagName:", tagName, "tagData:", tagData); 
+                    /* console.log("tagName:", tagName, "tagData:", tagData);  */
                     if(!tagName) continue;
                     const { action, value } = tagData;
 
@@ -1105,6 +1117,7 @@ function overviewListView() {
 	                    case "vs":    vs(tagName, value); break;
 	                    case "value": valueDisplay(tagName, value); break;
 	                    case "green": green(tagName, value); break;
+	                    case "water": water(tagName, value); break;
 	                    case "ok": ok(tagName, value); break;
 	                    case "settext": setText(tagName, value); break;
                     }
@@ -1126,15 +1139,15 @@ function overviewListViewString() {
         type: "post",
         dataType: "json",
         success: function(result) {
-            console.log("✅ Ajax 응답 전체:", result);
+            /* console.log("✅ Ajax 응답 전체:", result); */
 
             const data = result.multiValues;
             /* console.log("▶ 스트링:", data); */
 
             for (const item of data) {
-                console.log("item:", item);
+                /* console.log("item:", item); */
                 for (const [tagName, tagData] of Object.entries(item)) {
-                    console.log("tagName:", tagName, "tagData:", tagData);
+                    /* console.log("tagName:", tagName, "tagData:", tagData); */
                     if (!tagName) continue;
 
                     let { action, value } = tagData;

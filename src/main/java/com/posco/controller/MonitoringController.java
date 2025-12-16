@@ -407,10 +407,16 @@ public class MonitoringController {
 		return "/monitoring/alarmHistory.jsp";
 	}
 	
-	@RequestMapping(value = "/monitoring/alarmRanking", method = RequestMethod.GET)
-	public String alarmRanking(Users users) {
+	@RequestMapping(value = "/monitoring/pattern", method = RequestMethod.GET)
+	public String pattern(Users users) {
 
-		return "/monitoring/alarmRanking.jsp";
+		return "/monitoring/pattern.jsp";
+	}
+	
+	@RequestMapping(value = "/monitoring/batchReport", method = RequestMethod.GET)
+	public String batchReport(Users users) {
+
+		return "/monitoring/batchReport.jsp";
 	}
 	
 	@RequestMapping(value = "/monitoring/trend", method = RequestMethod.GET)
@@ -457,6 +463,12 @@ public class MonitoringController {
 	@RequestMapping(value = "/popup/coldPen", method = RequestMethod.GET)
 	public String coldPen(Users users) {
 		return "/popup/coldPen.jsp"; 
+	}
+	
+	//냉각팬
+	@RequestMapping(value = "/popup/vantilPen", method = RequestMethod.GET)
+	public String vantilPen(Users users) {
+		return "/popup/vantilPen.jsp"; 
 	}
 
 	//러핑밸브

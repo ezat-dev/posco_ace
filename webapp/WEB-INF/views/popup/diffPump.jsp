@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<%@include file="../include/pluginpage.jsp" %> 
 <head>
 <meta charset="utf-8" />
-<title>확산펌프</title>
+<title>고진공 펌프</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   html,body{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;}
@@ -47,7 +47,7 @@
 </head>
 <body>
   <div class="container no-select">
-    <div class="header">확산 펌프</div>
+    <div class="header">고진공 펌프</div>
 
     <div class="controls" style="margin-top:8px;">
       <button class="btn ctrl-btn" data-tag="diff-pump-off">OFF</button>
@@ -67,7 +67,7 @@
 (function(){
   console.log("### Trend Popup Script Loaded");
 
-  const DURATION = 2000;
+  const DURATION = 1000;
   let timerInterval = null;
   let startTime = 0;
   let activeButton = null;

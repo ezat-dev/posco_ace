@@ -1,98 +1,219 @@
+.text20{
+	width: 70px;
+  height: 20px;
+  position: absolute;
+  left: 333px;
+  top: 280px;
+}
+.box20{
+	background: #d9d9d9;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    width: 157px;
+    height: 31px;
+    position: absolute;
+    left: 0px;
+    top: 717px;
+}
+.box21{
+	background: #d9d9d9;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    width: 245px;
+    height: 31px;
+    position: absolute;
+    left: 0px;
+    top: 717px;
+    z-index : -1;
+}
+.set-lowVacuum{
+	width: 72px;
+    height: 19px;
+    position: absolute;
+    left: 164px;
+    top: 723px;
+}
+
+.box22{
+	background: #d9d9d9;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    width: 105px;
+    height: 31px;
+    position: absolute;
+    left: 244px;
+    top: 717px;
+}
+
+.box23{
+	background: #d9d9d9;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    width: 369px;
+    height: 31px;
+    position: absolute;
+    left: 244px;
+    top: 717px;
+	z-index : -1;
+}
+
+
+.nomal-heat {
+  width: 280px;
+  height: 280px;
+  position: absolute;
+  left: 870px;
+  top: 248px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: #e5e5e5;
+  border: 3px solid #999;
+
+  /* 텍스트 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 40px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+}
+
+.heatpower-red {
+  width: 280px;
+  height: 280px;
+  position: absolute;
+  left: 870px;
+  top: 248px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: #00ff00;
+  border: 3px solid #000000;
+
+  /* 텍스트 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 40px;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.2;
+}
+
 
 .diff-pump {
   background: #003366;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
-  width: 171px;
+  width: 191px;
   height: 31px;
   position: absolute;
-  left: 351px;
-  top: 454px;
+  left: 542px;
+  top: 470px;
 }
 .vacuum-heat {
-   width: 171px;
-  height: 31px;
+  width: 261px;
+  height: 51px;
   position: absolute;
-  left: 565px;
-  top: 603px;
+  left: 880px;
+  top: 645px;
   background: #FFAF1A;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .luffing-pump {
-   width: 171px;
+  width: 191px;
   height: 31px;
   position: absolute;
-  left: 48px;
-  top: 633px;
+  left: 148px;
+  top: 669px;
   background: #003366;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .cold-pen {
-  width: 171px;
+  width: 191px;
   height: 31px;
   position: absolute;
-  left: 789px;
-  top: 582px;
+  left: 1300px;
+  top: 482px;
+  background: #003366;
+  border-style: solid;
+  border-color: #c7c7c7;
+  border-width: 1px;
+}
+.vantil-pen {
+  width: 191px;
+  height: 31px;
+  position: absolute;
+  left: 930px;
+  top: 16px;
   background: #003366;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .booster-pump {
-  width: 171px;
+  width: 191px;
   height: 31px;
   position: absolute;
-  left: 48px;
-  top: 479px;
+  left: 148px;
+  top: 506px;
   background: #003366;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .fourline-valve {
-  width: 111px;
-  height: 31px;
+  width: 141px;
+  height: 30px;
   position: absolute;
-  left: 265px;
-  top: 409px;
+  left: 407px;
+  top: 417px;
   background: #3D9DFD;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .gas-valve {
-  width: 111px;
-  height: 31px;
+  width: 141px;
+  height: 30px;
   position: absolute;
-  left: 940px;
-  top: 414px;
+  left: 1450px;
+  top: 294px;
   background: #3D9DFD;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .luffing-valve {
-  width: 111px;
-  height: 31px;
+  width: 141px;
+  height: 30px;
   position: absolute;
-  left: 98px;
-  top: 267px;
+  left: 200px;
+  top: 258px;
   background: #3D9DFD;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
 }
 .vacuum-valve {
-  width: 111px;
-  height: 31px;
+  width: 141px;
+  height: 30px;
   position: absolute;
-  left: 279px;
-  top: 194px;
+  left: 700px;
+  top: 150px;
   background: #3D9DFD;
   border-style: solid;
   border-color: #c7c7c7;
@@ -104,16 +225,16 @@
   width: 30px;
   height: 24px;
   position: absolute;
-  left: 192px;
-  top: 317px;
+  left: 312px;
+  top: 304px;
 }
 .green-fourline-valve {
   background: #c0c0c0;
   border-radius: 5px;
-  width: 30px;
-  height: 24px;
+  width: 24px;
+  height: 30px;
   position: absolute;
-  left: 308px;
+  left: 456px;
   top: 331px;
   transform-origin: 0 0;
   transform: rotate(90deg) scale(1, 1);
@@ -124,15 +245,15 @@
   width: 30px;
   height: 24px;
   position: absolute;
-  left: 938px;
-  top: 382px;
+  left: 1450px;
+  top: 246px;
 }
 .mainIMG {
-  width: 726px;
-  height: 395px;
+  width: 1130px;
+  height: 753px;
   position: absolute;
-  left: 220px;
-  top: 213px;
+  left: 320px;
+  top: 24px;
   object-fit: cover;
   aspect-ratio: 726/395;
   z-index : -1;
@@ -442,20 +563,20 @@
   aspect-ratio: 51/39;
 }
 .object21 {
-  width: 92px;
-  height: 110px;
+  width: 112px;
+  height: 130px;
   position: absolute;
-  left: 118px;
-  top: 356px;
+  left: 238px;
+  top: 376px;
   object-fit: cover;
   aspect-ratio: 92/110;
 }
 .object22 {
-  width: 100px;
-  height: 102px;
+  width: 128px;
+  height: 122px;
   position: absolute;
-  left: 36px;
-  top: 358px;
+  left: 129px;
+  top: 378px;
   object-fit: cover;
   aspect-ratio: 100/102;
 }
@@ -469,20 +590,20 @@
   aspect-ratio: 161/29;
 }
 .object24 {
-  width: 92px;
-  height: 110px;
+  width: 112px;
+  height: 130px;
   position: absolute;
-  left: 118px;
-  top: 510px;
+  left: 238px;
+  top: 540px;
   object-fit: cover;
   aspect-ratio: 92/110;
 }
 .object25 {
-  width: 99px;
-  height: 102px;
+  width: 128px;
+  height: 122px;
   position: absolute;
-  left: 36px;
-  top: 514px;
+  left: 129px;
+  top: 544px;
   object-fit: cover;
   aspect-ratio: 99/102;
 }
@@ -587,7 +708,7 @@
   font-size: 15px;
   font-weight: 700;
   position: absolute;
-  left: 420px;
+  left: 623px;
   top: 413px;
   width: 35px;
   height: 21px;
@@ -624,8 +745,8 @@
   font-size: 15px;
   font-weight: 700;
   position: absolute;
-  left: 156px;
-  top: 317px;
+  left: 273px;
+  top: 304px;
   width: 31px;
   height: 21px;
 }
@@ -658,8 +779,8 @@
   font-size: 15px;
   font-weight: 700;
   position: absolute;
-  left: 419px;
-  top: 197px;
+  left: 623px;
+  top: 137px;
   width: 31px;
   height: 21px;
 }
@@ -682,7 +803,7 @@
   font-size: 15px;
   font-weight: 700;
   position: absolute;
-  left: 285px;
+  left: 427px;
   top: 303px;
   width: 32px;
   height: 21px;
@@ -717,8 +838,8 @@
   font-size: 15px;
   font-weight: 700;
   position: absolute;
-  left: 979px;
-  top: 382px;
+  left: 1490px;
+  top: 247px;
   width: 32px;
   height: 20px;
 }
@@ -745,8 +866,8 @@
   width: 60px;
   height: 60px;
   position: absolute;
-  left: 844px;
-  top: 479px;
+  left: 1367px;
+  top: 384px;
   object-fit: cover;
   aspect-ratio: 70/69;
 }
@@ -763,79 +884,182 @@
   width: 44px;
   height: 43px;
   position: absolute;
-  left: 412px;
-  top: 360px;
+  left: 615px;
+  top: 352px;
   object-fit: cover;
   aspect-ratio: 44/43;
 }
 .ellipse-3 {
   background: #000000;
   border-radius: 50%;
-  width: 56px;
-  height: 51px;
+  width: 66px;
+  height: 61px;
   position: absolute;
-  left: 62px;
-  top: 384px;
+  left: 167px;
+  top: 406px;
 }
 .pen-2 {
   width: 45px;
   height: 45px;
   position: absolute;
-  left: 67px;
-  top: 385px;
+  left: 178px;
+  top: 413px;
   object-fit: cover;
   aspect-ratio: 1;
 }
 .ellipse-4 {
   background: #000000;
   border-radius: 50%;
-  width: 56px;
-  height: 50px;
+  width: 66px;
+  height: 61px;
   position: absolute;
-  left: 62px;
-  top: 537px;
+  left: 167px;
+  top: 570px;
 }
 .pen-1 {
   width: 44px;
   height: 43px;
   position: absolute;
-  left: 67px;
-  top: 539px;
+  left: 178px;
+  top: 579px;
   object-fit: cover;
   aspect-ratio: 44/43;
 }
-.set-cool-switch-1 {
-  background: #696d69;
-  width: 70px;
-  height: 20px;
-  position: absolute;
-  left: 333px;
-  top: 525px;
+
+
+
+.water-cool-switch-1 {
+  width: 75px;
+    height: 30px;
+    position: absolute;
+    left: 1229px;
+    top: 587px;
+    font-size: 12px;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
 }
-.set-cool-switch-2 {
-  background: #696d69;
-  width: 70px;
-  height: 21px;
-  position: absolute;
-  left: 668px;
-  top: 108px;
+.water-cool-switch-2 {
+  width: 75px;
+    height: 30px;
+    position: absolute;
+    left: 1310px;
+    top: 587px;
+    font-size: 12px;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
 }
-.set-cool-switch-3 {
-  background: #696d69;
-  width: 70px;
-  height: 20px;
-  position: absolute;
-  left: 668px;
-  top: 137px;
+.water-cool-switch-3 {
+  width: 75px;
+    height: 30px;
+    position: absolute;
+    left: 1390px;
+    top: 587px;
+    font-size: 12px;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
 }
-.set-cool-switch-4 {
-  background: #696d69;
-  width: 70px;
-  height: 20px;
-  position: absolute;
-  left: 668px;
-  top: 164px;
+.water-cool-switch-4 {
+  width: 75px;
+    height: 30px;
+    position: absolute;
+    left: 1470px;
+    top: 587px;
+    font-size: 12px;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
 }
+
+
+.line-1 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  height: 0px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(0deg) scale(1, 1);
+  width: 320px;
+  left: 1180px;
+  top: 560px;
+}
+.line-2 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  width: 22px;
+  height: 0px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+  width: 30px;
+  left: 1260px;
+  top: 560px;
+}
+.line-3 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  width: 22px;
+  height: 0px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+  width: 30px;
+  left: 1340px;
+  top: 560px;
+}
+.line-4 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  width: 22px;
+  height: 0px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+  width: 30px;
+  left: 1420px;
+  top: 560px;
+}
+.line-5 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  width: 22px;
+  height: 0px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+  width: 30px;
+  left: 1500px;
+  top: 560px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .box {
   background: #d9d9d9;
   border-style: solid;
@@ -845,7 +1069,7 @@
   height: 87px;
   position: absolute;
   left: 0px;
-  top: 719px;
+  top: 749px;
 }
 .box2 {
   background: #d9d9d9;
@@ -856,7 +1080,7 @@
   height: 87px;
   position: absolute;
   left: 0px;
-  top: 719px;
+  top: 749px;
 }
 .box3 {
   background: #d9d9d9;
@@ -867,7 +1091,7 @@
   height: 31px;
   position: absolute;
   left: 0px;
-  top: 719px;
+  top: 749px;
 }
 .box4 {
   background: #d9d9d9;
@@ -878,7 +1102,7 @@
   height: 31px;
   position: absolute;
   left: 0px;
-  top: 719px;
+  top: 749px;
 }
 .box5 {
   background: #d9d9d9;
@@ -889,7 +1113,7 @@
   height: 29px;
   position: absolute;
   left: 0px;
-  top: 748px;
+  top: 778px;
 }
 .box6 {
   background: #d9d9d9;
@@ -900,7 +1124,7 @@
   height: 29px;
   position: absolute;
   left: 0px;
-  top: 748px;
+  top: 778px;
 }
 .box7 {
   background: #d9d9d9;
@@ -911,7 +1135,7 @@
   height: 28px;
   position: absolute;
   left: 0px;
-  top: 778px;
+  top: 808px;
 }
 .time-zone-2 {
   background: #d9d9d9;
@@ -922,7 +1146,7 @@
   height: 87px;
   position: absolute;
   left: 1044px;
-  top: 719px;
+  top: 749px;
 }
 .time-zone-1 {
   background: #d9d9d9;
@@ -933,7 +1157,7 @@
   height: 43px;
   position: absolute;
   left: 1044px;
-  top: 763px;
+  top: 793px;
 }
 .logo-zone {
   background: #d9d9d9;
@@ -944,7 +1168,7 @@
   height: 87px;
   position: absolute;
   left: 1298px;
-  top: 719px;
+  top: 749px;
 }
 .box8 {
   background: #d9d9d9;
@@ -955,7 +1179,7 @@
   height: 87px;
   position: absolute;
   left: 244px;
-  top: 719px;
+  top: 749px;
 }
 .box9 {
   background: #d9d9d9;
@@ -966,18 +1190,19 @@
   height: 31px;
   position: absolute;
   left: 244px;
-  top: 719px;
+  top: 749px;
 }
 .box10 {
+  
   background: #d9d9d9;
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
   width: 105px;
-  height: 31px;
+  height: 30px;
   position: absolute;
   left: 244px;
-  top: 719px;
+  top: 806px;
 }
 .box11 {
   background: #d9d9d9;
@@ -988,21 +1213,10 @@
   height: 29px;
   position: absolute;
   left: 244px;
-  top: 748px;
+  top: 778px;
 }
 .box12 {
-  background: #d9d9d9;
-  border-style: solid;
-  border-color: #000000;
-  border-width: 1px;
-  width: 105px;
-  height: 30px;
-  position: absolute;
-  left: 244px;
-  top: 776px;
-}
-.box13 {
-  background: #d9d9d9;
+	background: #d9d9d9;
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
@@ -1010,7 +1224,20 @@
   height: 29px;
   position: absolute;
   left: 244px;
-  top: 748px;
+  top: 778px;
+  z-index : 1;
+  
+}
+.box13 {
+  background: #d9d9d9;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px;
+  width: 105px;
+  height: 31px;
+  position: absolute;
+  left: 244px;
+  top: 747px;
 }
 .box14 {
   background: #c5fa8f;
@@ -1021,7 +1248,7 @@
   height: 45px;
   position: absolute;
   left: 801px;
-  top: 719px;
+  top: 749px;
 }
 .auto-run-off-box {
   background: #c5fa8f;
@@ -1032,7 +1259,7 @@
   height: 43px;
   position: absolute;
   left: 801px;
-  top: 763px;
+  top: 793px;
 }
 .auto-run-on-box {
   background: #c5fa8f;
@@ -1043,28 +1270,28 @@
   height: 43px;
   position: absolute;
   left: 922px;
-  top: 763px;
+  top: 793px;
 }
 .set-vacuum {
   width: 72px;
   height: 19px;
   position: absolute;
   left: 164px;
-  top: 724px;
+  top: 754px;
 }
 .set-heat {
   width: 72px;
   height: 18px;
   position: absolute;
   left: 164px;
-  top: 753px;
+  top: 783px;
 }
 .set-low-vacuum {
   width: 72px;
   height: 19px;
   position: absolute;
   left: 164px;
-  top: 782px;
+  top: 812px;
 }
 .set-cool-switch-1 {
   width: 79px;
@@ -1111,10 +1338,10 @@
   border-color: #000000;
   border-width: 1px;
   width: 188px;
-  height: 31px;
+  height: 41px;
   position: absolute;
   left: 614px;
-  top: 719px;
+  top: 749px;
 }
 .box16 {
   background: #d9d9d9;
@@ -1132,11 +1359,11 @@
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
-  width: 73px;
-  height: 29px;
+  width: 81px;
+  height: 58px;
   position: absolute;
   left: 614px;
-  top: 748px;
+  top: 778px;
 }
 .box18 {
   background: #d9d9d9;
@@ -1154,11 +1381,31 @@
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
-  width: 116px;
-  height: 29px;
+  width: 106px;
+  height: 58px;
   position: absolute;
-  left: 686px;
-  top: 748px;
+  left: 696px;
+  top: 778px;
+}
+.analog-lowvacuum-pv-1 {
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+  width: 94px;
+  height: 19px;
+  position: absolute;
+  left: 358px;
+  top: 724px;
+}
+.analog-lowvacuum-pv-2 { 
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+  width: 94px;
+  height: 19px;
+  position: absolute;
+  left: 481px;
+  top: 724px;
 }
 .analog-vacuum-pv-1 {
   font-family: "Inter-Bold", sans-serif;
@@ -1168,19 +1415,10 @@
   height: 19px;
   position: absolute;
   left: 358px;
-  top: 724px;
+  top: 812px;
 }
 .analog-hivacuum-pv-1 {
- font-family: "Inter-Bold", sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-  width: 94px;
-  height: 19px;
-  position: absolute;
-  left: 358px;
-  top: 753px;
-}
-.analog-heat-pv-1 {
+ 
   font-family: "Inter-Bold", sans-serif;
     font-size: 16px;
     font-weight: 500;
@@ -1188,7 +1426,18 @@
   height: 19px;
   position: absolute;
   left: 358px;
-  top: 782px;
+  top: 754px;
+}
+.analog-heat-pv-1 {
+  
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+  width: 94px;
+  height: 19px;
+  position: absolute;
+  left: 358px;
+  top: 783px;
 }
 .analog-vacuum-pv-2 {
  font-family: "Inter-Bold", sans-serif;
@@ -1198,9 +1447,10 @@
   height: 19px;
   position: absolute;
   left: 481px;
-  top: 724px;
+  top: 812px;
 }
 .analog-hivacuum-pv-2 {
+  
   font-family: "Inter-Bold", sans-serif;
     font-size: 16px;
     font-weight: 500;
@@ -1208,17 +1458,18 @@
   height: 19px;
   position: absolute;
   left: 481px;
-  top: 753px;
+  top: 754px;
 }
 .analog-heat-pv-2 {
- font-family: "Inter-Bold", sans-serif;
+ 
+  font-family: "Inter-Bold", sans-serif;
     font-size: 16px;
     font-weight: 500;
   width: 94px;
   height: 19px;
   position: absolute;
   left: 481px;
-  top: 782px;
+  top: 783px;
 }
 .analog-timer-sv {
   font-family: "Inter-Bold", sans-serif;
@@ -1228,7 +1479,7 @@
   height: 19px;
   position: absolute;
   left: 702px;
-  top: 753px;
+  top: 803px;
 }
 .analog-timer-pv {
  font-family: "Inter-Bold", sans-serif;
@@ -1267,24 +1518,9 @@
   left: 1078px;
   top: 48px;
 }
-.nomal-heat {
-  width: 139px;
-  height: 138px;
-  position: absolute;
-  left: 584px;
-  top: 410px;
-  object-fit: cover;
-  aspect-ratio: 139/138;
-}
-.heatpower-red {
-  width: 139px;
-  height: 138px;
-  position: absolute;
-  left: 584px;
-  top: 410px;
-  object-fit: cover;
-  aspect-ratio: 139/138;
-}
+
+
+
 
 .text {
   color: #000000;
@@ -1307,7 +1543,7 @@
   position: absolute;
   left: 577px;
   top: 726px;
-  width: 32px;
+  width: 82px;
   height: 17px;
 }
 .text3 {
@@ -1342,7 +1578,7 @@
   font-weight: 700;
   position: absolute;
   left: 577px;
-  top: 727px;
+  top: 757px;
   width: 31px;
   height: 15px;
 }
@@ -1354,7 +1590,7 @@
   font-weight: 700;
   position: absolute;
   left: 577px;
-  top: 756px;
+  top: 786px;
   width: 32px;
   height: 17px;
 }
@@ -1366,7 +1602,7 @@
   font-weight: 700;
   position: absolute;
   left: 577px;
-  top: 784px;
+  top: 814px;
   width: 31px;
   height: 16px;
 }
@@ -1378,7 +1614,7 @@
   font-weight: 700;
   position: absolute;
   left: 8px;
-  top: 722px;
+  top: 752px;
   width: 142px;
   height: 15px;
 }
@@ -1390,7 +1626,7 @@
   font-weight: 700;
   position: absolute;
   left: 8px;
-  top: 750px;
+  top: 780px;
   width: 142px;
   height: 15px;
 }
@@ -1402,7 +1638,7 @@
   font-weight: 700;
   position: absolute;
   left: 8px;
-  top: 779px;
+  top: 809px;
   width: 142px;
   height: 15px;
 }
@@ -1414,7 +1650,7 @@
   font-weight: 700;
   position: absolute;
   left: 269px;
-  top: 722px;
+  top: 810px;
   width: 55px;
   height: 15px;
 }
@@ -1450,7 +1686,7 @@
   font-weight: 700;
   position: absolute;
   left: 666px;
-  top: 722px;
+  top: 752px;
   width: 85px;
   height: 15px;
 }
@@ -1474,7 +1710,7 @@
   font-weight: 700;
   position: absolute;
   left: 769px;
-  top: 756px;
+  top: 806px;
   width: 25px;
   height: 15px;
 }
@@ -1510,7 +1746,7 @@
   font-weight: 700;
   position: absolute;
   left: 460px;
-  top: 721px;
+  top: 751px;
 }
 .div2 {
   color: #000000;
@@ -1520,7 +1756,7 @@
   font-weight: 700;
   position: absolute;
   left: 460px;
-  top: 750px;
+  top: 780px;
 }
 .div3 {
   color: #000000;
@@ -1530,7 +1766,29 @@
   font-weight: 700;
   position: absolute;
   left: 460px;
-  top: 778px;
+  top: 808px;
+}
+.div4 {
+  color: #000000;
+  text-align: left;
+  font-family: "Inter-Bold", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  position: absolute;
+  left: 460px;
+  top: 721px;
+}
+.text19{
+	color: #000000;
+    text-align: left;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    position: absolute;
+    left: 577px;
+    top: 728px;
+    width: 31px;
+    height: 15px;
 }
 .bell-box {
   background: #1f2935;
@@ -1539,7 +1797,7 @@
   height: 81px;
   position: absolute;
   left: 1052px;
-  top: 723px;
+  top: 753px;
 }
 .bell-alarm-stop {
   background: #6a7788;
@@ -1548,7 +1806,7 @@
   height: 77px;
   position: absolute;
   left: 1054px;
-  top: 725px;
+  top: 755px;
 }
 .bell-alarm-reset {
   background: #6a7788;
@@ -1557,7 +1815,7 @@
   height: 77px;
   position: absolute;
   left: 1134px;
-  top: 725px;
+  top: 755px;
 }
 .bell-recipe {
   background: #6a7788;
@@ -1566,7 +1824,7 @@
   height: 77px;
   position: absolute;
   left: 1214px;
-  top: 725px;
+  top: 755px;
 }
 
 .icon-reset {
