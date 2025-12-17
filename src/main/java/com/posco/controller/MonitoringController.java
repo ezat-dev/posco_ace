@@ -383,6 +383,9 @@ public class MonitoringController {
 	    }
 	}
 	
+	
+	
+	
 	//패턴 쓰기버튼 쓰기
 	@RequestMapping(value = "/monitoring/write/patternWriteBit", method = RequestMethod.POST)
 	@ResponseBody
@@ -428,8 +431,106 @@ public class MonitoringController {
 			return false;
 		}
 	}
+	
+	
+	////////////////////////패턴운전적용 전용/////////////////////////
+	//패턴읽기전용
+	@RequestMapping(value = "/monitoring/write/patternRead", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean writePatternRead(@RequestParam int patternNo) {
 
+	    try {
+	        OpcDataMap opc = new OpcDataMap();
 
+	        opc.setOpcData(
+	            "ace_posco.OVERVIEW.analog-pattern-number",
+	            (short) patternNo
+	        );
+
+	        Thread.sleep(300);
+
+	        opc.setOpcData("ace_posco.OVERVIEW.pattern-read", true);
+	        Thread.sleep(1000);
+	        opc.setOpcData("ace_posco.OVERVIEW.pattern-read", false);
+
+	        return true;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+	@RequestMapping(value = "/monitoring/write/patternAnalogOnly", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> writePatternAnalogOnly(
+	        @RequestParam String tagName,
+	        @RequestParam int value) {
+
+	    Map<String, Object> rMap = new HashMap<>();
+	    OpcDataMap opc = new OpcDataMap();
+
+	    try {
+	        if (value < -32768 || value > 32767) {
+	            rMap.put("alert", "범위초과");
+	            return rMap;
+	        }
+
+	        opc.setOpcData(
+	            "ace_posco.OVERVIEW." + tagName,
+	            (short) value
+	        );
+
+	        return rMap;
+
+	    } catch (Exception e) {
+	        rMap.put("alert", e.getMessage());
+	        return rMap;
+	    }
+	}
+	
+	
+	@RequestMapping(value = "/monitoring/write/patternApplyBit", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean patternApplyBit(
+	        @RequestParam String tagName,
+	        @RequestParam int value) {
+
+	    try {
+	        String node = "ace_posco.OVERVIEW." + tagName;
+
+	        NodeId nodeId = new NodeId(
+	            Unsigned.ushort(2),
+	            node
+	        );
+
+	        MainController.client.writeValue(
+	            nodeId,
+	            new DataValue(new Variant(value == 1))
+	        ).get();
+
+	        new Thread(() -> {
+	            try {
+	                Thread.sleep(5000);
+	                MainController.client.writeValue(
+	                    nodeId,
+	                    new DataValue(new Variant(false))
+	                ).get();
+	            } catch (Exception ignored) {}
+	        }).start();
+
+	        return true;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	///////////////////////////////////////////////////////
+	
+	
+	
+	
 	// PLC 패턴 아날로그값 WRITE (INT16)
 	@RequestMapping(value = "/monitoring/write/patternAnalog", method = RequestMethod.POST)
 	@ResponseBody
@@ -472,6 +573,28 @@ public class MonitoringController {
 	        rMap.put("alert", e.getMessage());
 	        return rMap;
 	    }
+	}
+	
+	
+	@RequestMapping(value = "/monitoring/read/waitbit", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> waitbit(@RequestParam String tagName) {
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+	        DataValue dataValue = MainController.client.readValue(0, TimestampsToReturn.Neither, nodeId).get();
+	        boolean value = (boolean) dataValue.getValue().getValue();
+
+	        result.put("status", "OK");
+	        result.put("value", value);
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("value", false);
+	    }
+	    return result;
 	}
 
 

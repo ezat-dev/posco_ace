@@ -120,7 +120,7 @@
 
     <div class="header">패턴 프로그램 편집</div>
 	<div class="current-pattern">
-	    <input type="number" class="analog-pattern-number">
+	    <input type="number" class="analog-pattern-number" disabled>
 	</div>
     <!-- ===== 테이블 ===== -->
     <div class="table-wrap">
@@ -194,6 +194,7 @@
 </div>
 
 <script>
+
 
 // ===============================
 // (1) 오버뷰 아날로그 값 READ

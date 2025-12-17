@@ -156,13 +156,45 @@
     cursor: pointer;
     user-select: none;
 }
+.pattern-on.active {
+    border: 3px solid #00c853;
+}
+
+
+
+/* 공통 오버레이 */
+.pattern-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.pattern-overlay-text {
+    background: #fff;
+    padding: 30px 50px;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
 
     </style>
 
 <body>
     <main class="main">
     
-    
+    <div id="patternStatus" style="position:absolute; left:60px; top:50px; font-size:20px; font-weight:bold; color:#003366;">
+    상태: -
+</div>
+
+
       <div class="st-table-wrap">
     <table class="st-table">
 
@@ -174,7 +206,7 @@
         
         <tr>
             <th colspan="3" class="pattern-number">
-				<input type="number" class="analog-pattern-number">
+				<input type="number" class="analog-pattern-number" min="1" max="14">
 			</th>
             <th colspan="19">진공 열처리로 패턴 프로그램</th>
         </tr>
@@ -259,32 +291,55 @@
 
 	
 	<div class="pattern-read">패턴 읽기</div>
-	<div class="pattern-write">패턴 쓰기</div>
+	<div class="pattern-write">패턴 수정</div>
 	
 	
 	
 	
 	<div class="pattern-box">
-    <!-- 왼쪽 영역 -->
+    
     <div class="pattern-left">
         <div class="pattern-label">운전 패턴번호</div>
-        <input type="text" class="pattern-input">
+        <input type="number" class="pattern-run" min="1" max="14">
     </div>
 
-    <!-- 오른쪽 영역 -->
-    <div class="pattern-right">
+   
+    <div class="pattern-on">
         적용
     </div>
 </div>
+
+
 		
-	
-	
-	
-	
-	
     </main>
     
 <script>
+
+
+function bindPatternRangeAlert(selector) {
+
+    document.querySelectorAll(selector).forEach(input => {
+
+        input.addEventListener("change", function () {
+            const min = parseInt(this.min, 10);
+            const max = parseInt(this.max, 10);
+            const val = parseInt(this.value, 10);
+
+            if (isNaN(val)) return;
+
+            if (val < min || val > max) {
+                alert("패턴 번호는 " + min + " ~ " + max + " 사이만 입력 가능합니다.");
+                this.value = "";
+                this.focus();
+            }
+        });
+
+    });
+}
+
+// 적용
+bindPatternRangeAlert(".pattern-run, .analog-pattern-number");
+
 
 
 $(".pattern-write").on("click", function () {
@@ -516,6 +571,186 @@ function patternDataRead(){
     });
 
 })();
+
+
+
+//운전 패턴 적용 버튼
+(function () {
+
+    const applyBtn = document.querySelector(".pattern-on");
+    const input = document.querySelector(".pattern-run");
+
+    if (!applyBtn || !input) return;
+
+    applyBtn.addEventListener("click", function () {
+
+        const patternNo = parseInt(input.value, 10);
+        if (isNaN(patternNo)) {
+            alert("운전 패턴번호를 입력하세요.");
+            return;
+        }
+
+        // ① 운전 패턴번호 WRITE (읽기 비트 ❌)
+        $.ajax({
+            url: "/posco/monitoring/write/patternAnalogOnly",
+            type: "post",
+            data: {
+                tagName: "pattern-run",
+                value: patternNo
+            },
+            success: function() {
+                console.log("✅ 운전 패턴번호 WRITE 완료");
+            },
+            error: function() {
+                console.error("❌ 운전 패턴번호 WRITE 실패");
+            }
+        });
+
+        // ② 패턴 적용 비트 WRITE (5초 유지)
+        $.ajax({
+            url: "/posco/monitoring/write/patternApplyBit",
+            type: "post",
+            data: {
+                tagName: "pattern-on",
+                value: 1
+            },
+            success: function() {
+                console.log("✅ 패턴 적용 트리거 완료");
+            },
+            error: function() {
+                console.error("❌ 패턴 적용 트리거 실패");
+            }
+        });
+
+    });
+
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(function () {
+
+    const btn = document.querySelector('.pattern-read');
+    const input = document.querySelector('.analog-pattern-number');
+
+    btn.addEventListener('click', function () {
+
+        const patternNo = parseInt(input.value, 10);
+        if (isNaN(patternNo)) {
+            alert("패턴 번호를 입력하세요.");
+            return;
+        }
+
+        $.ajax({
+            url: "/posco/monitoring/write/patternRead",
+            type: "post",
+            data: { patternNo: patternNo },
+            success: function () {
+                console.log("✅ 패턴 읽기 트리거 완료");
+            }
+        });
+    });
+
+})();
+
+
+//상태 표시 함수
+function setPatternStatus(text) {
+    const statusEl = document.getElementById("patternStatus");
+    if (statusEl) {
+        statusEl.innerText = "상태: " + text;
+    }
+}
+
+// 비트값 ON 체크용 헬퍼
+function isBitOn(value) {
+    return value === true || value === 1;
+}
+
+// 읽기중 / 쓰기중 상태 체크
+function pollPatternWaitStatus() {
+    let waitOn = false;
+
+    // 읽기중
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-wait-read" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("읽기중...");
+                waitOn = true;
+            }
+        }
+    });
+
+    // 쓰기중
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-wait-write" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("쓰기중...");
+                waitOn = true;
+            }
+        },
+        complete: function () {
+            if (!waitOn) setPatternStatus("-"); // 아무 작업 없으면 상태 초기화
+        }
+    });
+}
+
+// 읽기 완료 / 쓰기 완료 체크
+function pollPatternDoneLamp() {
+    // 읽기 완료
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-read-lamp" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("읽기 완료");
+            }
+        }
+    });
+
+    // 쓰기 완료
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-write-lamp" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("쓰기 완료");
+            }
+        }
+    });
+}
+
+// 1초마다 상태 갱신
+setInterval(() => {
+    pollPatternWaitStatus();
+    pollPatternDoneLamp();
+}, 1000);
+
+
+
+
+
 </script>
 
 
