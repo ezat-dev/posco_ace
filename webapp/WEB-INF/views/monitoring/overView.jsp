@@ -82,6 +82,7 @@
 .box13:hover,
 .box12:hover,
 .box17:hover,
+.box22:hover,
 .auto-run-off-box:hover,.auto-run-on-box:hover,
 .bell-alarm-reset:hover,
  .bell-alarm-stop:hover{
@@ -331,7 +332,7 @@ h1{
   height:30px;
   padding:4px 10px;
   background:#0b63ce;
-  color:#fff;
+  color:#00ff00;
   border-radius:6px;
   border: none;
   cursor: pointer;
@@ -346,12 +347,58 @@ h1{
   height: calc(100% - 44px);
 }
 	
+	
+	
+	
+.arrow-pipe {
+  width: 25px;
+  height: 75px;
+  position: absolute;
+  left: 614px;
+  top: 508px;
+  clip-path: polygon(
+    50% 0%,
+    100% 35%,
+    70% 35%,
+    70% 100%,
+    30% 100%,
+    30% 35%,
+    0% 35%
+  );
+  background: #00ff00;
+}
+
+.arrow-pipe span {
+  position: absolute;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  background: #01B3FF;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  animation: particleDown 1s linear infinite;
+}
+
+.arrow-pipe span:nth-child(1) { animation-delay: 0s; }
+.arrow-pipe span:nth-child(2) { animation-delay: .3s; }
+.arrow-pipe span:nth-child(3) { animation-delay: .6s; }
+
+@keyframes particleDown {
+  from { top: -10px; opacity: 0; }
+  10%  { opacity: 1; }
+  to   { top: 80px; opacity: 0; }
+}
+
     </style>
     
     
     <body>
     
-  
+  <div class="arrow-pipe">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
  <div class="st-table-wrap">
     <table class="st-table">
         <tr>
@@ -526,10 +573,11 @@ h1{
   
   <div class="box20">저진공 도달</div>
   <div class="box21"></div>
-  <div class="set-lowVacuum">미적용</div>
+  <div class="set-lowVacuum">OFF</div>
   
   <div class="box22">저진공 SP</div>
   <div class="box23"></div>
+  
   
   <!-- <div class="bx"></div> -->
   <div class="box15"></div>
@@ -556,7 +604,7 @@ h1{
   <div class="text4">냉각수 유량스위치-4</div> -->
   <div class="text5">Torr</div>
   <div class="text6">Torr</div>
-  <div class="text7">Torr</div>
+<!--   <div class="text7">Torr</div> -->
   <div class="text19">Torr</div>
   <div class="text8">고진공 도달</div>
   <div class="text9">히팅 도달</div>
@@ -565,7 +613,7 @@ h1{
   <!-- <div class="text12">고진공-SET</div>
   <div class="text13">히팅-SET</div> -->
   <div class="text14">냉각타이머</div>
-  <div class="text16">분</div>
+  <div class="text16">도(℃)</div>
   <!-- <div class="text17">분</div>
   <div class="text18">현재치</div> -->
   <div class="div">E</div>
@@ -832,7 +880,7 @@ $(document).ready(function () {
 
 	//자동운전선택
     $(".box14").on("click", function () {
-        openPopup("/posco/popup/autoRun", 380, 150);
+        openPopup("/posco/popup/autoRun", 420, 220);
     });
 
 	//러핑펌프
@@ -888,6 +936,11 @@ $(document).ready(function () {
   	//고진공SET
     $(".box13").on("click", function () {
         openPopup("/posco/popup/vacuumSet", 460, 190);
+    });
+
+  	//저진공SET
+    $(".box22").on("click", function () {
+        openPopup("/posco/popup/lowVacuumSet", 460, 190);
     });
 
   	//냉각타이머 설정치
@@ -1089,7 +1142,7 @@ function lamp(key, value){
 
 
 // =====================
-// OPC 값 알람 조회
+// OPC 값 조회
 // =====================
 function overviewListView() {
     $.ajax({

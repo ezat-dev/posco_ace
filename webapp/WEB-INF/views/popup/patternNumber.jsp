@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>냉각타이머</title>
+<title>히팅 설정</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <%@include file="../include/pluginpage.jsp" %> 
@@ -60,13 +60,14 @@
 <body>
 <div class="container">
 
-    <div class="header">냉각타이머 온도설정</div>
+    <div class="header">패턴 번호 설정</div>
 
     <div class="box-wrap">
         <div class="row heat-inline">
-    <label>온도설정</label>
+    <label>패턴 번호</label>
 
-    <input type="text" class="input-cool-sv">
+    <input type="text" class="input-pattern-number">
+
 </div>
     </div>
 
@@ -76,78 +77,77 @@
 <div id="toast" class="toast"></div>
 
 <script>
-
-
-// ===============================
-// (1) 오버뷰 아날로그 값 읽기
-// ===============================
+//===============================
+//(1) 오버뷰 아날로그 값 읽기
+//===============================
 $(document).ready(function () {
-    // 팝업 로딩 시 – 오버뷰 태그 읽어서 인풋에 표시
-    loadAnalogValue("analog-timer-sv", ".input-cool-sv");
+ // 팝업 로딩 시 – 오버뷰 태그 읽어서 인풋에 표시
+ loadAnalogValue("analog-pattern-number", ".input-pattern-number");
 
-    // 저장 클릭 시
-    $("#btnSave").click(function () {
-        savePopupValues();
-    });
+ // 저장 클릭 시
+ $("#btnSave").click(function () {
+     savePopupValues();
+ });
 });
 
 
-// ===============================
-// (1) 오버뷰 값 읽기
-// ===============================
+//===============================
+//(1) 오버뷰 값 읽기
+//===============================
 function loadAnalogValue(tag, selector) {
-    $.ajax({
-        url: "/posco/monitoring/read/analog",
-        type: "get",
-        data: { tagName: tag },
-        success: function (res) {
-            if (res.status === "OK") {
-                $(selector).val(res.value);
-            }
-        }
-    });
+ $.ajax({
+     url: "/posco/monitoring/read/analog",
+     type: "get",
+     data: { tagName: tag },
+     success: function (res) {
+         if (res.status === "OK") {
+             $(selector).val(res.value);
+         }
+     }
+ });
 }
 
 
-// ===============================
-// (2) 저장 → POPUP 태그에 쓰기
-// ===============================
+//===============================
+//(2) 저장 → POPUP 태그에 쓰기
+//===============================
 function savePopupValues() {
 
-    const v1 = $(".input-cool-sv").val().trim();
+ const v1 = $(".input-pattern-number").val().trim();
 
-    // =============================
-    // 값 검증 (정수, 0~999)
-    // =============================
-    const intVal = parseInt(v1);
+ // =============================
+ // 값 검증 (정수, 0~999)
+ // =============================
+ const intVal = parseInt(v1);
 
-    if (isNaN(intVal) || intVal < 0 || intVal > 9999) {
-        alert("0 ~ 9999 사이의 정수만 입력 가능합니다.");
-        return;
-    }
+ if (isNaN(intVal) || intVal < 0 || intVal > 9999) {
+     alert("0 ~ 9999 사이의 정수만 입력 가능합니다.");
+     return;
+ }
 
-    // =============================
-    // 저장 확인창
-    // =============================
-    if (!confirm("저장하시겠습니까?")) {
-        return;
-    }
+ // =============================
+ // 저장 확인창
+ // =============================
+ if (!confirm("저장하시겠습니까?")) {
+     return;
+ }
 
-    // =============================
-    // 저장 호출
-    // =============================
-    $.ajax({
-        url: "/posco/monitoring/write/popInput",
-        type: "post",
-        data: {
-            tagName: "input-cool-sv",
-            value: intVal
-        },
-        success: function (res) {
-        	alert("저장되었습니다.");
-        }
-    });
+ // =============================
+ // 저장 호출
+ // =============================
+ $.ajax({
+     url: "/posco/monitoring/write/popInput",
+     type: "post",
+     data: {
+         tagName: "input-pattern-number",
+         value: intVal
+     },
+     success: function (res) {
+     	alert("저장되었습니다.");
+     }
+ });
 }
+
 
 
 </script>

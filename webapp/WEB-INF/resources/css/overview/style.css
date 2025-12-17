@@ -37,7 +37,7 @@
 }
 
 .box22{
-	background: #d9d9d9;
+	background: #7fa8df;
     border-style: solid;
     border-color: #000000;
     border-width: 1px;
@@ -1216,7 +1216,7 @@
   top: 778px;
 }
 .box12 {
-	background: #d9d9d9;
+	background: #7fa8df;
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
@@ -1229,7 +1229,7 @@
   
 }
 .box13 {
-  background: #d9d9d9;
+  background: #7fa8df;
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
@@ -1355,7 +1355,7 @@
   top: 776px;
 }
 .box17 {
-  background: #d9d9d9;
+  background: #7fa8df;
   border-style: solid;
   border-color: #000000;
   border-width: 1px;
@@ -1709,9 +1709,9 @@
   font-size: 14px;
   font-weight: 700;
   position: absolute;
-  left: 769px;
+  left: 759px;
   top: 806px;
-  width: 25px;
+  width: 45px;
   height: 15px;
 }
 .text17 {

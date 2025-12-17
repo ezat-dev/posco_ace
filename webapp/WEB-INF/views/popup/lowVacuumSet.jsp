@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>냉각타이머</title>
+<title>저진공 SP 설정</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <%@include file="../include/pluginpage.jsp" %> 
@@ -54,19 +54,24 @@
     font-weight: bold;
 }
 
+
 </style>
 </head>
 
 <body>
 <div class="container">
 
-    <div class="header">냉각타이머 온도설정</div>
+    <div class="header">저진공 SP 설정</div>
 
     <div class="box-wrap">
         <div class="row heat-inline">
-    <label>온도설정</label>
+    <label>저진공 SP</label>
 
-    <input type="text" class="input-cool-sv">
+    <input type="text" class="input-lowvacuum-1">
+
+    <span class="unit-text">E</span>
+
+    <input type="text" class="input-lowvacuum-2">
 </div>
     </div>
 
@@ -76,16 +81,12 @@
 <div id="toast" class="toast"></div>
 
 <script>
-
-
-// ===============================
-// (1) 오버뷰 아날로그 값 읽기
-// ===============================
 $(document).ready(function () {
     // 팝업 로딩 시 – 오버뷰 태그 읽어서 인풋에 표시
-    loadAnalogValue("analog-timer-sv", ".input-cool-sv");
+    loadAnalogValue("analog-lowvacuum-pv-1", ".input-lowvacuum-1");
+    loadAnalogValue("analog-lowvacuum-pv-2", ".input-lowvacuum-2");
 
-    // 저장 클릭 시
+    // 저장 클릭 시 POPUP 태그에 쓰기
     $("#btnSave").click(function () {
         savePopupValues();
     });
@@ -93,9 +94,10 @@ $(document).ready(function () {
 
 
 // ===============================
-// (1) 오버뷰 값 읽기
+// (1) 오버뷰 아날로그 값 읽기
 // ===============================
 function loadAnalogValue(tag, selector) {
+
     $.ajax({
         url: "/posco/monitoring/read/analog",
         type: "get",
@@ -114,40 +116,61 @@ function loadAnalogValue(tag, selector) {
 // ===============================
 function savePopupValues() {
 
-    const v1 = $(".input-cool-sv").val().trim();
+    const v1 = $(".input-lowvacuum-1").val().trim();
+    const v2 = $(".input-lowvacuum-2").val().trim();
 
     // =============================
-    // 값 검증 (정수, 0~999)
+    // (1) 값 검증
     // =============================
-    const intVal = parseInt(v1);
 
-    if (isNaN(intVal) || intVal < 0 || intVal > 9999) {
-        alert("0 ~ 9999 사이의 정수만 입력 가능합니다.");
+    // --- input-heat-1 (float 0.0 ~ 9.9)
+    const f1 = parseFloat(v1);
+    if (isNaN(f1) || f1 < 0.0 || f1 > 9.9) {
+        alert("첫 번째 값은 0.0 ~ 9.9 까지의 숫자만 입력 가능합니다.");
+        return;
+    }
+
+    // --- input-heat-2 (int -9 ~ 9)
+    const i2 = parseInt(v2);
+    if (isNaN(i2) || i2 < -9 || i2 > 9) {
+        alert("두 번째 값은 -9 ~ 9 사이의 정수만 입력 가능합니다.");
         return;
     }
 
     // =============================
-    // 저장 확인창
+    // (2) 저장 확인창
     // =============================
     if (!confirm("저장하시겠습니까?")) {
         return;
     }
 
     // =============================
-    // 저장 호출
+    // (3) 저장 (input-heat-1 → input-heat-2 순서)
     // =============================
+
     $.ajax({
         url: "/posco/monitoring/write/popInput",
         type: "post",
         data: {
-            tagName: "input-cool-sv",
-            value: intVal
+            tagName: "input-lowvacuum-1",
+            value: f1
         },
-        success: function (res) {
-        	alert("저장되었습니다.");
+        success: function (res1) {
+            $.ajax({
+                url: "/posco/monitoring/write/popInput",
+                type: "post",
+                data: {
+                    tagName: "input-lowvacuum-2",
+                    value: i2
+                },
+                success: function (res2) {
+                	alert("저장되었습니다.");
+                }
+            });
         }
     });
 }
+
 
 
 </script>

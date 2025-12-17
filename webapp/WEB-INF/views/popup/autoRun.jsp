@@ -64,6 +64,12 @@
 	    <button class="btn n2 ctrl-btn" data-tag="auto-n2-on">질소공정</button>
 	    <button class="btn nomal ctrl-btn" data-tag="auto-nomal-on">일반공정</button>
   	</div>
+  	
+  	<div class="controls" style="margin-top:8px;">
+	    <button class="btn holdon ctrl-btn" data-tag="auto-holdon-on">패턴운전 HOLD ON</button>
+	    <button class="btn holdoff ctrl-btn" data-tag="auto-holdoff-on">패턴운전 HOLD OFF</button>
+	    <button class="btn skip ctrl-btn" data-tag="auto-skip-on">패턴운전 SKIP</button>
+  	</div>
 
     <div class="progress-wrap" aria-hidden="true" title="길게 누르세요">
       <div id="progressBar" class="progress-bar"></div>
@@ -213,7 +219,10 @@ function pollLampStatus() {
      { tag: "auto-run-lamp-on", btn: "[data-tag='auto-run-on']" },
      { tag: "auto-end-lamp-on", btn: "[data-tag='auto-end-on']" },
      { tag: "auto-n2-lamp-on", btn: "[data-tag='auto-n2-on']" },
-     { tag: "auto-nomal-lamp-on", btn: "[data-tag='auto-nomal-on']" }
+     { tag: "auto-nomal-lamp-on", btn: "[data-tag='auto-nomal-on']" },
+     { tag: "auto-holdon-lamp-on", btn: "[data-tag='auto-holdon-on']" },
+     { tag: "auto-holdoff-lamp-on", btn: "[data-tag='auto-holdoff-on']" },
+     { tag: "auto-skip-lamp-on", btn: "[data-tag='auto-skip-on']" }
  ];
 
  lampMap.forEach(item => {

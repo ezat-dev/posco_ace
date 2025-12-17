@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>알람발생 빈도</title>
+    <title>패턴관리</title>
 	<%@include file="../include/pluginpage.jsp" %>    
     <jsp:include page="../include/tabBar.jsp"/>
 </head>
@@ -55,6 +55,9 @@
     font-weight: bold;
     color: #333;
 }
+
+
+
 
 .pattern-read {
   background: #003366;
@@ -170,89 +173,91 @@
 
         
         <tr>
-            <th colspan="3" class="pattern-number"></th>
+            <th colspan="3" class="pattern-number">
+				<input type="number" class="analog-pattern-number">
+			</th>
             <th colspan="19">진공 열처리로 패턴 프로그램</th>
         </tr>
 
         
         <tr>
-            <td>Seg</td>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
-            <td>5</td>
-            <td>6</td>
-            <td>7</td>
-            <td>8</td>
-            <td>9</td>
-            <td>10</td>
-            <td>11</td>
-            <td>12</td>
-            <td>13</td>
-            <td>14</td>
-            <td>15</td>
-            <td>16</td>
-            <td>17</td>
-            <td>18</td>
-            <td>19</td>
-            <td>20</td>
+            <td class="big">Seg</td>
+            <td class="big">1</td>
+            <td class="big">2</td>
+            <td class="big">3</td>
+            <td class="big">4</td>
+            <td class="big">5</td>
+            <td class="big">6</td>
+            <td class="big">7</td>
+            <td class="big">8</td>
+            <td class="big">9</td>
+            <td class="big">10</td>
+            <td class="big">11</td>
+            <td class="big">12</td>
+            <td class="big">13</td>
+            <td class="big">14</td>
+            <td class="big">15</td>
+            <td class="big">16</td>
+            <td class="big">17</td>
+            <td class="big">18</td>
+            <td class="big">19</td>
+            <td class="big">20</td>
         </tr>
 
         
         <tr>
             <td>시간(분)</td>
-            <td class="pattern-time-1"></td>
-            <td class="pattern-time-2"></td>
-            <td class="pattern-time-3"></td>
-            <td class="pattern-time-4"></td>
-            <td class="pattern-time-5"></td>
-            <td class="pattern-time-6"></td>
-            <td class="pattern-time-7"></td>
-            <td class="pattern-time-8"></td>
-            <td class="pattern-time-9"></td>
-            <td class="pattern-time-10"></td>
-            <td class="pattern-time-11"></td>
-            <td class="pattern-time-12"></td>
-            <td class="pattern-time-13"></td>
-            <td class="pattern-time-14"></td>
-            <td class="pattern-time-15"></td>
-            <td class="pattern-time-16"></td>
-            <td class="pattern-time-17"></td>
-            <td class="pattern-time-18"></td>
-            <td class="pattern-time-19"></td>
-            <td class="pattern-time-20"></td>
+            <td class="analog-pattern-time-1"></td>
+            <td class="analog-pattern-time-2"></td>
+            <td class="analog-pattern-time-3"></td>
+            <td class="analog-pattern-time-4"></td>
+            <td class="analog-pattern-time-5"></td>
+            <td class="analog-pattern-time-6"></td>
+            <td class="analog-pattern-time-7"></td>
+            <td class="analog-pattern-time-8"></td>
+            <td class="analog-pattern-time-9"></td>
+            <td class="analog-pattern-time-10"></td>
+            <td class="analog-pattern-time-11"></td>
+            <td class="analog-pattern-time-12"></td>
+            <td class="analog-pattern-time-13"></td>
+            <td class="analog-pattern-time-14"></td>
+            <td class="analog-pattern-time-15"></td>
+            <td class="analog-pattern-time-16"></td>
+            <td class="analog-pattern-time-17"></td>
+            <td class="analog-pattern-time-18"></td>
+            <td class="analog-pattern-time-19"></td>
+            <td class="analog-pattern-time-20"></td>
         </tr>
 
         
         <tr>
             <td>온도(℃)</td>
-            <td class="pattern-temp-1"></td>
-            <td class="pattern-temp-2"></td>
-            <td class="pattern-temp-3"></td>
-            <td class="pattern-temp-4"></td>
-            <td class="pattern-temp-5"></td>
-            <td class="pattern-temp-6"></td>
-            <td class="pattern-temp-7"></td>
-            <td class="pattern-temp-8"></td>
-            <td class="pattern-temp-9"></td>
-            <td class="pattern-temp-10"></td>
-            <td class="pattern-temp-11"></td>
-            <td class="pattern-temp-12"></td>
-            <td class="pattern-temp-13"></td>
-            <td class="pattern-temp-14"></td>
-            <td class="pattern-temp-15"></td>
-            <td class="pattern-temp-16"></td>
-            <td class="pattern-temp-17"></td>
-            <td class="pattern-temp-18"></td>
-            <td class="pattern-temp-19"></td>
-            <td class="pattern-temp-20"></td>
+            <td class="analog-pattern-temp-1"></td>
+            <td class="analog-pattern-temp-2"></td>
+            <td class="analog-pattern-temp-3"></td>
+            <td class="analog-pattern-temp-4"></td>
+            <td class="analog-pattern-temp-5"></td>
+            <td class="analog-pattern-temp-6"></td>
+            <td class="analog-pattern-temp-7"></td>
+            <td class="analog-pattern-temp-8"></td>
+            <td class="analog-pattern-temp-9"></td>
+            <td class="analog-pattern-temp-10"></td>
+            <td class="analog-pattern-temp-11"></td>
+            <td class="analog-pattern-temp-12"></td>
+            <td class="analog-pattern-temp-13"></td>
+            <td class="analog-pattern-temp-14"></td>
+            <td class="analog-pattern-temp-15"></td>
+            <td class="analog-pattern-temp-16"></td>
+            <td class="analog-pattern-temp-17"></td>
+            <td class="analog-pattern-temp-18"></td>
+            <td class="analog-pattern-temp-19"></td>
+            <td class="analog-pattern-temp-20"></td>
         </tr>
 
     </table>
 </div>
 
-
+	
 	<div class="pattern-read">패턴 읽기</div>
 	<div class="pattern-write">패턴 쓰기</div>
 	
@@ -271,20 +276,10 @@
         적용
     </div>
 </div>
-
-	
-	
-	
 		
 	
 	
 	
-	
-	
-	
-	
-	
-	</div>
 	
 	
     </main>
@@ -292,9 +287,237 @@
 <script>
 
 
+$(".pattern-write").on("click", function () {
+    openPopup("/posco/popup/patternWrite", 1250, 300);
+});
+function openPopup(url, w, h) {
+    // 화면 중앙 계산
+    const left = (window.screen.width - w) / 2;
+    const top = (window.screen.height - h) / 2;
+
+    const options =
+        "width=" + w +
+        ",height=" + h +
+        ",left=" + left +
+        ",top=" + top +
+        ",resizable=yes,scrollbars=yes";
+
+    window.open(url, "_blank", options);
+}
 
 
+
+
+//OPC///////////////////////////////////////////////////////////////////////
+
+
+
+function valueDisplay(key, val) {
+    const els = document.getElementsByClassName(key);
+    if (!els || els.length === 0) return;
+
+    let displayValue = val;
+
+    Array.from(els).forEach(el => {
+        el.innerText = displayValue;
+    });
+}
+
+
+
+
+//=====================
+//OPC 값 조회
+//=====================
+function overviewListView() {
+ $.ajax({
+     url: "/posco/monitoring/view",
+     type: "post",
+     dataType: "json",
+     success: function(result) {
+         /* console.log("✅ Ajax 응답 전체:", result);  */
+
+         const data = result.multiValues;
+        /*  console.log("▶ multiValues:", data);  */
+
+         for(const item of data){
+             /* console.log("item:", item);  */
+             for(const [tagName, tagData] of Object.entries(item)){
+                 /* console.log("tagName:", tagName, "tagData:", tagData);  */
+                 if(!tagName) continue;
+                 const { action, value } = tagData;
+
+                 switch(action){
+	                    case "v":     v(tagName, value); break;
+	                    case "c":     c(tagName, value); break;
+	                    case "pen":   pen(tagName, value); break;
+	                    case "lamp":  lamp(tagName, value); break;
+	                    case "vs":    vs(tagName, value); break;
+	                    case "value": valueDisplay(tagName, value); break;
+//	                    case "green": green(tagName, value); break;
+	                    case "water": water(tagName, value); break;
+	                    case "ok": ok(tagName, value); break;
+	                    case "settext": setText(tagName, value); break;
+                 }
+             }
+         }
+     },
+     error: function(err) {
+         //console.error("❌ Ajax 요청 실패:", err);
+     }
+ });
+}
+
+
+
+
+function overviewListViewString() {
+ $.ajax({
+     url: "/posco/monitoring/view/string",
+     type: "post",
+     dataType: "json",
+     success: function(result) {
+         /* console.log("✅ Ajax 응답 전체:", result); */
+
+         const data = result.multiValues;
+         /* console.log("▶ 스트링:", data); */
+
+         for (const item of data) {
+             /* console.log("item:", item); */
+             for (const [tagName, tagData] of Object.entries(item)) {
+                 /* console.log("tagName:", tagName, "tagData:", tagData); */
+                 if (!tagName) continue;
+
+                 let { action, value } = tagData;
+
+ 
+
+                 switch (action) {
+                     case "value":
+                         valueDisplay(tagName, value);
+                         break;
+                 }
+             }
+         }
+     },
+     error: function(err) {
+         //console.error("❌ Ajax 요청 실패:", err);
+     }
+ });
+}
+
+$(function(){
+ //overviewListView();        // 첫 실행
+ //overviewListViewString();  // 첫 실행
+/*
+ overviewInterval = setInterval(() => {
+     overviewListView();
+     overviewListViewString();
+  
+ }, 2500); // 1초마다 갱신
+*/
+
+	patternDataRead();
+	patternDataReadInterval = setInterval("patternDataRead()",1000);
+});
+
+var patternDataReadInterval;
+
+//패턴 조회 함수(1초주기 동작)
+function patternDataRead(){
+       $.ajax({
+           url: "/posco/monitoring/read/patternAnalog",
+           type: "post",
+           data: {},
+           success: function (res) {
+               console.log(res);                                                  
+			var opcDatas = res.multiValues;
+
+			for(var rows in opcDatas){
+				for(var row in opcDatas[rows]){
+					
+					var d = opcDatas[rows];
+
+					if(d[row].action == "value"){
+						console.log(row, d[row].value)
+						$("."+row).text(d[row].value);
+					}						 
+				}
+			}                
+           }
+
+       });
+}
+
+//패턴비트 ON 함수
+
+
+
+
+(function(){
+    console.log("### Pattern Read Logic Loaded");
+
+    const btn = document.querySelector('.pattern-read');
+    const patternInput = document.querySelector('.analog-pattern-number');
+
+    if (!btn || !patternInput) {
+        console.error("❌ pattern-read 또는 analog-pattern-number 없음");
+        return;
+    }
+
+    btn.addEventListener('click', function () {
+
+        const patternValue = parseInt(patternInput.value, 10);
+
+        if (isNaN(patternValue)) {
+            alert("패턴 번호를 입력하세요.");
+            return;
+        }
+
+        console.log("### Step1: Analog WRITE →", patternValue);
+
+        // ① 아날로그 값 먼저 WRITE (D6010)
+        $.ajax({
+            url: "/posco/monitoring/write/patternAnalog",
+            type: "post",
+            data: {
+                tagName: "analog-pattern-number", // 👉 D6010
+                value: patternValue
+            },
+            success: function (res) {
+
+				console.log(res);
+                
+/*
+                console.log("### Analog WRITE 성공 → BIT WRITE 시작");
+
+                // ② 비트 ON (pattern-read)
+                $.ajax({
+                    url: "/posco/monitoring/write/patternBit",
+                    type: "post",
+                    data: {
+                        tagName: "pattern-read",
+                        value: 1
+                    },
+                    success: function () {
+                        console.log("✅ Pattern Read Triggered");
+                    },
+                    error: function () {
+                        console.error("❌ BIT WRITE 실패");
+                    }
+                });
+ */               
+            },
+            error: function () {
+                console.error("❌ Analog WRITE 실패");
+            }
+        });
+
+    });
+
+})();
 </script>
+
 
 </body>
 </html>

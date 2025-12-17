@@ -64,10 +64,10 @@ div {
   <div class="alarm-12">부스터 펌프 TRIP</div>
   <div class="alarm-13">DP 펌프 TRIP</div>
   <div class="alarm-14">쿨링팬 TRIP</div>
-  <div class="alarm-15">물압력1 이상</div>
-  <div class="alarm-16">물압력2 이상</div>
-  <div class="alarm-17">물압력3 이상</div>
-  <div class="alarm-18">물압력4 이상</div>
+  <div class="alarm-15">Water in Electorde1</div>
+  <div class="alarm-16">Water in Electorde2</div>
+  <div class="alarm-17" style="font-size:17px;">Water in Diffusion Pump</div>
+  <div class="alarm-18">Water in Electorde3</div>
   <div class="alarm-19">AIR 압력 이상</div>
   <div class="alarm-20">GAS 압력 이상</div>
   <div class="alarm-21">DP 펌프 과열</div>
@@ -80,9 +80,9 @@ div {
   <div class="alarm-28">온도분포7 TC 단선</div>
   <div class="alarm-29">온도분포8 TC 단선</div>
   <div class="alarm-30">온도분포9 TC 단선</div>
-  <div class="alarm-31">온도분포10 TC 단선</div>
+  <!-- <div class="alarm-31">온도분포10 TC 단선</div>
   <div class="alarm-32">온도분포11 TC 단선</div>
-  <div class="alarm-33">온도분포12 TC 단선</div>
+  <div class="alarm-33">온도분포12 TC 단선</div> -->
 
 
 
@@ -123,15 +123,15 @@ div {
 	        type: "post",
 	        dataType: "json",
 	        success: function(result) {
-	            console.log("✅ Ajax 응답 전체:", result); 
+	            /* console.log("✅ Ajax 응답 전체:", result); */ 
 
 	            const data = result.multiValues;
-	            console.log("▶ multiValues:", data); 
+	            /* console.log("▶ multiValues:", data); */ 
 
 	            for(const item of data){
-	                console.log("item:", item); 
+	                /* console.log("item:", item); */ 
 	                for(const [tagName, tagData] of Object.entries(item)){
-	                    console.log("tagName:", tagName, "tagData:", tagData); 
+	                    /* console.log("tagName:", tagName, "tagData:", tagData);  */
 	                    if(!tagName) continue;
 	                    const { action, value } = tagData;
 
