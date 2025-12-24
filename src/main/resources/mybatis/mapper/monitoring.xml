@@ -4,19 +4,49 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="monitoring">
 	
-	
 	<select id="gettrend" parameterType="monitoring" resultType="monitoring">
 	    SELECT 
-	        tdatetime,
-	        vac1_pv, vac2_pv, vac3_pv, protec_pv, tem_sp,
+	        DATE_FORMAT(TIMESTAMPADD(HOUR,9,tdatetime),'%Y-%m-%d %H:%i:%s') AS tdatetime,
+	        vac1_pv, vac2_pv, vac3_pv,  tem_sp, tem_tsp,
 	        tem_1, tem_2, tem_3, tem_4, tem_5, tem_6,
 	        tem_7, tem_8, tem_9, tem_10, tem_11, tem_12
 	    FROM tb_temp
 	    WHERE tdatetime BETWEEN #{startDate} AND #{endDate}
 	    ORDER BY tdatetime;
 	</select>
-
-
 	
-    
+	<update id="patternInputList" parameterType="map">
+		CALL sp_ptrn_save(#{ptrn_no}, #{ptrn_seg1_temp}, #{ptrn_seg2_temp}, #{ptrn_seg3_temp},
+						  #{ptrn_seg4_temp}, #{ptrn_seg5_temp}, #{ptrn_seg6_temp}, #{ptrn_seg7_temp},
+						  #{ptrn_seg8_temp}, #{ptrn_seg9_temp}, #{ptrn_seg10_temp},
+						  #{ptrn_seg1_time}, #{ptrn_seg2_time}, #{ptrn_seg3_time}, #{ptrn_seg4_time},
+						  #{ptrn_seg5_time}, #{ptrn_seg6_time}, #{ptrn_seg7_time}, #{ptrn_seg8_time},
+						  #{ptrn_seg9_time}, #{ptrn_seg10_time}
+		)
+	</update>
+	
+	<select id="getPatternList" parameterType="pattern" resultType="pattern">
+	    SELECT 
+	        proc_date, proc_ptrn_no, proc_ptrn_start, proc_ptrn_end
+	    FROM tb_pattern_proc
+	    WHERE proc_date BETWEEN #{sdate} AND #{edate}
+	    ORDER BY proc_ptrn_start;
+	</select>
+	
+	
+	<select id="getPatternInfo" parameterType="int" resultType="hashmap">
+	    SELECT 
+	        ptrn_no,
+	        ptrn_seg1_temp, ptrn_seg2_temp, ptrn_seg3_temp, ptrn_seg4_temp, ptrn_seg5_temp,
+	        ptrn_seg6_temp, ptrn_seg7_temp, ptrn_seg8_temp, ptrn_seg9_temp, ptrn_seg10_temp,
+	        ptrn_seg11_temp, ptrn_seg12_temp, ptrn_seg13_temp, ptrn_seg14_temp, ptrn_seg15_temp,
+	        ptrn_seg16_temp, ptrn_seg17_temp, ptrn_seg18_temp, ptrn_seg19_temp, ptrn_seg20_temp,
+	        ptrn_seg1_time, ptrn_seg2_time, ptrn_seg3_time, ptrn_seg4_time, ptrn_seg5_time,
+	        ptrn_seg6_time, ptrn_seg7_time, ptrn_seg8_time, ptrn_seg9_time, ptrn_seg10_time,
+	        ptrn_seg11_time, ptrn_seg12_time, ptrn_seg13_time, ptrn_seg14_time, ptrn_seg15_time,
+	        ptrn_seg16_time, ptrn_seg17_time, ptrn_seg18_time, ptrn_seg19_time, ptrn_seg20_time
+	    FROM tb_pattern
+	    WHERE ptrn_no = #{patternNo}
+	</select>
+	
 </mapper>

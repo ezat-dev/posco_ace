@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pattern">
+	
+	<select id="patternDataList" resultType="pattern">
+		SELECT *
+		FROM tb_pattern_proc
+		WHERE 1=1
+		AND proc_ptrn_start IS NOT NULL
+		AND proc_ptrn_end IS NULL
+	</select>
+	
+	<insert id="patternStartDataSave" parameterType="pattern">
+		INSERT INTO tb_pattern_proc 
+			(proc_date, proc_ptrn_no, proc_ptrn_start)
+		VALUES
+			(CURDATE(),#{proc_ptrn_no},NOW())
+	</insert>
+	
+	<update id="patternStartDataForceUpdate" parameterType="pattern">
+		UPDATE tb_pattern_proc SET proc_comment = #{proc_comment}, proc_ptrn_end = NOW()
+		WHERE proc_ptrn_start = #{proc_ptrn_start}
+	</update>
+    
+    <select id="patternEndDataList" parameterType="pattern" resultType="pattern">
+    	SELECT *
+    	FROM tb_pattern_proc
+    	WHERE 1=1
+    	AND proc_ptrn_no = #{proc_ptrn_no}
+    	AND proc_ptrn_start IS NOT NULL
+    	AND proc_ptrn_end IS NULL
+    </select>
+    
+    <update id="patternEndDataUpdate" parameterType="pattern">
+    	UPDATE tb_pattern_proc SET proc_ptrn_end = NOW()
+    	WHERE 1=1
+    	AND proc_ptrn_no = #{proc_ptrn_no}
+    	AND proc_ptrn_start = #{proc_ptrn_start}
+    	AND proc_ptrn_end IS NULL
+    </update>
+</mapper>

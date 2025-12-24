@@ -20,6 +20,7 @@
     <!-- 스케줄러 및 비동기 처리 -->
     <task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="false"/>
     <bean id="commProcessor" class="com.posco.async.CommProcessor"/>
+    <bean id="patternProcessor" class="com.posco.async.PatternProcessor"/>
     <task:scheduler id="scheduler" pool-size="4"/>
     <task:executor id="executor" keep-alive="10" pool-size="10-20" queue-capacity="10" rejection-policy="ABORT"/>
 
@@ -52,12 +53,15 @@
 	
 	
     
-		<bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+		<!-- <bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		    <property name="driverClassName" value="org.sqlite.JDBC" /> 
 		    <property name="url" value="jdbc:sqlite:D:\project\ace_posco\Data\Alarm/ace_posco_AlarmData.db" />
-		</bean>
+		</bean> -->
 
-	
+	<bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+		    <property name="driverClassName" value="org.sqlite.JDBC" /> 
+		    <property name="url" value="jdbc:sqlite:C:\Users\LENOVO\Documents\Autonics\SCADAMaster\Project\ace_posco\Data\Alarm/ace_posco_AlarmData.db" />
+		</bean>
 	
 		
 	 <bean id="sqlSessionFactorySQLite" class="org.mybatis.spring.SqlSessionFactoryBean">

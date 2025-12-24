@@ -2,7 +2,6 @@ package com.posco.service;
 
 import java.util.List;
 
-import com.posco.domain.Facility;
 import com.posco.domain.Permission;
 import com.posco.domain.UserLog;
 import com.posco.domain.UserMenu;

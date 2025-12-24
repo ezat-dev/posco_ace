@@ -494,8 +494,8 @@
                 <table class="seg-table">
                     <tr>
                         <th>현재 운전 패턴번호</th>
-                        <th>현재 진행 세그먼트</th>
-                        <th>현재 진행 세그먼트 남은시간(분)</th>
+                        <th>현재 진행 Seg</th>
+                        <th>현재 진행 Seg 남은시간(분)</th>
                     </tr>
                     <tr>
                         <td class="analog-pattern-status"></td>

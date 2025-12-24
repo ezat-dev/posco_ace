@@ -315,10 +315,33 @@ function savePopupValues() {
 
     if (!confirm("패턴을 수정 하시겠습니까?")) return;
 
-    writeSequential(tagValueMap, 0);
+//    writeSequential(tagValueMap, 0);
+    writeSequential(tagValueMap);
 }
 
+//저장 메서드((2025-12-24 추가)[변경])
+function writeSequential(list){
+	
+	var listParam = JSON.stringify(list);
+	
+    $.ajax({
+        url: "/posco/monitoring/write/patternInputList",
+        type: "post",
+        traditional: true,
+        data: {
+        	"listParam":listParam
+        },
+        success: function (result) {
+            console.log(result);
+            triggerPatternWriteBit();
+        },
+        error: function () {
+            alert("저장 실패 : " + tagName);
+        }
+    });
 
+}
+/*
 //저장 메서드
 function writeSequential(list, idx) {
 
@@ -345,7 +368,7 @@ function writeSequential(list, idx) {
         }
     });
 }
-
+*/
 
 //패턴쓰기(버튼) 비트살리기
 function triggerPatternWriteBit() {

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bega">
+
+	<select id="getBegaInsertList" parameterType="bega" resultType="bega">
+	    SELECT 
+	        ROW_NUMBER() OVER(ORDER BY f.fstp_code) AS row_num,
+	        fac.fac_name,
+	        f.fstp_plan,
+	        f.fstp_tu,
+	        f.fstp_stby,
+	        f.fstp_01,
+	        f.fstp_02,
+	        f.fstp_03,
+	        f.fstp_04,
+	        f.fstp_05,
+	        f.fstp_06,
+	        f.fstp_07,
+	        f.fstp_08,
+	        f.fstp_09,
+	        f.fstp_10,
+	        f.fstp_bigo,
+	        f.fstp_code,
+	        DATE_FORMAT(f.fstp_date, '%Y-%m-%d') AS fstp_date
+	    FROM tb_facstop f
+	    INNER JOIN tb_fac fac
+	        ON f.fac_code = fac.fac_code
+	    WHERE f.fstp_date BETWEEN #{sdate} AND #{edate}
+	    ORDER BY f.fstp_date, fac.fac_name
+	</select>
+	
+	<insert id="begaInsertSave" parameterType="bega">
+	    INSERT INTO tb_facstop (
+	        fstp_code,
+	        fac_code,
+	        fstp_date,
+	        fstp_plan,
+	        fstp_tu,
+	        fstp_stby,
+	        fstp_sil,
+	        fstp_man,
+	        fstp_mhr,
+	        fstp_01,
+	        fstp_02,
+	        fstp_03,
+	        fstp_04,
+	        fstp_05,
+	        fstp_06,
+	        fstp_07,
+	        fstp_08,
+	        fstp_09,
+	        fstp_10,
+	        fstp_bigo
+	    )
+	    SELECT
+	        CONCAT('F', LPAD(COALESCE(MAX(CAST(SUBSTRING(fstp_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+	        #{fac_code},
+	        #{fstp_date},
+	        #{fstp_plan},
+	        #{fstp_tu},
+	        #{fstp_stby},
+	        #{fstp_sil},
+	        #{fstp_man},
+	        #{fstp_mhr},
+	        #{fstp_01},
+	        #{fstp_02},
+	        #{fstp_03},
+	        #{fstp_04},
+	        #{fstp_05},
+	        #{fstp_06},
+	        #{fstp_07},
+	        #{fstp_08},
+	        #{fstp_09},
+	        #{fstp_10},
+	        #{fstp_bigo}
+	    FROM tb_facstop
+	</insert>
+	
+	
+	<update id="begaUpdateSave" parameterType="bega">
+	    UPDATE tb_facstop
+	    SET
+	        fac_code   = #{fac_code},
+	        fstp_date  = #{fstp_date},
+	        fstp_plan  = #{fstp_plan},
+	        fstp_tu    = #{fstp_tu},
+	        fstp_stby  = #{fstp_stby},
+	        fstp_sil   = #{fstp_sil},
+	        fstp_man   = #{fstp_man},
+	        fstp_mhr   = #{fstp_mhr},
+	        fstp_01    = #{fstp_01},
+	        fstp_02    = #{fstp_02},
+	        fstp_03    = #{fstp_03},
+	        fstp_04    = #{fstp_04},
+	        fstp_05    = #{fstp_05},
+	        fstp_06    = #{fstp_06},
+	        fstp_07    = #{fstp_07},
+	        fstp_08    = #{fstp_08},
+	        fstp_09    = #{fstp_09},
+	        fstp_10    = #{fstp_10},
+	        fstp_bigo  = #{fstp_bigo}
+	    WHERE fstp_code = #{fstp_code}
+	</update>
+	
+	<select id="begaInsertDetail" parameterType="bega" resultType="bega">
+	    SELECT  
+	        f.fstp_code, 
+	        f.fac_code, 
+	        DATE_FORMAT(f.fstp_date, '%Y-%m-%d') AS fstp_date, 
+	        f.fstp_plan, 
+	        f.fstp_tu, 
+	        f.fstp_stby, 
+	        f.fstp_sil, 
+	        f.fstp_man, 
+	        f.fstp_mhr, 
+	        f.fstp_01, 
+	        f.fstp_02, 
+	        f.fstp_03, 
+	        f.fstp_04, 
+	        f.fstp_05, 
+	        f.fstp_06, 
+	        f.fstp_07, 
+	        f.fstp_08, 
+	        f.fstp_09, 
+	        f.fstp_10, 
+	        f.fstp_bigo, 
+	        fac.fac_name
+	    FROM tb_facstop f
+	    INNER JOIN tb_fac fac 
+	        ON f.fac_code = fac.fac_code
+	    WHERE f.fstp_code = #{fstp_code}
+	</select>
+	
+	
+	<delete id="begaDelete" parameterType="int">
+	    DELETE FROM FACSTOP
+	    WHERE FSTP_CODE = #{fstp_code}
+	</delete>
+    
+</mapper>

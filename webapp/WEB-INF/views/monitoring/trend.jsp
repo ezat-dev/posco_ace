@@ -242,7 +242,7 @@ function trendYester() {
 // 변수 선언
 // ---------------------------
 let categories;
-let vac1_pv, vac2_pv, vac3_pv, protec_pv, tem_sp;
+let vac1_pv, vac2_pv, vac3_pv, tem_tsp, tem_sp;
 let tem_1, tem_2, tem_3, tem_4, tem_5, tem_6;
 let tem_7, tem_8, tem_9, tem_10, tem_11, tem_12;
 
@@ -291,6 +291,7 @@ function fetchData() {
                 vac3_pv = result.map(r => Number(r.vac3_pv));
                 protec_pv = result.map(r => Number(r.protec_pv));
                 tem_sp = result.map(r => Number(r.tem_sp));
+                tem_tsp = result.map(r => Number(r.tem_tsp));
 
                 tem_1 = result.map(r => Number(r.tem_1));
                 tem_2 = result.map(r => Number(r.tem_2));
@@ -311,8 +312,8 @@ function fetchData() {
                             { name: '1존온도 PV', data: vac1_pv },
                             { name: '2존온도 PV', data: vac2_pv },
                             { name: '3존온도 PV', data: vac3_pv },
-                            { name: '프로텍터온도 PV', data: protec_pv },
                             { name: '온도 SP', data: tem_sp },
+                            { name: '온도 TSP', data: tem_tsp },
                             { name: '온도분포1', data: tem_1 },
                             { name: '온도분포2', data: tem_2 },
                             { name: '온도분포3', data: tem_3 },
@@ -373,11 +374,11 @@ function createTrendChart(){
             type: 'datetime',
             labels: {
                 formatter: function(){
-                    return Highcharts.dateFormat('%H:%M', this.value);
+                    return Highcharts.dateFormat('%m-%d</br>%H:%M', this.value);
                 },
-                rotation: -45,
+//                rotation: -45,
                 align: 'right',
-                step: 1  // 라벨 표시 간격 조절 (1은 모든 틱마다, 2는 하나 건너뛰기)
+//                step: 1  // 라벨 표시 간격 조절 (1은 모든 틱마다, 2는 하나 건너뛰기)
             },
             tickPixelInterval: 200,  // 틱 사이 픽셀 간격 (넓힐수록 적게 표시)
             minTickInterval: 60 * 60 * 1000  // 최소 1시간 간격 (밀리초 단위)
@@ -385,7 +386,7 @@ function createTrendChart(){
 
         yAxis: {
             title: { text: "온도 (℃)", rotation: 0, align: 'high', offset: 0, y: -20 },
-            labels: { align: "left", x: 10 },
+            labels: { align: "left"},
             min: 0,
             max: 1200
         },
@@ -421,8 +422,8 @@ function createTrendChart(){
             { name: '1존온도 PV', data: vac1_pv.map((val, idx) => [categories[idx], val]) },
             { name: '2존온도 PV', data: vac2_pv.map((val, idx) => [categories[idx], val]) },
             { name: '3존온도 PV', data: vac3_pv.map((val, idx) => [categories[idx], val]) },
-            { name: '프로텍터온도 PV', data: protec_pv.map((val, idx) => [categories[idx], val]) },
             { name: '온도 SP', data: tem_sp.map((val, idx) => [categories[idx], val]) },
+            { name: '온도 TSP', data: tem_tsp.map((val, idx) => [categories[idx], val]) },
             { name: '온도분포1', data: tem_1.map((val, idx) => [categories[idx], val]) },
             { name: '온도분포2', data: tem_2.map((val, idx) => [categories[idx], val]) },
             { name: '온도분포3', data: tem_3.map((val, idx) => [categories[idx], val]) },

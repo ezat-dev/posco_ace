@@ -3,6 +3,14 @@ package com.posco.domain;
 public class Pattern {
 	
 	
+	private String sdate;
+	private String edate;
+	
+	private String s_sdate;
+	private String e_edate;
+	
+	private String startDate;
+	private String endDate;
 	
 	private int ptrn_no;
 	
@@ -49,7 +57,13 @@ public class Pattern {
 	private int ptrn_seg20_time;
 	
 	
-	
+	//2025-12-24 추가
+	private String proc_regtime;	//테이블에서 생성되는 기준키값
+	private String proc_date;		//패턴 등록일
+	private int proc_ptrn_no;		//패턴 등록일
+	private String proc_ptrn_start;	//패턴 시작시간
+	private String proc_ptrn_end;	//패턴 종료시간
+	private String proc_comment;	//비고[정상적으로 종료확인용, ...]
 	
 	
 	public int getPtrn_no() {
@@ -297,6 +311,78 @@ public class Pattern {
 	}
 	public void setPtrn_seg20_time(int ptrn_seg20_time) {
 		this.ptrn_seg20_time = ptrn_seg20_time;
+	}
+	public String getProc_date() {
+		return proc_date;
+	}
+	public void setProc_date(String proc_date) {
+		this.proc_date = proc_date;
+	}
+	public int getProc_ptrn_no() {
+		return proc_ptrn_no;
+	}
+	public void setProc_ptrn_no(int proc_ptrn_no) {
+		this.proc_ptrn_no = proc_ptrn_no;
+	}
+	public String getProc_ptrn_start() {
+		return proc_ptrn_start;
+	}
+	public void setProc_ptrn_start(String proc_ptrn_start) {
+		this.proc_ptrn_start = proc_ptrn_start;
+	}
+	public String getProc_ptrn_end() {
+		return proc_ptrn_end;
+	}
+	public void setProc_ptrn_end(String proc_ptrn_end) {
+		this.proc_ptrn_end = proc_ptrn_end;
+	}
+	public String getSdate() {
+		return sdate;
+	}
+	public void setSdate(String sdate) {
+		this.sdate = sdate;
+	}
+	public String getEdate() {
+		return edate;
+	}
+	public void setEdate(String edate) {
+		this.edate = edate;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getS_sdate() {
+		return s_sdate;
+	}
+	public void setS_sdate(String s_sdate) {
+		this.s_sdate = s_sdate;
+	}
+	public String getE_edate() {
+		return e_edate;
+	}
+	public void setE_edate(String e_edate) {
+		this.e_edate = e_edate;
+	}
+	public String getProc_regtime() {
+		return proc_regtime;
+	}
+	public void setProc_regtime(String proc_regtime) {
+		this.proc_regtime = proc_regtime;
+	}
+	public String getProc_comment() {
+		return proc_comment;
+	}
+	public void setProc_comment(String proc_comment) {
+		this.proc_comment = proc_comment;
 	}
 	
 

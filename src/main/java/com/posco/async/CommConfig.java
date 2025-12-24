@@ -43,6 +43,11 @@ public class CommConfig implements SchedulingConfigurer, AsyncConfigurer {
 		scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
 		return scheduler;
 	}
+	
+	@Bean
+	public PatternProcessor patternProcessor() {
+		return new PatternProcessor();
+	}
 
 	@Bean
 	public CommProcessor logProcessor() {

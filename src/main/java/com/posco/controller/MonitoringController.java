@@ -16,6 +16,9 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.posco.domain.Monitoring;
+import com.posco.domain.Pattern;
 import com.posco.domain.Users;
 import com.posco.service.MonitoringService;
 import com.posco.util.OpcDataMap;
@@ -37,6 +41,54 @@ public class MonitoringController {
 	private MonitoringService monitoringService;
 	
 	private final Logger logger = LoggerFactory.getLogger(MonitoringController.class);
+	
+	
+	
+	
+	@RequestMapping(value = "/pattern/getPatternList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getPatternList(
+			@RequestParam String sdate,
+			@RequestParam String edate) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Pattern pattern = new Pattern();
+
+		pattern.setSdate(sdate);
+		pattern.setEdate(edate);
+
+
+		List<Pattern> patternList = monitoringService.getPatternList(pattern);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<patternList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("idx", (i+1));
+			rowMap.put("proc_date", patternList.get(i).getProc_date());
+			rowMap.put("proc_ptrn_no", patternList.get(i).getProc_ptrn_no());
+			rowMap.put("proc_ptrn_start", patternList.get(i).getProc_ptrn_start());
+			rowMap.put("proc_ptrn_end", patternList.get(i).getProc_ptrn_end());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	@RequestMapping(value = "/pattern/getPatternInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getPatternInfo(@RequestParam int patternNo) {
+	    return monitoringService.getPatternInfo(patternNo);
+	}
+	
+	
+	
+	
+	
 	
 	@RequestMapping(value= "/monitoring/view/string", method = RequestMethod.POST)
 	@ResponseBody
@@ -508,6 +560,77 @@ public class MonitoringController {
 		}
 	}
 	
+	
+	//PLC 패턴 아날로그값 WRITE(2025-12-24 추가)
+	@RequestMapping(value = "/monitoring/write/patternInputList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> patternInputList(@RequestParam(required = false) String listParam) {
+
+//		System.out.println(listParam);
+
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser listParser = new JSONParser();
+		Object listObj = new Object();
+		JSONArray listJsonArray = new JSONArray();
+
+		OpcDataMap opc = new OpcDataMap();
+		
+		//현재 조회중인 패턴 값
+		//analog-pattern-number
+		Map<String, Object> ptrnNumberMap = null;
+		
+		try {
+			
+			ptrnNumberMap = opc.getOpcData("ace_posco.OVERVIEW.analog-pattern-number");
+			
+			short ptrn_no = Short.parseShort(ptrnNumberMap.get("value").toString());
+			
+			listObj = listParser.parse(listParam);
+			
+			if(listObj instanceof JSONArray) {
+				listJsonArray = (JSONArray)listObj;
+				//패턴번호 
+				rtnMap.put("ptrn_no",ptrn_no);
+				
+				for(int i=0; i<listJsonArray.size(); i++) {
+//					System.out.println(listJsonArray.get(i));
+					JSONArray aa = (JSONArray)listJsonArray.get(i);
+					
+					//PLC 전송용
+					String tagName = "";
+					//DB 저장용
+					String columnName = "";
+					
+					short tagValue = 0;
+					for(int j=0; j<aa.size(); j++) {
+
+						tagName = "ace_posco.POPUP."+aa.get(0).toString();
+						
+						if(aa.get(0).toString().length() > 0) {
+							String[] aaArray = aa.get(0).toString().split("-");
+							if(aa.get(0).toString().contains("-time-")) {
+								columnName = "ptrn_seg"+aaArray[3]+"_time";
+							}else {
+								columnName = "ptrn_seg"+aaArray[3]+"_temp";
+							}
+						}
+						
+						tagValue = Short.parseShort(aa.get(1).toString());
+					}
+					rtnMap.put(columnName,tagValue);
+					opc.setOpcData(tagName, tagValue);
+				}
+				logger.info("패턴관리-패턴수정 : {}","패턴 데이터적용 : "+rtnMap.toString());
+			}
+
+			monitoringService.patternInputList(rtnMap);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rtnMap;
+	}
 	
 	//PLC 패턴 아날로그값 WRITE
 	@RequestMapping(value = "/monitoring/write/patternInput", method = RequestMethod.POST)

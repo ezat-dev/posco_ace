@@ -215,29 +215,7 @@ h1{
 
 
 
-.area-trend {
-    width: 720px;
-    height: 330px;
-    position: absolute;
-    left: 950px;
-    top: 10px;
-    background: #ffffff;
-    border-radius: 10px;
-    border: 1px solid #d0d3d8;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-.trend-title {
-    background: #0b63ce;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    padding: 10px;
-    text-align: center;
-}
 
 
 
@@ -308,53 +286,6 @@ h1{
 }
 
 
-	
-	
-	
-	
-.arrow-pipe {
-  width: 25px;
-  height: 75px;
-  position: absolute;
-  left: 614px;
-  top: 508px;
-  clip-path: polygon(
-    50% 0%,
-    100% 35%,
-    70% 35%,
-    70% 100%,
-    30% 100%,
-    30% 35%,
-    0% 35%
-  );
-  background: #00ff00;
-}
-
-.arrow-pipe span {
-  position: absolute;
-  left: 50%;
-  width: 4px;
-  height: 8px;
-  background: #01B3FF;
-  border-radius: 2px;
-  transform: translateX(-50%);
-  animation: particleDown 1s linear infinite;
-}
-
-.arrow-pipe span:nth-child(1) { animation-delay: 0s; }
-.arrow-pipe span:nth-child(2) { animation-delay: .3s; }
-.arrow-pipe span:nth-child(3) { animation-delay: .6s; }
-
-@keyframes particleDown {
-  from { top: -10px; opacity: 0; }
-  10%  { opacity: 1; }
-  to   { top: 80px; opacity: 0; }
-}
-
-
-
-
-
 /* 테두리 점멸 효과 */
 .btn.active-on {
     border: 5px solid #00ff00;
@@ -375,22 +306,172 @@ h1{
     
 }
 
+
+
+
+
+
+
     </style>
     
     
     <body>
-    
-  <!-- <div class="arrow-pipe">
-  <span></span>
-  <span></span>
-  <span></span>
-</div> -->
+
+
+<!-- 저진공밸브 방향 -->   
+<div class="lamp-arrow-lowvacuum">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-lowvacuum" style="left: 410px; top: 210px; width: 60px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+<div class="lamp-arrow-lowvacuum vertical" style="left: 360px; top: 245px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-lowvacuum vertical" style="left: 360px; top: 320px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-lowvacuum vertical" style="left: 360px; top: 385px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-lowvacuum vertical" style="left: 360px; top: 450px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+
+
+<!-- 포라인밸브 방향 -->
+<div class="lamp-arrow-pore">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-pore" style="left: 452px; top: 372px; width: 45px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-pore" style="left: 385px; top: 372px; width: 45px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-pore vertical" style="left: 360px; top: 405px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-pore vertical" style="left: 360px; top: 463px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+
+<!-- 가스 방향 -->
+
+<div class="lamp-arrow-gas" style="left: 1270px; top: 358px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+<div class="lamp-arrow-gas vertical" style="left: 1355px; top: 105px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+<div class="lamp-arrow-gas vertical" style="left: 1355px; top: 180px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<div class="lamp-arrow-gas vertical" style="left: 1355px; top: 260px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+<div class="lamp-arrow-gas right" style="left: 1055px; top: 61px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+
+
+
+
+
+
  <div class="st-table-wrap">
     <table class="st-table">
         <tr>
         	<th>운전 패턴번호</th>
-            <th>진행 세그먼트</th>
-            <th>세그먼트 남은시간(분)</th>
+            <th>진행 Seg</th>
+            <th>Seg 남은시간(분)</th>
             <th>1존온도 PV</th>
             <th>2존온도 PV</th>
             <th>3존온도 PV</th>
@@ -398,9 +479,9 @@ h1{
             <th>온도TSP</th>
         </tr>
         <tr>
-        	<td class="analog-pattern-status"></td>
-            <td class="analog-seg-status"></td>
-            <td class="analog-seg-time"></td>
+        	<td class="analog-pattern-status" style="background-color:yellow;"></td>
+            <td class="analog-seg-status" style="background-color:yellow;"></td>
+            <td class="analog-seg-time" style="background-color:yellow;"></td>
             <td class="analog-vac1_pv"></td>
             <td class="analog-vac2_pv"></td>
             <td class="analog-vac3_pv"></td>   
@@ -930,6 +1011,18 @@ function lamp(key, value){
     if(!els || els.length === 0) return;
 
     Array.from(els).forEach(el => {
+
+    	 if (key.includes("lamp-arrow")) {
+
+             if (value) {
+                 el.classList.remove("hidden");   
+                 el.classList.add("active-lamp");
+             } else {
+                 el.classList.add("hidden");
+                 el.classList.remove("active-lamp");
+             }
+             return; // ⛔ 아래 로직 타지 않게
+         }
 
         // 1) lamp-on-* 처리 (초록 / 회색 전환)
         if(key.includes("lamp-on")){

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="standard">
+    
+    
+    <!-- 제품 조회 -->
+	<select id="getStandardList" parameterType="standard" resultType="standard">
+		SELECT *
+		FROM tb_workstd
+		WHERE 1=1
+	</select>
+    
+    <insert id="standardInsertSave" parameterType="standard">
+	    INSERT INTO tb_workstd (
+	        wstd_code,
+	        fac_code,
+	        fac_name,
+	        pattern,
+	        heat_time, heat_pv, heat_cp,
+	        chim_time, chim_pv, chim_cp,
+	        diff_time, diff_pv, diff_cp,
+	        gang_time, gang_pv, gang_cp,
+	        que_time, drain_time, queDrain_pv, queDrain_cp,
+	        heatMethod_1, heatMethod_2, heatMethod_3, heatMethod_4, heatMethod_5,
+	        cool_time, tfHeat_time, n2_time, cycle_time, cool2_time, tf_pv
+	    )
+	    SELECT
+	        CONCAT('W', LPAD(COALESCE(MAX(CAST(SUBSTRING(wstd_code, 2) AS UNSIGNED)), 0) + 1, 4, '0')),
+	        #{fac_code},
+	        #{fac_name},
+	        #{pattern},
+	        #{heat_time}, #{heat_pv}, #{heat_cp},
+	        #{chim_time}, #{chim_pv}, #{chim_cp},
+	        #{diff_time}, #{diff_pv}, #{diff_cp},
+	        #{gang_time}, #{gang_pv}, #{gang_cp},
+	        #{que_time}, #{drain_time}, #{queDrain_pv}, #{queDrain_cp},
+	        #{heatMethod_1}, #{heatMethod_2}, #{heatMethod_3}, #{heatMethod_4}, #{heatMethod_5},
+	        #{cool_time}, #{tfHeat_time}, #{n2_time}, #{cycle_time}, #{cool2_time}, #{tf_pv}
+	    FROM tb_workstd
+	</insert>
+
+
+
+
+	<!-- 작업표준 수정 -->
+	<update id="standardUpdateSave" parameterType="standard">
+	    UPDATE tb_workstd
+	    SET
+	        fac_code = #{fac_code},
+	        fac_name = #{fac_name},
+	        pattern = #{pattern},
+	        heat_time = #{heat_time},
+	        heat_pv = #{heat_pv},
+	        heat_cp = #{heat_cp},
+	        chim_time = #{chim_time},
+	        chim_pv = #{chim_pv},
+	        chim_cp = #{chim_cp},
+	        diff_time = #{diff_time},
+	        diff_pv = #{diff_pv},
+	        diff_cp = #{diff_cp},
+	        gang_time = #{gang_time},
+	        gang_pv = #{gang_pv},
+	        gang_cp = #{gang_cp},
+	        que_time = #{que_time},
+	        drain_time = #{drain_time},
+	        queDrain_pv = #{queDrain_pv},
+	        queDrain_cp = #{queDrain_cp},
+	        heatMethod_1 = #{heatMethod_1},
+	        heatMethod_2 = #{heatMethod_2},
+	        heatMethod_3 = #{heatMethod_3},
+	        heatMethod_4 = #{heatMethod_4},
+	        heatMethod_5 = #{heatMethod_5},
+	        cool_time = #{cool_time},
+	        tfHeat_time = #{tfHeat_time},
+	        n2_time = #{n2_time},
+	        cycle_time = #{cycle_time},
+	        cool2_time = #{cool2_time},
+	        tf_pv = #{tf_pv}
+	    WHERE wstd_code = #{wstd_code}
+	</update>
+
+
+
+	<select id="standardDetail" parameterType="standard" resultType="standard">
+	    SELECT 
+	        w.*,
+	        f.fac_no,
+	        f.fac_gyu,
+	        f.fac_hyun,
+	        f.fac_yong,
+	        f.fac_lot,
+	        f.fac_test,
+	        f.fac_bigo,
+	        f.fac_cau,
+	        f.fac_make
+	    FROM tb_workstd w
+	    LEFT JOIN tb_fac f ON w.fac_code = f.fac_code
+	    WHERE w.wstd_code = #{wstd_code}
+	</select>
+
+
+    <delete id="standardDelete" parameterType="String">
+	    DELETE FROM tb_workstd
+	    WHERE wstd_code = #{wstd_code}
+	</delete>
+
+
+
+
+
+
+
+
+
+    
+</mapper>

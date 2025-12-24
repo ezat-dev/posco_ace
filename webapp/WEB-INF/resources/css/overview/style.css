@@ -1,3 +1,482 @@
+/*-----------------------------------화살표 애니메이션---------------------------------------------*/
+
+
+/*-----------------------------------저진공 밸브---------------------------------------------*/
+/* ========== 가로========== */
+.lamp-arrow-lowvacuum {
+    position: absolute;
+    width: 60px;
+    height: 40px;
+    left: 503px;
+    top: 210px;
+}
+
+.lamp-arrow-lowvacuum::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #2980b9, #3498db);
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.lamp-arrow-lowvacuum::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-right: 15px solid #2980b9;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.lamp-arrow-lowvacuum .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+    animation: moveDots 2s linear infinite;
+}
+
+.lamp-arrow-lowvacuum .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-lowvacuum .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-lowvacuum .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-lowvacuum .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-lowvacuum .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDots {
+    0% { 
+        right: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        right: 100%;
+        opacity: 0; 
+    }
+}
+
+
+
+/* ========== 세로 방향 ========== */
+.lamp-arrow-lowvacuum.vertical {
+    width: 40px;
+    height: 50px;
+}
+
+.lamp-arrow-lowvacuum.vertical::before {
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #3498db, #2980b9);
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.lamp-arrow-lowvacuum.vertical::after {
+    left: 50%;
+    top: auto;
+    bottom: -10px;
+    transform: translateX(-50%);
+    border-right: 0;
+    border-top: 15px solid #2980b9;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 0;
+}
+
+.lamp-arrow-lowvacuum.vertical .dot {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    animation: moveDotsVertical 2s linear infinite;
+}
+
+/* 세로 점 시간차 */
+.lamp-arrow-lowvacuum.vertical .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-lowvacuum.vertical .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-lowvacuum.vertical .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-lowvacuum.vertical .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-lowvacuum.vertical .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDotsVertical {
+    0% { 
+        top: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        top: 100%;
+        opacity: 0; 
+    }
+}
+
+
+/*---------------------------------------------------------------------------------------------*/
+
+/*-----------------------------------포라인 벨브---------------------------------------------*/
+/* ========== 가로========== */
+.lamp-arrow-pore {
+    position: absolute;
+    width: 45px;
+    height: 40px;
+    left: 513px;
+    top: 372px;
+}
+
+.lamp-arrow-pore::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #2980b9, #3498db);
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.lamp-arrow-pore::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-right: 15px solid #2980b9;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.lamp-arrow-pore .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+    animation: moveDots 2s linear infinite;
+}
+
+.lamp-arrow-pore .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-pore .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-pore .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-pore .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-pore .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDots {
+    0% { 
+        right: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        right: 100%;
+        opacity: 0; 
+    }
+}
+
+
+/* ========== 세로 방향 ========== */
+.lamp-arrow-pore.vertical {
+    width: 40px;
+    height: 45px;
+}
+
+.lamp-arrow-pore.vertical::before {
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #3498db, #2980b9);
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.lamp-arrow-pore.vertical::after {
+    left: 50%;
+    top: auto;
+    bottom: -10px;
+    transform: translateX(-50%);
+    border-right: 0;
+    border-top: 15px solid #2980b9;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 0;
+}
+
+.lamp-arrow-pore.vertical .dot {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    animation: moveDotsVertical 2s linear infinite;
+}
+
+/* 세로 점 시간차 */
+.lamp-arrow-pore.vertical .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-pore.vertical .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-pore.vertical .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-pore.vertical .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-pore.vertical .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDotsVertical {
+    0% { 
+        top: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        top: 100%;
+        opacity: 0; 
+    }
+}
+
+
+
+
+/*                냉각팬                            */
+
+
+
+/* ========== 가로========== */
+.lamp-arrow-gas {
+    position: absolute;
+    width: 45px;
+    height: 40px;
+}
+
+.lamp-arrow-gas::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #2980b9, #3498db);
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.lamp-arrow-gas::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-right: 15px solid #2980b9;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.lamp-arrow-gas .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+    animation: moveDots 2s linear infinite;
+}
+
+.lamp-arrow-gas .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-gas .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-gas .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-gas .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-gas .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDots {
+    0% { 
+        right: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        right: 100%;
+        opacity: 0; 
+    }
+}
+
+
+/*   세로 방향   */
+.lamp-arrow-gas.vertical {
+    width: 40px;
+    height: 50px;
+}
+
+.lamp-arrow-gas.vertical::before {
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #3498db, #2980b9);
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.lamp-arrow-gas.vertical::after {
+    left: 50%;
+    top: auto;
+    bottom: -10px;
+    transform: translateX(-50%);
+    border-right: 0;
+    border-top: 15px solid #2980b9;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 0;
+}
+
+.lamp-arrow-gas.vertical .dot {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    animation: moveDotsVertical 2s linear infinite;
+}
+
+/* 세로 점 시간차 */
+.lamp-arrow-gas.vertical .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-gas.vertical .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-gas.vertical .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-gas.vertical .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-gas.vertical .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDotsVertical {
+    0% { 
+        top: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        top: 100%;
+        opacity: 0; 
+    }
+}
+
+
+
+/* ========== 오른쪽 가로========== */
+.lamp-arrow-gas.right {
+    position: absolute;
+    width: 45px;
+    height: 40px;
+}
+
+.lamp-arrow-gas.right::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #2980b9, #3498db);
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.lamp-arrow-gas.right::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-right: 15px solid #2980b9;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.lamp-arrow-gas.right .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+    animation: moveDots 2s linear infinite;
+}
+
+.lamp-arrow-gas.right .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-gas.right .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-gas.right .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-gas.right .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-gas.right .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDots {
+    0% { 
+        right: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        right: 100%;
+        opacity: 0; 
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .text20{
 	width: 70px;
   height: 20px;

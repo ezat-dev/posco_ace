@@ -75,6 +75,8 @@ public class ActionMap {
 	        result = "lamp"; 
 	    } else if(tagName.contains("lamp")) {
 	        result = "lamp"; 
+	    } else if(tagName.contains("lamp-arrow")){
+	    	 result = "lamp"; 
 	    }
 	    else if(tagName.contains("lamp-bit1")) {
 	        result = "lamp"; 

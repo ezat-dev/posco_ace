@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.posco.dao.UserDao;
-import com.posco.domain.Facility;
 import com.posco.domain.Permission;
 import com.posco.domain.UserLog;
 import com.posco.domain.UserMenu;
