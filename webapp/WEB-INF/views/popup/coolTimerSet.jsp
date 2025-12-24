@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>냉각타이머</title>
+<title>냉각완료온도</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <%@include file="../include/pluginpage.jsp" %> 
@@ -60,7 +60,7 @@
 <body>
 <div class="container">
 
-    <div class="header">냉각타이머 온도설정</div>
+    <div class="header">냉각완료온도 설정</div>
 
     <div class="box-wrap">
         <div class="row heat-inline">

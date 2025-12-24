@@ -13,6 +13,8 @@
 <%@include file="../include/pluginpage.jsp" %>     
     
     <style>
+    
+    
     	 body {overflow:hidden}
 			/* 📑 탭 스타일 */
 	
@@ -20,7 +22,7 @@
 .set-vacuum,.set-heat,.set-cool-switch-1,.set-cool-switch-2,.set-cool-switch-3,.set-cool-switch-4
 ,.analog-vacuum-pv-1,.analog-hivacuum-pv-1,.analog-heat-pv-1,.analog-vacuum-pv-2,.analog-hivacuum-pv-2
 ,.analog-heat-pv-2,.analog-timer-sv,.analog-timer-pv,.box12,.box10,.box13,.box17,.ok-auto,.box20,.set-lowVacuum,.box22,
-.analog-lowvacuum-pv-1,.analog-lowvacuum-pv-2{
+.analog-lowvacuum-pv-1,.analog-lowvacuum-pv-2,.analog-pg{
 	 display: flex;
     justify-content: center;
     align-items: center;
@@ -85,7 +87,8 @@
 .box22:hover,
 .auto-run-off-box:hover,.auto-run-on-box:hover,
 .bell-alarm-reset:hover,
- .bell-alarm-stop:hover{
+ .bell-alarm-stop:hover,
+ .bell-alarm-test:hover{
 	filter: brightness(1.2);
 	border: 1px solid red;
 }
@@ -105,6 +108,7 @@
  .auto-run-off-box:active,.auto-run-on-box:active,
  .bell-alarm-reset:active,
  .bell-alarm-stop:active,
+ .bell-alarm-test:active,
  .vantil-pen:active {
     filter: brightness(0.8);   /* 어둡게 */
     transform: scale(0.95);    /* 살짝 줄어듦 */
@@ -119,7 +123,7 @@ h1{
 
 	
 .pen-rotate {
-    animation: rotate 6s linear infinite;
+    animation: rotate 2s linear infinite;
 }
 
 @keyframes rotate {
@@ -138,14 +142,13 @@ h1{
 	
 	
 .area-alarm {
-    width: 580px;
-    height: 330px;
+    width: 379px;
+    height: 87px;
     position: absolute;
-    left: 1090px;
-    top: 370px;
+    left: 1299px;
+    top: 749px;
 
     background: #ffffff;
-    border-radius: 10px;
     border: 1px solid #d0d3d8;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
 
@@ -242,7 +245,7 @@ h1{
 /* 안전한 별도 네임스페이스 */
 .st-table-wrap {
     position: absolute;
-    left: 40px;
+    left: 30px;
     top: 10px;
 }
 
@@ -258,94 +261,53 @@ h1{
     font-size: 13px;
     font-weight: bold;
     color: #0b63ce;
+    height: 25px;
 }
 
 .st-table td {
     border: 1px solid #d0d3d8;
-    height: 30px;
+    height: 35px;
     text-align: center;
     font-size: 15px;
     font-weight: bold;
     color: #333;
+    height: 28px;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-/* 오버뷰 전용 트렌드 스타일 (사이즈 축소) */
-.ov-trend-wrap {
-  position: absolute;
-  left: 1120px; /* 필요 시 오버뷰 위치에 맞게 조정 */
-  top: 410px;
-  width: 550px; /* 기존 요청 크기 */
-  height: 300px;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #e3e7ee;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  padding: 8px;
-  box-sizing: border-box;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
+.seg-table-wrap {
+    position: absolute;
+    left: 30px;
+    top: 73px;
 }
 
-.ov-trend-header {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  justify-content:space-between;
-  margin-bottom:6px;
+.seg-table {
+    border-collapse: collapse;
+    width: 820px;
 }
 
-.ov-trend-title {
-  font-weight:700;
-  color:#0b63ce;
-  font-size:14px;
+.seg-table th {
+    background: #f3f6fb;
+    border: 1px solid #d0d3d8;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: #0b63ce;
+    height: 25px;
 }
 
-.ov-trend-controls {
-  display:flex;
-  gap:6px;
-  align-items:center;
+.seg-table td {
+    border: 1px solid #d0d3d8;
+    height: 35px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    height: 28px;
 }
 
-.ov-trend-controls input[type="text"]{
-  height:28px;
-  padding:4px 6px;
-  border-radius:4px;
-  border:1px solid #ccc;
-  font-size:13px;
-  width:130px;
-  box-sizing:border-box;
-}
 
-.ov-trend-controls .ov-btn {
-  height:30px;
-  padding:4px 10px;
-  background:#0b63ce;
-  color:#00ff00;
-  border-radius:6px;
-  border: none;
-  cursor: pointer;
-  font-weight:700;
-  font-size:13px;
-}
-
-#ov-trend-container {
-  flex:1;
-  width:100%;
-  min-height:180px;
-  height: calc(100% - 44px);
-}
 	
 	
 	
@@ -389,30 +351,68 @@ h1{
   to   { top: 80px; opacity: 0; }
 }
 
+
+
+
+
+/* 테두리 점멸 효과 */
+.btn.active-on {
+    border: 5px solid #00ff00;
+    animation: blink-border-green 1s infinite;
+}
+
+@keyframes blink-border-green {
+    0%, 100% {
+        border-color: rgba(0, 255, 0, 1);
+    }
+    50% {
+        border-color: rgba(0, 255, 0, 0.2);
+    }
+}
+
+.pg-on {
+    color: #ff0000;
+    
+}
+
     </style>
     
     
     <body>
     
-  <div class="arrow-pipe">
+  <!-- <div class="arrow-pipe">
   <span></span>
   <span></span>
   <span></span>
-</div>
+</div> -->
  <div class="st-table-wrap">
     <table class="st-table">
         <tr>
-            <th>ZONE PV 1</th>
-            <th>ZONE PV 2</th>
-            <th>ZONE PV 3</th>
-            <th>SET POINT</th>
+        	<th>운전 패턴번호</th>
+            <th>진행 세그먼트</th>
+            <th>세그먼트 남은시간(분)</th>
+            <th>1존온도 PV</th>
+            <th>2존온도 PV</th>
+            <th>3존온도 PV</th>
+            <th>온도SP</th>
+            <th>온도TSP</th>
         </tr>
         <tr>
+        	<td class="analog-pattern-status"></td>
+            <td class="analog-seg-status"></td>
+            <td class="analog-seg-time"></td>
             <td class="analog-vac1_pv"></td>
             <td class="analog-vac2_pv"></td>
             <td class="analog-vac3_pv"></td>   
-            <td class="analog-tem_sp"></td>         
-        </tr>
+            <td class="analog-tem_sp"></td>  
+            <td class="analog-tem_sp"></td>       
+        </tr>        
+    </table>
+</div>
+
+  
+   <div class="seg-table-wrap">
+    <table class="seg-table">
         <tr>
             <th>온도분포 1</th>
             <th>온도분포 2</th>
@@ -434,10 +434,31 @@ h1{
             <td class="analog-tem_7"></td>
             <td class="analog-tem_8"></td>
             <td class="analog-tem_9"></td>
-        </tr>        
+        </tr>      
     </table>
 </div>
-
+  
+  
+  
+  
+  
+  <!-- 운전모드 확인 -->
+  <div id="runStatus" style="position:absolute; left:35px; top:150px; font-size:18px; font-weight:bold; color:#003366;"> 운전 모드:</div>
+  <div class="lamp-bit1-auto-run" style="position:absolute; left:120px; top:150px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit2-manual-run" style="position:absolute; left:120px; top:150px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  
+  <!-- 운전상태 확인 -->
+  <div id="onStatus" style="position:absolute; left:35px; top:180px; font-size:18px; font-weight:bold; color:#003366;"> 운전 상태:</div>
+  <div class="lamp-bit3-wait-ok" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit4-wait-no" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit5-vacuum" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit6-heat" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit7-cool" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit8-end" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bit9-done" style="position:absolute; left:120px; top:180px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  
+  
+  
   
   <div class="line-1"></div>
   <div class="line-2"></div>
@@ -449,16 +470,18 @@ h1{
   <div class="water-cool-switch-3">냉각수 유량 3</div>
   <div class="water-cool-switch-4">냉각수 유량 4</div>
   
-  <div class="vantil-pen">배기 펜</div>  
-  <div class="vacuum-heat">진공로 히터</div>
-  <div class="vacuum-valve">고진공 밸브</div>
-  <div class="cold-pen">냉각 펜</div>
-  <div class="luffing-pump">저진공 펌프</div>
-  <div class="diff-pump">고진공 펌프</div>
-  <div class="booster-pump">저진공 보조 펌프</div>
-  <div class="fourline-valve">포라인 밸브</div>
-  <div class="luffing-valve">저진공 밸브</div>
-  <div class="gas-valve">질소 가스 밸브</div>
+  
+  <img class="btn vantil" src="/posco/image/overview/vantil1.png" />
+  <div class="btn vantil-pen" data-tag="vantil-pen">배기 펜</div>  
+  <div class="btn vacuum-heat" data-tag="vacuum-heat">진공로 히터</div>
+  <div class="btn vacuum-valve" data-tag="vacuum-valve">고진공 밸브</div>
+  <div class="btn cold-pen" data-tag="cold-pen">냉각 펜</div>
+  <div class="btn luffing-pump" data-tag="luffing-pump">저진공 펌프</div>
+  <div class="diff-pump" data-tag="diff-pump">고진공 펌프</div>
+  <div class="btn booster-pump" data-tag="booster-pump">저진공 보조 펌프</div>
+  <div class="btn fourline-valve" data-tag="fourline-valve">포라인 밸브</div>
+  <div class="btn luffing-valve" data-tag="luffing-valve">저진공 밸브</div>
+  <div class="btn gas-valve" data-tag="gas-valve">질소 가스 밸브</div>
   
   <img class="mainIMG" src="/posco/image/overview/poscoMain.png" />
   
@@ -526,12 +549,13 @@ h1{
   <div class="green-luffing-valve"></div>
   <!-- <div class="lamp-text-vacuum-valve-off">닫힘</div> -->
   <div class="lamp-text-vacuum-valve-on">닫힘</div>
+  <div class="green-vacuum-valve"></div>
   <!-- <div class="lamp-text-fourline-valve-off">닫힘</div> -->
   <div class="lamp-text-fourline-valve-on">닫힘</div>
   <div class="green-fourline-valve"></div>
   <!-- <div class="lamp-text-gas-valve-off">닫힘</div> -->
   <div class="lamp-text-gas-valve-on">닫힘</div>
- 
+ 	
   <div class="green-gas-valve"></div>
   <!-- <div class="ellipse-1"></div> -->
   <img class="pen-4" src="/posco/image/overview/pen-40.png" />
@@ -541,6 +565,8 @@ h1{
   <img class="pen-2" src="/posco/image/overview/pen-20.png" />
   <div class="ellipse-4"></div>
   <img class="pen-1" src="/posco/image/overview/pen-10.png" />
+  <div class="ellipse-5"></div>
+  <img class="pen-5" src="/posco/image/overview/pen-10.png" />
   <div class="box"></div>
   <div class="box2"></div>
   <div class="box3"></div>
@@ -552,12 +578,13 @@ h1{
   <div class="time-zone-2"></div>
   <div class="bell-box"></div>
   <div class="bell-alarm-stop">
-  <img class="icon-stop" src="/posco/image/overview/alarm_stop.png" /></div>
+  <img class="icon-stop" src="/posco/image/overview/alarm_stop.png" /><div class="alarm-stop-text">알람정지</div></div>
   <div class="bell-alarm-reset">
-  <img class="icon-reset" src="/posco/image/overview/alarm_reset.png" /></div>
-  <div class="bell-recipe"></div>
-  <!-- <div class="time-zone-1"></div> -->
+  <img class="icon-reset" src="/posco/image/overview/alarm_reset.png" /><div class="alarm-stop-text">알람리셋</div></div>
+  <div class="bell-alarm-test">
+  <img class="icon-test" src="/posco/image/overview/alarm_test.png" /><div class="alarm-stop-text">알람테스트</div></div>
   <div class="logo-zone"></div>
+  
   <div class="box8"></div>
   <div class="box9"></div>
   <div class="box10"></div>
@@ -577,6 +604,7 @@ h1{
   
   <div class="box22">저진공 SP</div>
   <div class="box23"></div>
+  <!-- <div class="box24"></div> -->
   
   
   <!-- <div class="bx"></div> -->
@@ -593,8 +621,10 @@ h1{
   <div class="analog-hivacuum-pv-2"></div>
   <div class="analog-heat-pv-2"></div>
   <div class="analog-timer-sv"></div>
+  <div class="analog-pg" data-tag="analog-pg"></div>
+  <div class="text-pg">kPa</div>
   <!-- <div class="analog-timer-pv"></div> -->
-  <div class="ok-auto"></div>
+  <!-- <div class="ok-auto"></div> -->
   <div class="analog-lowvacuum-pv-1"></div>
   <div class="analog-lowvacuum-pv-2"></div>
   
@@ -604,16 +634,16 @@ h1{
   <div class="text4">냉각수 유량스위치-4</div> -->
   <div class="text5">Torr</div>
   <div class="text6">Torr</div>
-<!--   <div class="text7">Torr</div> -->
+  <div class="text7">Torr</div>
   <div class="text19">Torr</div>
   <div class="text8">고진공 도달</div>
   <div class="text9">히팅 도달</div>
-  <div class="text10">로내 압력</div>
+  <div class="text10">양압계</div>
   <div class="text11">진공도</div>
   <!-- <div class="text12">고진공-SET</div>
   <div class="text13">히팅-SET</div> -->
-  <div class="text14">냉각타이머</div>
-  <div class="text16">도(℃)</div>
+  <div class="text14">냉각완료온도</div>
+  <div class="text16">℃</div>
   <!-- <div class="text17">분</div>
   <div class="text18">현재치</div> -->
   <div class="div">E</div>
@@ -621,254 +651,37 @@ h1{
   <div class="div3">E</div>
   <div class="div4">E</div>
 
-	<!-- 냉각수 유량 스위치 -->
-	
-	
-  <!-- <div class="text20">Water in Electrode 3</div>
-  <div class="text21">Water in Electrode 2</div>
-  <div class="text22">Water in Diffusion Pump</div>
-  <div class="text23">Water in Electrode 1</div> -->	
-  
-		
-		
-		
-		
-		
-<!--   
-   <div class="area-alarm">
-    <div class="alarm-title">알람 내역</div>
+
+
+
+
+
+	<!-- 알람  영역 -->
+	<div class="area-alarm">
+    <!-- <div class="alarm-title">알람 내역</div> -->
 
     <div class="alarm-list-wrapper">
         <table id="overviewAlarmTable">
-            <thead>
+            <!-- <thead>
                 <tr>
                     <th>No</th>
                     <th>내용</th>
                     <th>발생</th>
                     <th>해제</th>
                 </tr>
-            </thead>
+            </thead> -->
             <tbody></tbody>
         </table>
     </div>
 </div>
--->
-
-<!-- <div class="ov-trend-wrap" id="ovTrendArea">
-  <div class="ov-trend-header">
-    <div class="ov-trend-title">온도 트렌드</div>
-    <div class="ov-trend-controls">
-      <input type="text" id="ov-startDate" class="ov-datetime" autocomplete="off" />
-      <span style="font-weight:700; font-size:14px; color:#333;">~</span>
-      <input type="text" id="ov-endDate" class="ov-datetime" autocomplete="off" />
-      <button class="ov-btn" id="ov-trend-refresh">조회</button>
-    </div>
-  </div>
-
-
-  <div id="ov-trend-container"></div>
-</div>  -->
+	
+	
+  
 
 
 	    
 	    
 <script>
-
-/////////////////////////////////////////////////////////////////////////////////////
-/* (function(){
-	  // 안전을 위해 전역 오염 최소화: ov-prefixed 이름 사용
-	  function ov_paddingZero(n){ return n < 10 ? "0"+n : n; }
-
-	  function ov_trendNow(){
-	    const d = new Date();
-	    return d.getFullYear()
-	      + "-" + ov_paddingZero(d.getMonth()+1)
-	      + "-" + ov_paddingZero(d.getDate())
-	      + " " + ov_paddingZero(d.getHours())
-	      + ":" + ov_paddingZero(d.getMinutes());
-	  }
-	  function ov_trendYesterday(){
-	    const d = new Date();
-	    d.setDate(d.getDate() - 1);
-	    return d.getFullYear()
-	      + "-" + ov_paddingZero(d.getMonth()+1)
-	      + "-" + ov_paddingZero(d.getDate())
-	      + " " + ov_paddingZero(d.getHours())
-	      + ":" + ov_paddingZero(d.getMinutes());
-	  }
-
-	  // Highcharts 변수 (local)
-	  let ov_chart;
-	  let ov_categories, ov_vac1, ov_vac2, ov_vac3, ov_protec, ov_temps;
-
-	  function ov_fetchData() {
-	    const s = document.getElementById('ov-startDate').value;
-	    const e = document.getElementById('ov-endDate').value;
-
-	    $.ajax({
-	      type: "POST",
-	      url: "/posco/monitoring/trend/list",
-	      data: {
-	        startDate: s,
-	        endDate: e
-	      },
-	      success: function(result){
-	        if(!result || result.length === 0){
-	          // 데이터 없을 때 차트 클리어
-	          if(ov_chart && ov_chart.series) {
-	            ov_chart.update({ series: [] }, true, false);
-	          }
-	          return;
-	        }
-
-	        // 데이터 매핑
-	        ov_categories = result.map(r => new Date(r.tdatetime).getTime());
-	        ov_vac1 = result.map(r => Number(r.vac1_pv));
-	        ov_vac2 = result.map(r => Number(r.vac2_pv));
-	        ov_vac3 = result.map(r => Number(r.vac3_pv));
-	        ov_protec = result.map(r => Number(r.protec_pv));
-	        const tem_sp = result.map(r => Number(r.tem_sp));
-
-	        // tem_1..12
-	        const tems = [];
-	        for(let i=1;i<=12;i++){
-	          tems.push(result.map(r => Number(r["tem_"+i] || 0)));
-	        }
-
-	        // 차트 생성/업데이트
-	        if(!ov_chart){
-	          ov_createChart(ov_categories, ov_vac1, ov_vac2, ov_vac3, ov_protec, tem_sp, tems);
-	        } else {
-	          ov_chart.update({
-	            xAxis: { categories: ov_categories },
-	            series: [
-	              { name: '1존온도 PV', data: ov_vac1 },
-	              { name: '2존온도 PV', data: ov_vac2 },
-	              { name: '3존온도 PV', data: ov_vac3 },
-	              { name: '프로텍터온도 PV', data: ov_protec },
-	              { name: '온도 SP', data: tem_sp },
-	              // tem1..tem12
-	              { name: '온도분포1', data: tems[0] },
-	              { name: '온도분포2', data: tems[1] },
-	              { name: '온도분포3', data: tems[2] },
-	              { name: '온도분포4', data: tems[3] },
-	              { name: '온도분포5', data: tems[4] },
-	              { name: '온도분포6', data: tems[5] },
-	              { name: '온도분포7', data: tems[6] },
-	              { name: '온도분포8', data: tems[7] },
-	              { name: '온도분포9', data: tems[8] },
-	              { name: '온도분포10', data: tems[9] },
-	              { name: '온도분포11', data: tems[10] },
-	              { name: '온도분포12', data: tems[11] }
-	            ]
-	          }, true, false);
-	        }
-	      },
-	      error: function(){
-	        console.error("ov_trend: 데이터 조회 실패");
-	      }
-	    });
-	  }
-
-	  function ov_createChart(categories, vac1, vac2, vac3, protec, tem_sp, tems){
-	    // 차트 높이/너비는 컨테이너에 맞춤
-	    ov_chart = Highcharts.chart('ov-trend-container', {
-	      chart: { type: 'line', zoomType: 'x', height: null },
-	      title: { text: '' },
-	      xAxis: {
-	    	  type: 'datetime',
-	    	  categories: categories,
-	    	  tickPositions: (function () {
-	    	    const total = categories.length;
-	    	    if (total <= 1) return categories;  // 데이터 한 개면 그냥 그대로
-	    	    
-	    	    const ticks = [];
-	    	    const count = 5;  // 라벨 5개 고정
-
-	    	    for (let i = 0; i < count; i++) {
-	    	      const index = Math.floor((total - 1) * (i / (count - 1)));
-	    	      ticks.push(categories[index]);
-	    	    }
-	    	    return ticks;
-	    	  })(),
-	    	  labels: {
-	    	    formatter: function () {
-	    	      const d = new Date(this.value);
-	    	      const mm = (d.getMonth() + 1).toString().padStart(2, "0");
-	    	      const dd = d.getDate().toString().padStart(2, "0");
-	    	      const hh = d.getHours().toString().padStart(2, "0");
-	    	      const mi = d.getMinutes().toString().padStart(2, "0");
-	    	      return mm + "-" + dd + "\n" + hh + ":" + mi;
-	    	    }
-	    	  }
-	    	}
-,
-	      yAxis: {
-	        title: { text: '온도' },
-	        min: 0
-	      },
-	      tooltip: { shared: true, crosshairs: true, valueDecimals: 1 },
-	      legend: { enabled: false }, // 작은 박스라 범례 숨김
-	      series: [
-	        { name: '1존온도 PV', data: vac1 },
-	        { name: '2존온도 PV', data: vac2 },
-	        { name: '3존온도 PV', data: vac3 },
-	        { name: '프로텍터온도 PV', data: protec },
-	        { name: '온도 SP', data: tem_sp },
-	        // tem1..tem12
-	        { name: '온도분포1', data: tems[0] },
-	        { name: '온도분포2', data: tems[1] },
-	        { name: '온도분포3', data: tems[2] },
-	        { name: '온도분포4', data: tems[3] },
-	        { name: '온도분포5', data: tems[4] },
-	        { name: '온도분포6', data: tems[5] },
-	        { name: '온도분포7', data: tems[6] },
-	        { name: '온도분포8', data: tems[7] },
-	        { name: '온도분포9', data: tems[8] },
-	        { name: '온도분포10', data: tems[9] },
-	        { name: '온도분포11', data: tems[10] },
-	        { name: '온도분포12', data: tems[11] }
-	      ],
-	      credits: { enabled: false }
-	    });
-	  }
-
-	  // 날짜피커 초기화 (간단한 텍스트 셋팅 — 기존 프로젝트에 datepicker 플러그인이 있으면 그걸로 바꿔도 됩니다)
-	  function ov_initDates(){
-	    document.getElementById('ov-startDate').value = ov_trendYesterday();
-	    document.getElementById('ov-endDate').value = ov_trendNow();
-	  }
-
-	  // 바인딩
-	  function ov_bind(){
-	    document.getElementById('ov-trend-refresh').addEventListener('click', function(){
-	      ov_fetchData();
-	    });
-	    // 엔터로도 검색
-	    document.getElementById('ov-endDate').addEventListener('keydown', function(e){
-	      if(e.key === 'Enter') ov_fetchData();
-	    });
-	  }
-
-	  // init
-	  function ov_init(){
-	    ov_initDates();
-	    ov_bind();
-	    ov_fetchData();
-	  }
-
-	  // DOM ready (오버뷰에 이 스크립트가 삽입될 때 즉시 실행)
-	  if(document.readyState === 'loading'){
-	    document.addEventListener('DOMContentLoaded', ov_init);
-	  } else {
-	    ov_init();
-	  }
-
-	})(); */
-//////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
 $(document).ready(function () {
@@ -1094,7 +907,8 @@ function valueDisplay(key, val) {
     const decimalKeys = [
         "analog-vacuum-pv-1",
         "analog-heat-pv-1",
-        "analog-hivacuum-pv-1"
+        "analog-hivacuum-pv-1",
+        "analog-lowvacuum-pv-1"
     ];
 
     if (decimalKeys.includes(key) && !isNaN(val)) {
@@ -1135,6 +949,69 @@ function lamp(key, value){
                 el.innerText = "열림";
             } else {
                 el.innerText = "닫힘";
+            }
+        }
+        else if(key.includes("lamp-bit1")){
+            if(value){
+                el.innerText = "자동운전 모드";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit2")){
+            if(value){
+                el.innerText = "수동운전 모드";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit3")){
+            if(value){
+                el.innerText = "운전대기-자동운전가능";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit4")){
+            if(value){
+                el.innerText = "운전대기-자동운전불가";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit5")){
+            if(value){
+                el.innerText = "진공 중";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit6")){
+            if(value){
+                el.innerText = "히팅 중";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit7")){
+            if(value){
+                el.innerText = "냉각 중";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit8")){
+            if(value){
+                el.innerText = "종료 중";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bit9")){
+            if(value){
+                el.innerText = "운전완료";
+            } else {
+                el.innerText = "";
             }
         }
     });
@@ -1267,7 +1144,7 @@ function loadOverviewAlarm() {
                 tr.append("<td>" + (i + 1) + "</td>");
                 tr.append("<td style='text-align:left;'>" + (r.a_desc || "") + "</td>");
                 tr.append("<td>" + shortTime(r.a_stime) + "</td>");
-                tr.append("<td class='active-alarm'>진행중</td>");
+                /* tr.append("<td class='active-alarm'>진행중</td>"); */
 
                 tr.addClass("active-alarm");
 
@@ -1286,46 +1163,275 @@ loadOverviewAlarm();
 //OVERVIEW STOP/RESET (즉시 1 → 2초 후 0)
 //=======================================
 
-document.querySelectorAll('.icon-stop, .icon-reset').forEach(icon => {
+document
+    .querySelectorAll('.icon-stop, .icon-reset, .icon-test')
+    .forEach(icon => {
 
- icon.addEventListener('click', function () {
-     
-     const tagName = this.classList.contains('icon-stop')
-         ? "icon-stop"
-         : "icon-reset";
+        icon.addEventListener('click', function () {
 
-     console.log("### OVERVIEW 버튼 클릭됨:", tagName);
+            let tagName = "";
+            let alertMsg = "";
 
-     $.ajax({
-         url: "/posco/monitoring/writeOverview",
-         type: "post",
-         data: { tagName: tagName, value: 1 },
-         success: function (res) {
-             console.log("### OVERVIEW write 성공:", res);
-         },
-         error: function (err) {
-             console.error("### OVERVIEW write 실패:", err);
+            if (this.classList.contains('icon-stop')) {
+                tagName = "icon-stop";
+                alertMsg = "알람 정지 완료";
+            } else if (this.classList.contains('icon-reset')) {
+                tagName = "icon-reset";
+                alertMsg = "알람 리셋 완료";
+            } else if (this.classList.contains('icon-test')) {
+                tagName = "icon-test";
+                alertMsg = "알람 테스트 완료";
+            }
+
+            if (!tagName) return;
+
+            console.log("### OVERVIEW 버튼 클릭됨:", tagName);
+
+            $.ajax({
+                url: "/posco/monitoring/writeOverview",
+                type: "post",
+                data: {
+                    tagName: tagName,
+                    value: 1
+                },
+                success: function (res) {
+                    console.log("### OVERVIEW write 성공:", res);
+                    alert(alertMsg);   // 🔥 여기
+                },
+                error: function (err) {
+                    console.error("### OVERVIEW write 실패:", err);
+                    alert("PLC 통신 실패");
+                }
+            });
+        });
+    });
+
+
+
+
+
+//==============================
+//PLC Lamp 상태 폴링
+//==============================
+function pollLampStatus() {
+
+//ON Lamp
+//부스터펌프 오버뷰 램프 on
+$.ajax({
+ url: "/posco/monitoring/read/overviewLamp",
+ type: "get",
+ data: { tagName: "booster-pump-lamp-on" },
+ success: function(res) {
+     if (res.status === "OK") {
+         const isOn = res.value === true;
+
+         const onBtn = document.querySelector("[data-tag='booster-pump']");
+         if (isOn) {
+             onBtn.classList.add("active-on");
+         } else {
+             onBtn.classList.remove("active-on");
          }
-     });
- });
+     }
+ }
 });
 
+//러핑펌프 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "luffing-pump-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
 
+	         const onBtn = document.querySelector("[data-tag='luffing-pump']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
 
-// ==========================
-// 현재 시간 표시 (year-month-day hour:minute:second)
-// ==========================
-function clock(){
-            let timetext = document.querySelector('h1'); /* h1 태그 갖고오기 */
-            let today = new Date(); /* 날짜와 시간 */
-            let H = today.getHours();
-            let M = today.getMinutes();
-            let S = today.getSeconds();
+//확산펌프 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "diff-pump-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
 
-            timetext.innerHTML = H + ":" + M + ":" + S; /* html에 출력 */
-        }
-        clock();
-        setInterval(clock,1000); /* 1초마다 clock함수 실행 */
+	         const onBtn = document.querySelector("[data-tag='diff-pump']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//진공메인 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "vacuum-heat-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='vacuum-heat']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//냉각펜 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "cool-pen-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='cold-pen']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//배기펜 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "vantil-pen-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='vantil-pen']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//러핑밸브 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "luffing-valve-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='luffing-valve']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//포라인밸브 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "fourline-valve-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='fourline-valve']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//고진공밸브 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "vacuum-valve-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='vacuum-valve']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//가스밸브 오버뷰 램프 on
+$.ajax({
+	 url: "/posco/monitoring/read/overviewLamp",
+	 type: "get",
+	 data: { tagName: "gas-valve-lamp-on" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='gas-valve']");
+	         if (isOn) {
+	             onBtn.classList.add("active-on");
+	         } else {
+	             onBtn.classList.remove("active-on");
+	         }
+	     }
+	 }
+	});
+
+//양압계 글자표시
+$.ajax({
+	 url: "/posco/monitoring/read/pgLamp",
+	 type: "get",
+	 data: { tagName: "lamp-pg" },
+	 success: function(res) {
+	     if (res.status === "OK") {
+	         const isOn = res.value === true;
+
+	         const onBtn = document.querySelector("[data-tag='analog-pg']");
+	         if (isOn) {
+	             onBtn.classList.add("pg-on");
+	         } else {
+	             onBtn.classList.remove("pg-on");
+	         }
+	     }
+	 }
+	});
+
+}
+
+//1초마다 PLC 상태 갱신
+setInterval(pollLampStatus, 1000);
+
+//첫 실행
+pollLampStatus();
 
 </script>
 

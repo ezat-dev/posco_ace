@@ -301,9 +301,6 @@ function fetchData() {
                 tem_7 = result.map(r => Number(r.tem_7));
                 tem_8 = result.map(r => Number(r.tem_8));
                 tem_9 = result.map(r => Number(r.tem_9));
-                tem_10 = result.map(r => Number(r.tem_10));
-                tem_11 = result.map(r => Number(r.tem_11));
-                tem_12 = result.map(r => Number(r.tem_12));
 
                 if(!chart){
                     createTrendChart();
@@ -324,10 +321,7 @@ function fetchData() {
                             { name: '온도분포6', data: tem_6 },
                             { name: '온도분포7', data: tem_7 },
                             { name: '온도분포8', data: tem_8 },
-                            { name: '온도분포9', data: tem_9 },
-                            { name: '온도분포10', data: tem_10 },
-                            { name: '온도분포11', data: tem_11 },
-                            { name: '온도분포12', data: tem_12 }
+                            { name: '온도분포9', data: tem_9 }
                         ]
                     });
                 }
@@ -339,52 +333,105 @@ function fetchData() {
     });
 }
 
-// ---------------------------
-// HighCharts 생성
-// ---------------------------
+
 function createTrendChart(){
     chart = Highcharts.chart('container', {
-        chart: { type: 'line' },
+        chart: { 
+            type: 'line',
+            zoomType: 'x',
+            panning: true,
+            panKey: 'shift',
+            events: {
+                load: function() {
+                    const chart = this;
+                    
+                    //줌기능
+                    this.container.addEventListener('wheel', function(e) {
+                        e.preventDefault();
+                        
+                        const xAxis = chart.xAxis[0];
+                        const extremes = xAxis.getExtremes();
+                        const range = extremes.max - extremes.min;
+                        const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1;
+                        
+                        const newRange = range * zoomFactor;
+                        const center = (extremes.max + extremes.min) / 2;
+                        
+                        xAxis.setExtremes(
+                            center - newRange / 2,
+                            center + newRange / 2,
+                            true,
+                            false
+                        );
+                    }, { passive: false });
+                }
+            }
+        },
         title: { text: '온도 트렌드' },
 
         xAxis: {
             type: 'datetime',
-            categories: categories,
             labels: {
                 formatter: function(){
-                    return Highcharts.dateFormat(this.value);
+                    return Highcharts.dateFormat('%H:%M', this.value);
                 },
-                step: 1,
-            }
+                rotation: -45,
+                align: 'right',
+                step: 1  // 라벨 표시 간격 조절 (1은 모든 틱마다, 2는 하나 건너뛰기)
+            },
+            tickPixelInterval: 200,  // 틱 사이 픽셀 간격 (넓힐수록 적게 표시)
+            minTickInterval: 60 * 60 * 1000  // 최소 1시간 간격 (밀리초 단위)
         },
 
         yAxis: {
-            title: { text: "온도",rotation:360 },
-            labels:{align:"left",x:10},
+            title: { text: "온도 (℃)", rotation: 0, align: 'high', offset: 0, y: -20 },
+            labels: { align: "left", x: 10 },
             min: 0,
             max: 1200
         },
 
-        tooltip: { shared: true, crosshairs: true },
+        plotOptions: {
+            line: {
+                marker: {
+                    enabled: false  // 동그라미 점 제거
+                }
+            },
+            series: {
+                states: {
+                    hover: {
+                        lineWidthPlus: 0  // 호버 시에도 선 두께 유지
+                    }
+                }
+            }
+        },
+
+        tooltip: { 
+            shared: true, 
+            crosshairs: true,
+            xDateFormat: '%Y-%m-%d %H:%M'  // 툴팁도 분까지만
+        },
+
+        legend: {
+            layout: 'horizontal',
+            align: 'center',
+            verticalAlign: 'bottom'
+        },
 
         series: [
-            { name: '1존온도 PV', data: vac1_pv },
-            { name: '2존온도 PV', data: vac2_pv },
-            { name: '3존온도 PV', data: vac3_pv },
-            { name: '프로텍터온도 PV', data: protec_pv },
-            { name: '온도 SP', data: tem_sp },
-            { name: '온도분포1', data: tem_1 },
-            { name: '온도분포2', data: tem_2 },
-            { name: '온도분포3', data: tem_3 },
-            { name: '온도분포4', data: tem_4 },
-            { name: '온도분포5', data: tem_5 },
-            { name: '온도분포6', data: tem_6 },
-            { name: '온도분포7', data: tem_7 },
-            { name: '온도분포8', data: tem_8 },
-            { name: '온도분포9', data: tem_9 },
-            { name: '온도분포10', data: tem_10 },
-            { name: '온도분포11', data: tem_11 },
-            { name: '온도분포12', data: tem_12 }
+            { name: '1존온도 PV', data: vac1_pv.map((val, idx) => [categories[idx], val]) },
+            { name: '2존온도 PV', data: vac2_pv.map((val, idx) => [categories[idx], val]) },
+            { name: '3존온도 PV', data: vac3_pv.map((val, idx) => [categories[idx], val]) },
+            { name: '프로텍터온도 PV', data: protec_pv.map((val, idx) => [categories[idx], val]) },
+            { name: '온도 SP', data: tem_sp.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포1', data: tem_1.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포2', data: tem_2.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포3', data: tem_3.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포4', data: tem_4.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포5', data: tem_5.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포6', data: tem_6.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포7', data: tem_7.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포8', data: tem_8.map((val, idx) => [categories[idx], val]) },
+            { name: '온도분포9', data: tem_9.map((val, idx) => [categories[idx], val]) }
         ]
     });
 }

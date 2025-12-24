@@ -16,9 +16,10 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,7 @@ public class MonitoringController {
 	@Autowired
 	private MonitoringService monitoringService;
 	
+	private final Logger logger = LoggerFactory.getLogger(MonitoringController.class);
 	
 	@RequestMapping(value= "/monitoring/view/string", method = RequestMethod.POST)
 	@ResponseBody
@@ -131,6 +133,75 @@ public class MonitoringController {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	
+	
+	//PLC 오버뷰 램프 비트 읽기
+	@RequestMapping(value = "/monitoring/read/overviewLamp", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> overviewLamp(@RequestParam String tagName) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			String fullNodeId = "ace_posco.COMM." + tagName;
+			UShort namespaceIndex = Unsigned.ushort(2);
+			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+			DataValue dataValue = MainController.client.readValue(0, TimestampsToReturn.Neither, nodeId).get();
+			boolean value = (boolean) dataValue.getValue().getValue();
+
+			result.put("status", "OK");
+			result.put("value", value);
+		} catch (Exception e) {
+			result.put("status", "ERR");
+			result.put("value", false);
+		}
+		return result;
+	}
+	
+	
+	//PLC 오버뷰 양압계 빨간 글씨 표시
+	@RequestMapping(value = "/monitoring/read/pgLamp", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> pgLamp(@RequestParam String tagName) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+			UShort namespaceIndex = Unsigned.ushort(2);
+			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+			DataValue dataValue = MainController.client.readValue(0, TimestampsToReturn.Neither, nodeId).get();
+			boolean value = (boolean) dataValue.getValue().getValue();
+
+			result.put("status", "OK");
+			result.put("value", value);
+		} catch (Exception e) {
+			result.put("status", "ERR");
+			result.put("value", false);
+		}
+		return result;
+	}
+	
+	//온도계 통신 전환 램프 비트 읽기
+	@RequestMapping(value = "/monitoring/read/patternLamp", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> patternLamp(@RequestParam String tagName) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+			UShort namespaceIndex = Unsigned.ushort(2);
+			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+			DataValue dataValue = MainController.client.readValue(0, TimestampsToReturn.Neither, nodeId).get();
+			boolean value = (boolean) dataValue.getValue().getValue();
+
+			result.put("status", "OK");
+			result.put("value", value);
+		} catch (Exception e) {
+			result.put("status", "ERR");
+			result.put("value", false);
+		}
+		return result;
 	}
 	
 	//PLC 팝업 비트 읽기
@@ -309,7 +380,12 @@ public class MonitoringController {
 	    }
 	}
 
-
+	
+	
+	
+	
+	
+	//////////////////////////////////////////패턴//////////////////////////////////////////////////
 
 	// PLC 패턴 아날로그값 READ
 	@RequestMapping(value = "/monitoring/read/patternAnalog", method = RequestMethod.POST)
@@ -409,7 +485,7 @@ public class MonitoringController {
 			System.out.println("Write Status = " + status);
 			if (!status.isGood()) return false;
 
-			// 자동 리셋
+			// 2초
 			if (boolVal) {
 				new Thread(() -> {
 					try {
@@ -433,8 +509,105 @@ public class MonitoringController {
 	}
 	
 	
-	////////////////////////패턴운전적용 전용/////////////////////////
-	//패턴읽기전용
+	//PLC 패턴 아날로그값 WRITE
+	@RequestMapping(value = "/monitoring/write/patternInput", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean patternInput(@RequestParam String tagName, @RequestParam String value) {
+
+		try {
+			UShort namespaceIndex = Unsigned.ushort(2);
+			String fullNodeId = "ace_posco.POPUP." + tagName;
+
+			System.out.println("Popup Write NodeId = ns=2;s=" + fullNodeId);
+
+			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+			Variant writeValue;
+
+			if (tagName.equals("input-pattern-time-1") ||
+					tagName.equals("input-pattern-time-2") ||
+					tagName.equals("input-pattern-time-3") ||
+					tagName.equals("input-pattern-time-4") ||
+					tagName.equals("input-pattern-time-5") ||
+					tagName.equals("input-pattern-time-6") ||
+					tagName.equals("input-pattern-time-7") ||
+					tagName.equals("input-pattern-time-8") ||
+					tagName.equals("input-pattern-time-9") ||
+					tagName.equals("input-pattern-time-10") ||
+					tagName.equals("input-pattern-time-11") ||
+					tagName.equals("input-pattern-time-12") ||
+					tagName.equals("input-pattern-time-13") ||
+					tagName.equals("input-pattern-time-14") ||
+					tagName.equals("input-pattern-time-15") ||
+					tagName.equals("input-pattern-time-16") ||
+					tagName.equals("input-pattern-time-17") ||
+					tagName.equals("input-pattern-time-18") ||
+					tagName.equals("input-pattern-time-19") ||
+					tagName.equals("input-pattern-time-20") ||
+					tagName.equals("input-pattern-temp-1") ||
+					tagName.equals("input-pattern-temp-2") ||
+					tagName.equals("input-pattern-temp-3") ||
+					tagName.equals("input-pattern-temp-4") ||
+					tagName.equals("input-pattern-temp-5") ||
+					tagName.equals("input-pattern-temp-6") ||
+					tagName.equals("input-pattern-temp-7") ||
+					tagName.equals("input-pattern-temp-8") ||
+					tagName.equals("input-pattern-temp-9") ||
+					tagName.equals("input-pattern-temp-10") ||
+					tagName.equals("input-pattern-temp-11") ||
+					tagName.equals("input-pattern-temp-12") ||
+					tagName.equals("input-pattern-temp-13") ||
+					tagName.equals("input-pattern-temp-14") ||
+					tagName.equals("input-pattern-temp-15") ||
+					tagName.equals("input-pattern-temp-16") ||
+					tagName.equals("input-pattern-temp-17") ||
+					tagName.equals("input-pattern-temp-18") ||
+					tagName.equals("input-pattern-temp-19") ||
+					tagName.equals("input-pattern-temp-20")) 
+			{
+				try {
+					short v = Short.parseShort(value);
+					writeValue = new Variant(v);
+
+					logger.info("패천관리-패턴수정 : {}","패턴 데이터 조회 : "+v);
+				} catch(Exception e) {
+					System.out.println("Int16 변환 실패");
+					return false;
+				}
+			}
+
+			//float
+			else {
+				try {
+					float v = Float.parseFloat(value);
+
+
+					v = Math.round(v * 10) / 10.0f;
+
+					writeValue = new Variant(v);
+				} catch(Exception e) {
+					writeValue = new Variant(value);
+				}
+			}
+
+			System.out.println("Popup Write Value = " + writeValue);
+
+			StatusCode status = MainController.client
+					.writeValue(nodeId, new DataValue(writeValue))
+					.get();
+
+			System.out.println("Write Status = " + status);
+
+			return status.isGood();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	//패턴읽기 버튼
 	@RequestMapping(value = "/monitoring/write/patternRead", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean writePatternRead(@RequestParam int patternNo) {
@@ -460,7 +633,8 @@ public class MonitoringController {
 	        return false;
 	    }
 	}
-
+	
+	//패턴 아날로그값 쓰기
 	@RequestMapping(value = "/monitoring/write/patternAnalogOnly", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> writePatternAnalogOnly(
@@ -526,7 +700,7 @@ public class MonitoringController {
 	        return false;
 	    }
 	}
-	///////////////////////////////////////////////////////
+	
 	
 	
 	
@@ -576,6 +750,7 @@ public class MonitoringController {
 	}
 	
 	
+	// 패턴 대기신호(읽기중, 쓰기중, 읽기완료, 쓰기완료)
 	@RequestMapping(value = "/monitoring/read/waitbit", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> waitbit(@RequestParam String tagName) {
@@ -599,100 +774,21 @@ public class MonitoringController {
 
 
 	
-	//PLC 패턴 아날로그값 WRITE
-	@RequestMapping(value = "/monitoring/write/patternInput", method = RequestMethod.POST)
-	@ResponseBody
-	public boolean patternInput(@RequestParam String tagName, @RequestParam String value) {
-
-		try {
-			UShort namespaceIndex = Unsigned.ushort(2);
-			String fullNodeId = "ace_posco.POPUP." + tagName;
-
-			System.out.println("Popup Write NodeId = ns=2;s=" + fullNodeId);
-
-			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
-
-			Variant writeValue;
-
-			if (tagName.equals("input-pattern-time-1") ||
-					tagName.equals("input-pattern-time-2") ||
-					tagName.equals("input-pattern-time-3") ||
-					tagName.equals("input-pattern-time-4") ||
-					tagName.equals("input-pattern-time-5") ||
-					tagName.equals("input-pattern-time-6") ||
-					tagName.equals("input-pattern-time-7") ||
-					tagName.equals("input-pattern-time-8") ||
-					tagName.equals("input-pattern-time-9") ||
-					tagName.equals("input-pattern-time-10") ||
-					tagName.equals("input-pattern-time-11") ||
-					tagName.equals("input-pattern-time-12") ||
-					tagName.equals("input-pattern-time-13") ||
-					tagName.equals("input-pattern-time-14") ||
-					tagName.equals("input-pattern-time-15") ||
-					tagName.equals("input-pattern-time-16") ||
-					tagName.equals("input-pattern-time-17") ||
-					tagName.equals("input-pattern-time-18") ||
-					tagName.equals("input-pattern-time-19") ||
-					tagName.equals("input-pattern-time-20") ||
-					tagName.equals("input-pattern-temp-1") ||
-					tagName.equals("input-pattern-temp-2") ||
-					tagName.equals("input-pattern-temp-3") ||
-					tagName.equals("input-pattern-temp-4") ||
-					tagName.equals("input-pattern-temp-5") ||
-					tagName.equals("input-pattern-temp-6") ||
-					tagName.equals("input-pattern-temp-7") ||
-					tagName.equals("input-pattern-temp-8") ||
-					tagName.equals("input-pattern-temp-9") ||
-					tagName.equals("input-pattern-temp-10") ||
-					tagName.equals("input-pattern-temp-11") ||
-					tagName.equals("input-pattern-temp-12") ||
-					tagName.equals("input-pattern-temp-13") ||
-					tagName.equals("input-pattern-temp-14") ||
-					tagName.equals("input-pattern-temp-15") ||
-					tagName.equals("input-pattern-temp-16") ||
-					tagName.equals("input-pattern-temp-17") ||
-					tagName.equals("input-pattern-temp-18") ||
-					tagName.equals("input-pattern-temp-19") ||
-					tagName.equals("input-pattern-temp-20")) 
-			{
-				try {
-					short v = Short.parseShort(value);
-					writeValue = new Variant(v);
-				} catch(Exception e) {
-					System.out.println("Int16 변환 실패");
-					return false;
-				}
-			}
-
-			//float
-			else {
-				try {
-					float v = Float.parseFloat(value);
-
-					
-					v = Math.round(v * 10) / 10.0f;
-
-					writeValue = new Variant(v);
-				} catch(Exception e) {
-					writeValue = new Variant(value);
-				}
-			}
-
-			System.out.println("Popup Write Value = " + writeValue);
-
-			StatusCode status = MainController.client
-					.writeValue(nodeId, new DataValue(writeValue))
-					.get();
-
-			System.out.println("Write Status = " + status);
-
-			return status.isGood();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+	
+	
+////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// PLC 오버뷰 아날로그 값 바로 쓰기
 	/*
@@ -924,6 +1020,12 @@ public class MonitoringController {
 	@RequestMapping(value = "/popup/patternWrite", method = RequestMethod.GET)
 	public String patternWrite(Users users) {
 		return "/popup/patternWrite.jsp"; 
+	}
+	
+	//패턴스킵
+	@RequestMapping(value = "/popup/patternSkip", method = RequestMethod.GET)
+	public String patternSjip(Users users) {
+		return "/popup/patternSkip.jsp"; 
 	}
 	///////////////////////////////////////////////
 	

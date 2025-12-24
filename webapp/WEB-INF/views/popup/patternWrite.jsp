@@ -187,7 +187,7 @@
 
     
     <div class="btn-area">
-        <button class="btn btn-save">저장</button>
+        <button class="btn btn-save">패턴적용</button>
         <button class="btn btn-close" onclick="window.close()">닫기</button>
     </div>
 
@@ -196,15 +196,13 @@
 <script>
 
 
-// ===============================
-// (1) 오버뷰 아날로그 값 READ
-// ===============================
+//패턴 읽어오기(패턴관리화면 값)
 $(document).ready(function () {
 
-    // ✅ 패턴 번호
+    
     loadAnalogValue("analog-pattern-number", ".analog-pattern-number");
 
-    // 시간
+    
     loadAnalogValue("analog-pattern-time-1", ".input-pattern-time-1");
     loadAnalogValue("analog-pattern-time-2", ".input-pattern-time-2");
     loadAnalogValue("analog-pattern-time-3", ".input-pattern-time-3");
@@ -226,7 +224,7 @@ $(document).ready(function () {
     loadAnalogValue("analog-pattern-time-19", ".input-pattern-time-19");
     loadAnalogValue("analog-pattern-time-20", ".input-pattern-time-20");
 
-    // 온도
+    
     loadAnalogValue("analog-pattern-temp-1", ".input-pattern-temp-1");
     loadAnalogValue("analog-pattern-temp-2", ".input-pattern-temp-2");
     loadAnalogValue("analog-pattern-temp-3", ".input-pattern-temp-3");
@@ -248,14 +246,12 @@ $(document).ready(function () {
     loadAnalogValue("analog-pattern-temp-19", ".input-pattern-temp-19");
     loadAnalogValue("analog-pattern-temp-20", ".input-pattern-temp-20");
 
-    // 저장 버튼
+   
     $(".btn-save").click(savePopupValues);
 });
 
 
-// ===============================
-// (2) 아날로그 READ
-// ===============================
+//워드 읽기
 function loadAnalogValue(tag, selector) {
     $.ajax({
         url: "/posco/monitoring/read/analog",
@@ -270,9 +266,7 @@ function loadAnalogValue(tag, selector) {
 }
 
 
-// ===============================
-// (3) 저장 → POPUP WRITE
-// ===============================
+//패턴 수정
 function savePopupValues() {
 
     const tagValueMap = [
@@ -319,15 +313,13 @@ function savePopupValues() {
         ["input-pattern-temp-20", $(".input-pattern-temp-20").val()]
     ];
 
-    if (!confirm("저장하시겠습니까?")) return;
+    if (!confirm("패턴을 수정 하시겠습니까?")) return;
 
     writeSequential(tagValueMap, 0);
 }
 
 
-// ===============================
-// (4) 순차 WRITE
-// ===============================
+//저장 메서드
 function writeSequential(list, idx) {
 
     if (idx >= list.length) {
@@ -355,9 +347,7 @@ function writeSequential(list, idx) {
 }
 
 
-// ===============================
-// (5) pattern-write BIT
-// ===============================
+//패턴쓰기(버튼) 비트살리기
 function triggerPatternWriteBit() {
 
     $.ajax({
@@ -369,13 +359,13 @@ function triggerPatternWriteBit() {
         },
         success: function () {
 
-            // ⭐ 부모 화면 즉시 갱신
+           
             if (window.opener && !window.opener.closed) {
                 window.opener.overviewListView();
                 window.opener.overviewListViewString();
             }
 
-            alert("저장되었습니다.");
+            alert("패턴이 수정 되었습니다.");
             window.close();
         },
         error: function () {

@@ -60,7 +60,18 @@
     top: 717px;
 	z-index : -1;
 }
-
+.box24{
+	background: #d9d9d9;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    width: 683px;
+    height: 31px;
+    position: absolute;
+    left: 614px;
+    top: 717px;
+	z-index : -1;
+}
 
 .nomal-heat {
   width: 280px;
@@ -73,7 +84,7 @@
   background: #e5e5e5;
   border: 3px solid #999;
 
-  /* 텍스트 중앙 정렬 */
+  /* �ؽ�Ʈ �߾� ���� */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,7 +107,7 @@
   background: #00ff00;
   border: 3px solid #000000;
 
-  /* 텍스트 중앙 정렬 */
+  /* �ؽ�Ʈ �߾� ���� */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,12 +168,17 @@
   width: 191px;
   height: 31px;
   position: absolute;
-  left: 930px;
+  left: 980px;
   top: 16px;
   background: #003366;
   border-style: solid;
   border-color: #c7c7c7;
   border-width: 1px;
+}
+.vantil{
+  position: absolute;
+  left: 900px;
+  top: -10px;
 }
 .booster-pump {
   width: 191px;
@@ -219,6 +235,15 @@
   border-color: #c7c7c7;
   border-width: 1px;
 }
+.green-vacuum-valve {
+  background: #c0c0c0;
+  border-radius: 5px;
+  width: 30px;
+  height: 24px;
+  position: absolute;
+  left: 622px;
+  top: 163px;
+}
 .green-luffing-valve {
   background: #c0c0c0;
   border-radius: 5px;
@@ -258,6 +283,7 @@
   aspect-ratio: 726/395;
   z-index : -1;
 }
+
 .footer {
   background: #33363d;
   width: 1684px;
@@ -926,8 +952,24 @@
   aspect-ratio: 44/43;
 }
 
-
-
+.ellipse-5 {
+  background: #000000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 907px;
+  top: 16px;
+}
+.pen-5 {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  left: 912px;
+  top: 20px;
+  object-fit: cover;
+  aspect-ratio: 44/43;
+}
 .water-cool-switch-1 {
   width: 75px;
     height: 30px;
@@ -1481,6 +1523,16 @@
   left: 702px;
   top: 803px;
 }
+.analog-pg {
+  font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+  width: 69px;
+  height: 19px;
+  position: absolute;
+  left: 158px;
+  top: 813px;
+}
 .analog-timer-pv {
  font-family: "Inter-Bold", sans-serif;
     font-size: 16px;
@@ -1606,6 +1658,18 @@
   width: 31px;
   height: 16px;
 }
+.text-pg {
+ color: #000000;
+    text-align: left;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    position: absolute;
+    left: 210px;
+    top: 814px;
+    width: 31px;
+    height: 16px;
+}
 .text8 {
   color: #000000;
   text-align: center;
@@ -1687,7 +1751,7 @@
   position: absolute;
   left: 666px;
   top: 752px;
-  width: 85px;
+  width: 95px;
   height: 15px;
 }
 .text15 {
@@ -1800,14 +1864,21 @@
   top: 753px;
 }
 .bell-alarm-stop {
-  background: #6a7788;
-  border-radius: 3px;
-  width: 77px;
-  height: 77px;
-  position: absolute;
-  left: 1054px;
-  top: 755px;
+    background: #6a7788;
+    border-radius: 3px;
+    width: 77px;
+    height: 77px;
+    position: absolute;
+    left: 1054px;
+    top: 755px;
+
+    /* 🔥 핵심 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
 .bell-alarm-reset {
   background: #6a7788;
   border-radius: 3px;
@@ -1816,8 +1887,14 @@
   position: absolute;
   left: 1134px;
   top: 755px;
+  
+  /* 🔥 핵심 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
-.bell-recipe {
+.bell-alarm-test {
   background: #6a7788;
   border-radius: 3px;
   width: 77px;
@@ -1825,20 +1902,36 @@
   position: absolute;
   left: 1214px;
   top: 755px;
+  
+  /* 🔥 핵심 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .icon-reset {
-      width: 75px;
-    height: 75px;
+  width: 70px;
+    height: 50px;
+    margin-bottom: 5px;
     
 }
 .icon-stop {
-      width: 72px;
-    height: 72px;
-    margin-top: 4px;
-    margin-left: 2px;
+    width: 70px;
+    height: 50px;
+    margin-bottom: 5px;
 }
-
+.icon-test {
+    width: 70px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+.alarm-stop-text {
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+}
 .back-1 {
   width: 901px;
   height: 555px;

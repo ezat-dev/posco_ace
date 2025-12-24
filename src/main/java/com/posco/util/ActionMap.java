@@ -59,7 +59,7 @@ public class ActionMap {
             return "value";
         }
 	    
-	    if (tagName.contains("icon-stop") || tagName.contains("icon-reset")) {
+	    if (tagName.contains("icon-stop") || tagName.contains("icon-reset") || tagName.contains("icon-test")) {
 	        return "value";   // 또는 고정 동작
 	    }
 
@@ -75,7 +75,35 @@ public class ActionMap {
 	        result = "lamp"; 
 	    } else if(tagName.contains("lamp")) {
 	        result = "lamp"; 
-	    } else if(tagName.contains("pen")) {
+	    }
+	    else if(tagName.contains("lamp-bit1")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit2")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit3")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit4")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit5")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit6")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit7")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit8")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("lamp-bit9")) {
+	        result = "lamp"; 
+	    }
+	    else if(tagName.contains("pen")) {
 	        return "pen";
 	    }else if(tagName.contains("ok")) {
 	        return "ok";

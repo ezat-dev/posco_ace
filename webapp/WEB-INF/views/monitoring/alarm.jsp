@@ -80,9 +80,8 @@ div {
   <div class="alarm-28">온도분포7 TC 단선</div>
   <div class="alarm-29">온도분포8 TC 단선</div>
   <div class="alarm-30">온도분포9 TC 단선</div>
-  <!-- <div class="alarm-31">온도분포10 TC 단선</div>
-  <div class="alarm-32">온도분포11 TC 단선</div>
-  <div class="alarm-33">온도분포12 TC 단선</div> -->
+  <div class="alarm-31">배기팬 TRIP</div>
+  <div class="alarm-32">양압 수치 초과</div>
 
 
 
