@@ -309,7 +309,32 @@ function createChart(series){
             type:"line",
             zoomType:"x",
             panning:true,
-            panKey:"shift"
+            panKey:"shift",
+            events: {
+                load: function() {
+                    const chart = this;
+                    
+                    //줌기능
+                    this.container.addEventListener('wheel', function(e) {
+                        e.preventDefault();
+                        
+                        const xAxis = chart.xAxis[0];
+                        const extremes = xAxis.getExtremes();
+                        const range = extremes.max - extremes.min;
+                        const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1;
+                        
+                        const newRange = range * zoomFactor;
+                        const center = (extremes.max + extremes.min) / 2;
+                        
+                        xAxis.setExtremes(
+                            center - newRange / 2,
+                            center + newRange / 2,
+                            true,
+                            false
+                        );
+                    }, { passive: false });
+                }
+            }
         },
         title:{ text:"온도 트렌드" },
 
@@ -538,6 +563,8 @@ $(function(){
     $("#endDate").val(now());
     loadHistory();
 });
+
+
 </script>
 
 </body>

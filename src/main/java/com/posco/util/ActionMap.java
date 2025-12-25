@@ -54,6 +54,7 @@ public class ActionMap {
 	        return "water";
 	    }
 	    
+	    
 	    if(tagName.contains("set-")){
 	        return "settext";
 	    }
@@ -82,7 +83,9 @@ public class ActionMap {
 	        result = "lamp"; 
 	    } else if(tagName.contains("lamp-arrow")){
 	    	 result = "lamp"; 
-	    }
+		} else if(tagName.contains("lamp-check")){
+	   	 result = "lamp"; 
+	   }
 	    else if(tagName.contains("lamp-bit1")) {
 	        result = "lamp"; 
 	    }

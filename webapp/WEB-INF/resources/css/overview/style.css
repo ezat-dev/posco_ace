@@ -395,38 +395,40 @@
 
 
 
-/* ========== 오른쪽 가로========== */
-.lamp-arrow-gas.right {
+.lamp-arrow-gas2 {
     position: absolute;
     width: 45px;
     height: 40px;
 }
 
-.lamp-arrow-gas.right::before {
+/* ▶ 몸통 */
+.lamp-arrow-gas2.flow-right::before {
     content: '';
     position: absolute;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #2980b9, #3498db);
+    background: linear-gradient(90deg, #3498db, #2980b9);
     top: 50%;
     transform: translateY(-50%);
     border-radius: 2px;
 }
 
-.lamp-arrow-gas.right::after {
+/* ▶ 화살표 머리 (오른쪽) */
+.lamp-arrow-gas2.flow-right::after {
     content: '';
     position: absolute;
-    left: -10px;
+    right: -10px;
     top: 50%;
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-right: 15px solid #2980b9;
+    border-left: 15px solid #2980b9;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
 }
 
-.lamp-arrow-gas.right .dot {
+/* ▶ 도트 */
+.lamp-arrow-gas2.flow-right .dot {
     position: absolute;
     width: 8px;
     height: 8px;
@@ -435,29 +437,30 @@
     top: 50%;
     transform: translateY(-50%);
     box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
-    animation: moveDots 2s linear infinite;
+    animation: moveDotsRight 2s linear infinite;
 }
 
-.lamp-arrow-gas.right .dot:nth-child(1) { animation-delay: 0s; }
-.lamp-arrow-gas.right .dot:nth-child(2) { animation-delay: 0.4s; }
-.lamp-arrow-gas.right .dot:nth-child(3) { animation-delay: 0.8s; }
-.lamp-arrow-gas.right .dot:nth-child(4) { animation-delay: 1.2s; }
-.lamp-arrow-gas.right .dot:nth-child(5) { animation-delay: 1.6s; }
+.lamp-arrow-gas2.flow-right .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-gas2.flow-right .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-gas2.flow-right .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-gas2.flow-right .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-gas2.flow-right .dot:nth-child(5) { animation-delay: 1.6s; }
 
-@keyframes moveDots {
-    0% { 
-        right: 0;
-        opacity: 0; 
+/* ▶ 좌 → 우 흐름 */
+@keyframes moveDotsRight {
+    0% {
+        left: 0;
+        opacity: 0;
     }
-    10% { 
-        opacity: 1; 
+    10% {
+        opacity: 1;
     }
-    90% { 
-        opacity: 1; 
+    90% {
+        opacity: 1;
     }
-    100% { 
-        right: 100%;
-        opacity: 0; 
+    100% {
+        left: 100%;
+        opacity: 0;
     }
 }
 
@@ -471,11 +474,48 @@
 
 
 
+.lamp-check-lowvacuum{
+   
+       
+   border-style: solid;
+    border-color: #ff0000;
+    border-width: 4px;
+    width: 260px;
+    height: 22px;
+    position: absolute;
+    left: 350px;
+    top: 719px;
+    z-index: 1;
 
+}
+.lamp-check-hivacuum{
+   
+       
+   border-style: solid;
+    border-color: #ff0000;
+    border-width: 4px;
+    width: 260px;
+    height: 22px;
+    position: absolute;
+    left: 350px;
+    top: 748px;
+    z-index: 1;
 
+}
+.lamp-check-heat{
+   
+       
+   border-style: solid;
+    border-color: #ff0000;
+    border-width: 4px;
+    width: 260px;
+    height: 22px;
+    position: absolute;
+    left: 350px;
+    top: 779px;
+    z-index: 1;
 
-
-
+}
 
 .text20{
 	width: 70px;

@@ -451,7 +451,9 @@ h1{
 </div>
 
 
-<div class="lamp-arrow-gas right" style="left: 1055px; top: 61px;">
+
+
+<div class="lamp-arrow-gas2 flow-right" style="left: 1015px; top: 61px;">
     <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
@@ -459,10 +461,37 @@ h1{
     <div class="dot"></div>
 </div>
 
+<div class="lamp-arrow-gas2 flow-right" style="left: 1087px; top: 61px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
 
+<div class="lamp-arrow-gas2 flow-right" style="left: 1160px; top: 61px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
 
+<div class="lamp-arrow-gas2 flow-right" style="left: 1235px; top: 61px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
 
-
+<div class="lamp-arrow-gas2 flow-right" style="left: 1310px; top: 61px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
 
 
 
@@ -540,6 +569,9 @@ h1{
   
   
   
+  <div class="lamp-check-lowvacuum"></div>
+  <div class="lamp-check-hivacuum"></div>
+  <div class="lamp-check-heat"></div>
   
   <div class="line-1"></div>
   <div class="line-2"></div>
@@ -1011,6 +1043,7 @@ function lamp(key, value){
     if(!els || els.length === 0) return;
 
     Array.from(els).forEach(el => {
+        
 
     	 if (key.includes("lamp-arrow")) {
 
@@ -1024,6 +1057,18 @@ function lamp(key, value){
              return; // ⛔ 아래 로직 타지 않게
          }
 
+    	 if (key.includes("lamp-check")) {
+
+             if (value) {
+                 el.classList.remove("hidden");   
+                 el.classList.add("active-lamp");
+             } else {
+                 el.classList.add("hidden");
+                 el.classList.remove("active-lamp");
+             }
+             return; // ⛔ 아래 로직 타지 않게
+         }
+         
         // 1) lamp-on-* 처리 (초록 / 회색 전환)
         if(key.includes("lamp-on")){
             // hidden 제거 (항상 표시)
