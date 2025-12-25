@@ -38,7 +38,10 @@ public class ActionMap {
 	    String tagType = tagInfo.get("tagType").toString();
 	    String result = "";
 
-	   
+	    if(tagName.equals("analog-pattern-number")){
+	        return "patternNumber";
+	    }
+
 	    if("analog".equals(tagType)){
 	        return "value";
 	    }
@@ -58,6 +61,8 @@ public class ActionMap {
 	    if("analog".equals(tagType) || tagName.startsWith("analog-")) {
             return "value";
         }
+	    
+	    
 	    
 	    if (tagName.contains("icon-stop") || tagName.contains("icon-reset") || tagName.contains("icon-test")) {
 	        return "value";   // 또는 고정 동작

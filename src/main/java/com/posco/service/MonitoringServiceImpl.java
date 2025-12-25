@@ -30,6 +30,22 @@ public class MonitoringServiceImpl implements MonitoringService{
 	}
 	
 	@Override
+	public List<Monitoring> getPatternTrend(Monitoring monitoring) {
+	    return monitoringDAO.getPatternTrend(monitoring);
+	}
+	
+	@Override
+	public List<Monitoring> getRealtimeTrend() {
+	    return monitoringDAO.getRealtimeTrend();
+	}
+	
+	@Override
+	public Pattern getCurrentRunningPattern() {
+	    return monitoringDAO.getCurrentRunningPattern();
+	}
+
+	
+	@Override
 	public void patternInputList(Map<String, Object> rtnMap) {
 		monitoringDAO.patternInputList(rtnMap);
 	}

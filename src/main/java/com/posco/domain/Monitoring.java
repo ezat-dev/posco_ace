@@ -2,6 +2,7 @@ package com.posco.domain;
 
 public class Monitoring {
 	
+	private int patternNo;
 	
 	private String hogi;
     private String cutum;
@@ -19,13 +20,15 @@ public class Monitoring {
     private String endDate;
     private String tdatetime;
     
-    
+    private String startDateTime;
+    private String endDateTime;
     
     private Integer vac1_pv;
     private Integer vac2_pv;
     private Integer vac3_pv;
     private Integer protec_pv;
     private Integer tem_sp;
+    private Integer tem_tsp;
     private Integer tem_1;
     private Integer tem_2;
     private Integer tem_3;
@@ -360,6 +363,30 @@ public class Monitoring {
 	}
 	public void setTem_sp(Integer tem_sp) {
 		this.tem_sp = tem_sp;
+	}
+	public String getStartDateTime() {
+		return startDateTime;
+	}
+	public void setStartDateTime(String startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+	public String getEndDateTime() {
+		return endDateTime;
+	}
+	public void setEndDateTime(String endDateTime) {
+		this.endDateTime = endDateTime;
+	}
+	public int getPatternNo() {
+		return patternNo;
+	}
+	public void setPatternNo(int patternNo) {
+		this.patternNo = patternNo;
+	}
+	public Integer getTem_tsp() {
+		return tem_tsp;
+	}
+	public void setTem_tsp(Integer tem_tsp) {
+		this.tem_tsp = tem_tsp;
 	}
 	
 	

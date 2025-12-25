@@ -1242,8 +1242,40 @@ public class MonitoringController {
 	}
 
 		
+	@RequestMapping(value = "/monitoring/trend/pattern", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Monitoring> getPatternTrend(Monitoring monitoring) {
+
+	  
+	    return monitoringService.getPatternTrend(monitoring);
+	}
+
+	@RequestMapping(value = "/monitoring/trend/realtime", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Monitoring> getRealtimeTrend() {
+	    return monitoringService.getRealtimeTrend();
+	}
 	
 	
+	@RequestMapping(value = "/monitoring/trend/pattern/current", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getCurrentPattern() {
+
+	    Pattern current = monitoringService.getCurrentRunningPattern();
+
+	    Map<String, Object> map = new HashMap<>();
+	    if(current == null){
+	        map.put("running", false);
+	    } else {
+	        map.put("running", true);
+	        map.put("patternNo", current.getProc_ptrn_no());
+	        map.put("startTime", current.getProc_ptrn_start());
+	        map.put("endTime", current.getProc_ptrn_end());
+	    }
+
+	    return map;
+	}
+
 	
 
 }

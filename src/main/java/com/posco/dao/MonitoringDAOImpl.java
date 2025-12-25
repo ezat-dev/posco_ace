@@ -23,6 +23,22 @@ public class MonitoringDAOImpl implements MonitoringDAO{
 	}
 	
 	@Override
+	public List<Monitoring> getPatternTrend(Monitoring monitoring) {
+	    return sqlSession.selectList("monitoring.getPatternTrend", monitoring);
+	}
+	
+	@Override
+	public List<Monitoring> getRealtimeTrend() {
+	    return sqlSession.selectList("monitoring.getRealtimeTrend");
+	}
+	
+	@Override
+	public Pattern getCurrentRunningPattern() {
+	    return sqlSession.selectOne("monitoring.getCurrentRunningPattern");
+	}
+
+	
+	@Override
 	public List<Pattern> getPatternList(Pattern pattern) {
 		return sqlSession.selectList("monitoring.getPatternList", pattern);
 	}

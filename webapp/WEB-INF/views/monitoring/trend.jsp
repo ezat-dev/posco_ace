@@ -8,6 +8,10 @@
     <title>트렌드</title>
    <%@include file="../include/pluginpage.jsp" %>    
     <jsp:include page="../include/tabBar.jsp"/>
+    <script src="/posco/js/highcharts/highcharts.js"></script>
+<script src="/posco/js/highcharts/exporting.js"></script>
+<script src="/posco/js/highcharts/export-data.js"></script>
+<script src="/posco/js/highcharts/offline-exporting.js"></script>
 
     <style>
         .container {
@@ -180,12 +184,65 @@
         }
 
 
+
+/* ===== 조회 영역 ===== */
+.button-container{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    width:1600px;
+    padding:15px 20px;
+    background:#f4f4f4;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.select-button, .insert-button{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 16px;
+    border-radius:6px;
+    border:1px solid #aaa;
+    background:#e0e0e0;
+    cursor:pointer;
+    font-size:14px;
+    transition:all 0.2s;
+}
+
+.select-button:hover,
+.insert-button:hover{
+    background:#cfcfcf;
+}
+
+/* ===== 라디오 버튼 영역 ===== */
+.trend-radio-group{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-left:20px;
+}
+
+.trend-radio-group label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.trend-radio-group input[type="radio"]{
+    accent-color:#555;
+    transform:scale(1.2);
+}
+
     </style>
     </head>
 <body>
 
 
-
+			
+			
 
      		<div class="button-container">
         		<label class="daylabel">검색 날짜 :</label>
@@ -201,244 +258,287 @@
 				<button class="select-button">
                     <img src="/posco/css/tabBar/search-icon.png" alt="select" class="button-image">조회
                 </button>
-                <button class="insert-button">
-                    <img src="/posco/css/tabBar/add-outline.png" alt="insert" class="button-image">추가
-                </button>
-                
+                <div class="trend-radio-group">
+			    <label><input type="radio" name="trendMode" value="HIST" checked> 히스토리컬</label>
+			    <label><input type="radio" name="trendMode" value="REAL"> 실시간</label>
+			    <label><input type="radio" name="trendMode" value="PATTERN"> 패턴 트렌드</label>
+			    <div class="trend-option">
+				    <label>
+				        <input type="checkbox" id="toggleMarker">
+				        포인트 표시
+				    </label>
+				</div>
+			    
+			</div>
 			</div>
 			<div id="container" style="width: 100%; height: 600px; margin-top:100px;"></div>
 
 <script>
+/* ===============================
+   공통 변수
+================================ */
+let chart = null;
+let timer = null;
+let currentMode = "HIST";
+let markerEnabled = false;
 
-// ---------------------------
-// 날짜 유틸 함수 (시:분:초 자동 포함)
-// ---------------------------
-function paddingZero(n) {
-    return n < 10 ? "0" + n : n;
-}
+/* ===============================
+   날짜 유틸
+================================ */
+function pad(n){ return n < 10 ? "0"+n : n; }
 
-function trendToday() {
+function now(){
     const d = new Date();
-    return d.getFullYear()
-        + "-" + paddingZero(d.getMonth() + 1)
-        + "-" + paddingZero(d.getDate())
-        + " " + paddingZero(d.getHours())
-        + ":" + paddingZero(d.getMinutes());
+    return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "
+         + pad(d.getHours())+":"+pad(d.getMinutes());
 }
 
-function trendYester() {
+function before1Hour(){
     const d = new Date();
-    d.setDate(d.getDate() - 1);
-    return d.getFullYear()
-        + "-" + paddingZero(d.getMonth() + 1)
-        + "-" + paddingZero(d.getDate())
-        + " " + paddingZero(d.getHours())
-        + ":" + paddingZero(d.getMinutes());
+    d.setHours(d.getHours()-1);
+    return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "
+         + pad(d.getHours())+":"+pad(d.getMinutes());
 }
 
-
-
-// ---------------------------
-// 변수 선언
-// ---------------------------
-let categories;
-let vac1_pv, vac2_pv, vac3_pv, tem_tsp, tem_sp;
-let tem_1, tem_2, tem_3, tem_4, tem_5, tem_6;
-let tem_7, tem_8, tem_9, tem_10, tem_11, tem_12;
-
-let chart;
-let trendInterval;
-
-// ---------------------------
-// 최초 로딩
-// ---------------------------
-$(document).ready(function () {
-    $("#startDate").val(trendYester());
-    $("#endDate").val(trendToday());
-    fetchData();
-});
-
-// 조회 버튼
-$(".select-button").on("click", fetchData);
-
-// 자동 갱신용 시간 설정
-function trendIntervalFunc() {
-    $("#startDate").val(yesterDate());
-    $("#endDate").val(todayDate());
-    fetchData();
-}
-
-// ---------------------------
-// 데이터 조회 AJAX
-// ---------------------------
-function fetchData() {
-
-    $.ajax({
-        type: "POST",
-        url: "/posco/monitoring/trend/list",
-        data: {  
-            startDate: $("#startDate").val(),
-            endDate: $("#endDate").val()
+/* ===============================
+   차트 생성
+================================ */
+function createChart(series){
+    chart = Highcharts.chart("container",{
+        chart:{
+            type:"line",
+            zoomType:"x",
+            panning:true,
+            panKey:"shift"
         },
-        success: function (result) {
+        title:{ text:"온도 트렌드" },
 
-            if(result.length > 0 ){
-
-                categories = result.map(r => new Date(r.tdatetime).getTime());
-
-                vac1_pv = result.map(r => Number(r.vac1_pv));
-                vac2_pv = result.map(r => Number(r.vac2_pv));
-                vac3_pv = result.map(r => Number(r.vac3_pv));
-                protec_pv = result.map(r => Number(r.protec_pv));
-                tem_sp = result.map(r => Number(r.tem_sp));
-                tem_tsp = result.map(r => Number(r.tem_tsp));
-
-                tem_1 = result.map(r => Number(r.tem_1));
-                tem_2 = result.map(r => Number(r.tem_2));
-                tem_3 = result.map(r => Number(r.tem_3));
-                tem_4 = result.map(r => Number(r.tem_4));
-                tem_5 = result.map(r => Number(r.tem_5));
-                tem_6 = result.map(r => Number(r.tem_6));
-                tem_7 = result.map(r => Number(r.tem_7));
-                tem_8 = result.map(r => Number(r.tem_8));
-                tem_9 = result.map(r => Number(r.tem_9));
-
-                if(!chart){
-                    createTrendChart();
-                } else {
-                    chart.update({
-                        xAxis: { categories: categories },
-                        series: [
-                            { name: '1존온도 PV', data: vac1_pv },
-                            { name: '2존온도 PV', data: vac2_pv },
-                            { name: '3존온도 PV', data: vac3_pv },
-                            { name: '온도 SP', data: tem_sp },
-                            { name: '온도 TSP', data: tem_tsp },
-                            { name: '온도분포1', data: tem_1 },
-                            { name: '온도분포2', data: tem_2 },
-                            { name: '온도분포3', data: tem_3 },
-                            { name: '온도분포4', data: tem_4 },
-                            { name: '온도분포5', data: tem_5 },
-                            { name: '온도분포6', data: tem_6 },
-                            { name: '온도분포7', data: tem_7 },
-                            { name: '온도분포8', data: tem_8 },
-                            { name: '온도분포9', data: tem_9 }
-                        ]
-                    });
-                }
-            }
-        },
-        error: function () {
-            alert("데이터 조회 중 오류가 발생했습니다.");
-        }
-    });
-}
-
-
-function createTrendChart(){
-    chart = Highcharts.chart('container', {
-        chart: { 
-            type: 'line',
-            zoomType: 'x',
-            panning: true,
-            panKey: 'shift',
-            events: {
-                load: function() {
-                    const chart = this;
-                    
-                    //줌기능
-                    this.container.addEventListener('wheel', function(e) {
-                        e.preventDefault();
-                        
-                        const xAxis = chart.xAxis[0];
-                        const extremes = xAxis.getExtremes();
-                        const range = extremes.max - extremes.min;
-                        const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1;
-                        
-                        const newRange = range * zoomFactor;
-                        const center = (extremes.max + extremes.min) / 2;
-                        
-                        xAxis.setExtremes(
-                            center - newRange / 2,
-                            center + newRange / 2,
-                            true,
-                            false
-                        );
-                    }, { passive: false });
-                }
-            }
-        },
-        title: { text: '온도 트렌드' },
-
-        xAxis: {
-            type: 'datetime',
-            labels: {
-                formatter: function(){
-                    return Highcharts.dateFormat('%m-%d</br>%H:%M', this.value);
+        plotOptions:{
+            series:{
+                marker:{
+                    enabled: markerEnabled
                 },
-//                rotation: -45,
-                align: 'right',
-//                step: 1  // 라벨 표시 간격 조절 (1은 모든 틱마다, 2는 하나 건너뛰기)
-            },
-            tickPixelInterval: 200,  // 틱 사이 픽셀 간격 (넓힐수록 적게 표시)
-            minTickInterval: 60 * 60 * 1000  // 최소 1시간 간격 (밀리초 단위)
-        },
-
-        yAxis: {
-            title: { text: "온도 (℃)", rotation: 0, align: 'high', offset: 0, y: -20 },
-            labels: { align: "left"},
-            min: 0,
-            max: 1200
-        },
-
-        plotOptions: {
-            line: {
-                marker: {
-                    enabled: false  // 동그라미 점 제거
-                }
-            },
-            series: {
-                states: {
-                    hover: {
-                        lineWidthPlus: 0  // 호버 시에도 선 두께 유지
+                states:{
+                    hover:{
+                        lineWidthPlus:0
                     }
                 }
             }
         },
 
-        tooltip: { 
-            shared: true, 
-            crosshairs: true,
-            xDateFormat: '%Y-%m-%d %H:%M'  // 툴팁도 분까지만
+        xAxis:{
+            type:"datetime",
+            labels:{
+                formatter:function(){
+                    return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
+                }
+            }
         },
 
-        legend: {
-            layout: 'horizontal',
-            align: 'center',
-            verticalAlign: 'bottom'
+        yAxis:{
+            title:{ text:"온도(℃)" },
+            min:0
         },
 
-        series: [
-            { name: '1존온도 PV', data: vac1_pv.map((val, idx) => [categories[idx], val]) },
-            { name: '2존온도 PV', data: vac2_pv.map((val, idx) => [categories[idx], val]) },
-            { name: '3존온도 PV', data: vac3_pv.map((val, idx) => [categories[idx], val]) },
-            { name: '온도 SP', data: tem_sp.map((val, idx) => [categories[idx], val]) },
-            { name: '온도 TSP', data: tem_tsp.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포1', data: tem_1.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포2', data: tem_2.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포3', data: tem_3.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포4', data: tem_4.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포5', data: tem_5.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포6', data: tem_6.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포7', data: tem_7.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포8', data: tem_8.map((val, idx) => [categories[idx], val]) },
-            { name: '온도분포9', data: tem_9.map((val, idx) => [categories[idx], val]) }
-        ]
+        tooltip:{
+            shared:true,
+            crosshairs:true,
+            xDateFormat:"%Y-%m-%d %H:%M"
+        },
+
+        exporting:{
+            enabled:true,
+            buttons:{
+                contextButton:{
+                    menuItems:["downloadPNG","downloadCSV"]
+                }
+            }
+        },
+
+        series: series
     });
 }
 
-</script>
+/* ===============================
+   차트 Clear
+================================ */
+function clearChart(){
+    if(!chart) return;
+    while(chart.series.length){
+        chart.series[0].remove(false);
+    }
+    chart.redraw();
+}
 
+/* ===============================
+   타이머 제어
+================================ */
+function stopTimer(){
+    if(timer){
+        clearInterval(timer);
+        timer = null;
+    }
+}
+
+/* ===============================
+   히스토리컬 트렌드
+================================ */
+function loadHistory(){
+    stopTimer();
+    currentMode = "HIST";
+
+    $.post("/posco/monitoring/trend/list",{
+        startDate:$("#startDate").val(),
+        endDate:$("#endDate").val()
+    },function(result){
+
+        if(!result || result.length === 0){
+            clearChart();
+            return;
+        }
+
+        const categories = result.map(r => new Date(r.tdatetime).getTime());
+
+        const series = [
+            { name:'1존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac1_pv]) },
+            { name:'2존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac2_pv]) },
+            { name:'3존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac3_pv]) },
+            { name:'온도 SP', data: result.map((r,i)=>[categories[i],+r.tem_sp]) },
+            { name:'온도 TSP', data: result.map((r,i)=>[categories[i],+r.tem_tsp]) },
+            { name:'온도분포1', data: result.map((r,i)=>[categories[i],+r.tem_1]) },
+            { name:'온도분포2', data: result.map((r,i)=>[categories[i],+r.tem_2]) },
+            { name:'온도분포3', data: result.map((r,i)=>[categories[i],+r.tem_3]) },
+            { name:'온도분포4', data: result.map((r,i)=>[categories[i],+r.tem_4]) },
+            { name:'온도분포5', data: result.map((r,i)=>[categories[i],+r.tem_5]) },
+            { name:'온도분포6', data: result.map((r,i)=>[categories[i],+r.tem_6]) },
+            { name:'온도분포7', data: result.map((r,i)=>[categories[i],+r.tem_7]) },
+            { name:'온도분포8', data: result.map((r,i)=>[categories[i],+r.tem_8]) },
+            { name:'온도분포9', data: result.map((r,i)=>[categories[i],+r.tem_9]) }
+        ];
+
+        chart ? chart.update({series}) : createChart(series);
+    });
+}
+
+/* ===============================
+   실시간 트렌드
+================================ */
+function startRealtime(){
+    stopTimer();
+    currentMode = "REAL";
+
+    loadRealtime();
+    timer = setInterval(loadRealtime, 5000);
+}
+
+function loadRealtime(){
+    $.post("/posco/monitoring/trend/realtime",function(result){
+
+        if(!result || result.length === 0){
+            clearChart();
+            return;
+        }
+
+        const categories = result.map(r => new Date(r.tdatetime).getTime());
+
+        const series = [
+            { name:'1존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac1_pv]) },
+            { name:'2존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac2_pv]) },
+            { name:'3존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac3_pv]) },
+            { name:'온도 SP', data: result.map((r,i)=>[categories[i],+r.tem_sp]) },
+            { name:'온도 TSP', data: result.map((r,i)=>[categories[i],+r.tem_tsp]) },
+            { name:'온도분포1', data: result.map((r,i)=>[categories[i],+r.tem_1]) },
+            { name:'온도분포2', data: result.map((r,i)=>[categories[i],+r.tem_2]) },
+            { name:'온도분포3', data: result.map((r,i)=>[categories[i],+r.tem_3]) },
+            { name:'온도분포4', data: result.map((r,i)=>[categories[i],+r.tem_4]) },
+            { name:'온도분포5', data: result.map((r,i)=>[categories[i],+r.tem_5]) },
+            { name:'온도분포6', data: result.map((r,i)=>[categories[i],+r.tem_6]) },
+            { name:'온도분포7', data: result.map((r,i)=>[categories[i],+r.tem_7]) },
+            { name:'온도분포8', data: result.map((r,i)=>[categories[i],+r.tem_8]) },
+            { name:'온도분포9', data: result.map((r,i)=>[categories[i],+r.tem_9]) }
+        ];
+
+        chart ? chart.update({series}) : createChart(series);
+    });
+}
+
+/* ===============================
+   패턴 트렌드
+================================ */
+function startPattern(){
+    stopTimer();
+    currentMode = "PATTERN";
+
+    loadPatternCurrent();
+    timer = setInterval(loadPatternCurrent, 5000);
+}
+
+function loadPatternCurrent(){
+    $.post("/posco/monitoring/trend/pattern/current",function(resp){
+
+        if(!resp || resp.running !== true){
+            clearChart();
+            return;
+        }
+
+        $.post("/posco/monitoring/trend/pattern",{patternNo:resp.patternNo},function(result){
+
+            if(!result || result.length === 0){
+                clearChart();
+                return;
+            }
+
+            const categories = result.map(r => new Date(r.tdatetime).getTime());
+
+            const series = [
+                { name:'1존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac1_pv]) },
+                { name:'2존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac2_pv]) },
+                { name:'3존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac3_pv]) },
+                { name:'온도 SP', data: result.map((r,i)=>[categories[i],+r.tem_sp]) },
+                { name:'온도 TSP', data: result.map((r,i)=>[categories[i],+r.tem_tsp]) }
+            ];
+
+            chart ? chart.update({series}) : createChart(series);
+        });
+    });
+}
+
+/* ===============================
+   이벤트
+================================ */
+$("#btnSearch").on("click",function(){
+    if(currentMode === "HIST") loadHistory();
+});
+
+$("input[name='trendMode']").on("change",function(){
+    const v = $(this).val();
+    if(v==="HIST") loadHistory();
+    if(v==="REAL") startRealtime();
+    if(v==="PATTERN") startPattern();
+});
+
+$("#toggleMarker").on("change",function(){
+    markerEnabled = this.checked;
+    if(chart){
+        chart.update({
+            plotOptions:{
+                series:{
+                    marker:{ enabled: markerEnabled }
+                }
+            }
+        });
+    }
+});
+
+/* ===============================
+   초기화
+================================ */
+$(function(){
+    $("#startDate").val(before1Hour());
+    $("#endDate").val(now());
+    loadHistory();
+});
+</script>
 
 </body>
 </html>

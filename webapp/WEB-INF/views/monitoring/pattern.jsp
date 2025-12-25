@@ -8,6 +8,7 @@
     <title>패턴관리</title>
 	<%@include file="../include/pluginpage.jsp" %>    
     <jsp:include page="../include/tabBar.jsp"/>
+    
 </head>
    <style>
         * {
@@ -541,7 +542,7 @@
 
         <!-- 3. 패턴 테이블 (세번째 줄) -->
         <div class="table-section">
-            <div class="section-title">패턴 프로그램 <div id="patternStatus">상태: -</div></div>
+            <div class="section-title">패턴 정보관리 <div id="patternStatus">상태: -</div></div>
             
             <div class="st-table-wrap">
                 <table class="st-table">
@@ -704,13 +705,29 @@ function valueDisplay(key, val) {
     const els = document.getElementsByClassName(key);
     if (!els || els.length === 0) return;
 
-    let displayValue = val;
-
     Array.from(els).forEach(el => {
-        el.innerText = displayValue;
+        if (el.tagName === "INPUT") {
+            el.value = val;
+        } else {
+            el.innerText = val;
+        }
     });
 }
 
+
+
+function patternNumber(key, val) {
+    const els = document.getElementsByClassName(key);
+    if (!els || els.length === 0) return;
+
+    Array.from(els).forEach(el => {
+        if (el.tagName === "INPUT") {
+            el.value = val;
+        } else {
+            el.innerText = val;
+        }
+    });
+}
 
 
 
@@ -736,6 +753,7 @@ function overviewListView() {
                  const { action, value } = tagData;
 
                  switch(action){
+                        case "patternNumber": patternNumber(tagName, value); break;
 	                    case "v":     v(tagName, value); break;
 	                    case "c":     c(tagName, value); break;
 	                    case "pen":   pen(tagName, value); break;
@@ -818,7 +836,7 @@ function patternDataRead(){
            type: "post",
            data: {},
            success: function (res) {
-               console.log(res);                                                  
+               /* console.log(res);       */                                            
 			var opcDatas = res.multiValues;
 
 			for(var rows in opcDatas){
@@ -827,7 +845,7 @@ function patternDataRead(){
 					var d = opcDatas[rows];
 
 					if(d[row].action == "value"){
-						console.log(row, d[row].value)
+						/* console.log(row, d[row].value) */
 						$("."+row).text(d[row].value);
 					}						 
 				}
@@ -874,7 +892,7 @@ function patternDataRead(){
             },
             success: function (res) {
 
-				console.log(res);
+				/* console.log(res); */
                 
 /*
                 console.log("### Analog WRITE 성공 → BIT WRITE 시작");

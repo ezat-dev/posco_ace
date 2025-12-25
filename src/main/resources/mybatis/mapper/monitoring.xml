@@ -15,6 +15,59 @@
 	    ORDER BY tdatetime;
 	</select>
 	
+	<select id="getPatternTrend" parameterType="monitoring" resultType="monitoring">
+    SELECT
+        DATE_FORMAT(
+            TIMESTAMPADD(HOUR, 9, t.tdatetime),
+            '%Y-%m-%d %H:%i:%s'
+        ) AS tdatetime,
+
+        t.vac1_pv,
+        t.vac2_pv,
+        t.vac3_pv,
+        t.tem_sp,
+        t.tem_tsp
+
+    FROM tb_pattern_proc p
+    JOIN tb_temp t
+      ON t.tdatetime BETWEEN p.proc_ptrn_start
+                         AND IFNULL(p.proc_ptrn_end, NOW())
+
+    WHERE p.proc_ptrn_no = #{patternNo}
+
+    ORDER BY t.tdatetime
+
+</select>
+
+<select id="getCurrentRunningPattern"
+        resultType="pattern">
+    SELECT
+        proc_ptrn_no,
+        proc_ptrn_start,
+        proc_ptrn_end
+    FROM tb_pattern_proc
+    WHERE proc_ptrn_end IS NULL
+    ORDER BY proc_ptrn_start DESC
+    LIMIT 1
+</select>
+
+	
+	<select id="getRealtimeTrend" resultType="monitoring">
+    SELECT
+        DATE_FORMAT(
+            TIMESTAMPADD(HOUR,9,tdatetime),
+            '%Y-%m-%d %H:%i:%s'
+        ) AS tdatetime,
+        vac1_pv, vac2_pv, vac3_pv,
+        tem_sp, tem_tsp,
+        tem_1, tem_2, tem_3, tem_4, tem_5,
+        tem_6, tem_7, tem_8, tem_9
+    FROM tb_temp
+    WHERE tdatetime >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    ORDER BY tdatetime
+</select>
+	
+	
 	<update id="patternInputList" parameterType="map">
 		CALL sp_ptrn_save(#{ptrn_no}, #{ptrn_seg1_temp}, #{ptrn_seg2_temp}, #{ptrn_seg3_temp},
 						  #{ptrn_seg4_temp}, #{ptrn_seg5_temp}, #{ptrn_seg6_temp}, #{ptrn_seg7_temp},
