@@ -8,10 +8,6 @@
     <title>트렌드</title>
    <%@include file="../include/pluginpage.jsp" %>    
     <jsp:include page="../include/tabBar.jsp"/>
-    <script src="/posco/js/highcharts/highcharts.js"></script>
-<script src="/posco/js/highcharts/exporting.js"></script>
-<script src="/posco/js/highcharts/export-data.js"></script>
-<script src="/posco/js/highcharts/offline-exporting.js"></script>
 
     <style>
         .container {
@@ -255,7 +251,7 @@
 			   <input type="text" autocomplete="off" class="datetimeSet" id="endDate"
 			        style="font-size: 16px; margin: 5px; border-radius: 4px; border: 1px solid #ccc; text-align: center;    height: 30px;">
 			</div>
-				<button class="select-button">
+				<button class="select-button" id="btnSearch">
                     <img src="/posco/css/tabBar/search-icon.png" alt="select" class="button-image">조회
                 </button>
                 <div class="trend-radio-group">
@@ -281,6 +277,7 @@ let chart = null;
 let timer = null;
 let currentMode = "HIST";
 let markerEnabled = false;
+let isLoading = false; // 로딩 중복 방지
 
 /* ===============================
    날짜 유틸
@@ -301,9 +298,46 @@ function before1Hour(){
 }
 
 /* ===============================
+   범례 상태 저장/복원 (localStorage)
+================================ */
+function saveLegendState(){
+    if(!chart) return;
+    const state = {};
+    chart.series.forEach(s => {
+        state[s.name] = s.visible;
+    });
+    localStorage.setItem('trendLegendState', JSON.stringify(state));
+}
+
+function loadLegendState(){
+    const saved = localStorage.getItem('trendLegendState');
+    return saved ? JSON.parse(saved) : null;
+}
+
+/* ===============================
    차트 생성
 ================================ */
-function createChart(series){
+function createChart(series, mode){
+    const legendState = loadLegendState();
+    
+    // 실시간/패턴 트렌드는 온도분포 기본 숨김
+    if(mode === "REAL" || mode === "PATTERN"){
+        series.forEach(s => {
+            if(s.name.includes('온도분포')){
+                s.visible = false;
+            }
+        });
+    }
+    
+    // 저장된 범례 상태 적용
+    if(legendState){
+        series.forEach(s => {
+            if(legendState.hasOwnProperty(s.name)){
+                s.visible = legendState[s.name];
+            }
+        });
+    }
+    
     chart = Highcharts.chart("container",{
         chart:{
             type:"line",
@@ -314,24 +348,41 @@ function createChart(series){
                 load: function() {
                     const chart = this;
                     
-                    //줌기능
+                    // 마우스 휠 줌
                     this.container.addEventListener('wheel', function(e) {
                         e.preventDefault();
                         
                         const xAxis = chart.xAxis[0];
                         const extremes = xAxis.getExtremes();
-                        const range = extremes.max - extremes.min;
+                        const dataMin = extremes.dataMin;
+                        const dataMax = extremes.dataMax;
+                        const currentMin = extremes.min;
+                        const currentMax = extremes.max;
+                        const range = currentMax - currentMin;
                         const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1;
                         
                         const newRange = range * zoomFactor;
-                        const center = (extremes.max + extremes.min) / 2;
+                        const center = (currentMax + currentMin) / 2;
                         
-                        xAxis.setExtremes(
-                            center - newRange / 2,
-                            center + newRange / 2,
-                            true,
-                            false
-                        );
+                        let newMin = center - newRange / 2;
+                        let newMax = center + newRange / 2;
+                        
+                        // 과거 데이터 표시 (왼쪽 확장)
+                        if(newMin < dataMin){
+                            newMin = dataMin;
+                        }
+                        
+                        // 미래 데이터 표시 (오른쪽 확장) - 실시간만 허용
+                        if(mode === "REAL"){
+                            // 실시간은 오른쪽 무제한 확장
+                        } else {
+                            // 히스토리컬/패턴은 데이터 범위까지만
+                            if(newMax > dataMax){
+                                newMax = dataMax;
+                            }
+                        }
+                        
+                        xAxis.setExtremes(newMin, newMax, true, false);
                     }, { passive: false });
                 }
             }
@@ -346,6 +397,12 @@ function createChart(series){
                 states:{
                     hover:{
                         lineWidthPlus:0
+                    }
+                },
+                events: {
+                    legendItemClick: function() {
+                        // 범례 클릭 후 상태 저장
+                        setTimeout(saveLegendState, 100);
                     }
                 }
             }
@@ -409,6 +466,9 @@ function stopTimer(){
    히스토리컬 트렌드
 ================================ */
 function loadHistory(){
+    if(isLoading) return;
+    isLoading = true;
+    
     stopTimer();
     currentMode = "HIST";
 
@@ -419,6 +479,7 @@ function loadHistory(){
 
         if(!result || result.length === 0){
             clearChart();
+            isLoading = false;
             return;
         }
 
@@ -441,7 +502,14 @@ function loadHistory(){
             { name:'온도분포9', data: result.map((r,i)=>[categories[i],+r.tem_9]) }
         ];
 
-        chart ? chart.update({series}) : createChart(series);
+        if(chart){
+            clearChart();
+        }
+        createChart(series, "HIST");
+        
+        isLoading = false;
+    }).fail(function(){
+        isLoading = false;
     });
 }
 
@@ -451,22 +519,27 @@ function loadHistory(){
 function startRealtime(){
     stopTimer();
     currentMode = "REAL";
+    isLoading = false;
 
     loadRealtime();
     timer = setInterval(loadRealtime, 5000);
 }
 
 function loadRealtime(){
+    if(isLoading) return;
+    isLoading = true;
+    
     $.post("/posco/monitoring/trend/realtime",function(result){
 
         if(!result || result.length === 0){
             clearChart();
+            isLoading = false;
             return;
         }
 
         const categories = result.map(r => new Date(r.tdatetime).getTime());
 
-        const series = [
+        const newSeries = [
             { name:'1존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac1_pv]) },
             { name:'2존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac2_pv]) },
             { name:'3존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac3_pv]) },
@@ -483,7 +556,22 @@ function loadRealtime(){
             { name:'온도분포9', data: result.map((r,i)=>[categories[i],+r.tem_9]) }
         ];
 
-        chart ? chart.update({series}) : createChart(series);
+        // 차트가 없으면 새로 생성
+        if(!chart){
+            createChart(newSeries, "REAL");
+        } else {
+            // 차트가 있으면 데이터만 업데이트
+            newSeries.forEach((s, idx) => {
+                if(chart.series[idx]) {
+                    chart.series[idx].setData(s.data, false);
+                }
+            });
+            chart.redraw();
+        }
+        
+        isLoading = false;
+    }).fail(function(){
+        isLoading = false;
     });
 }
 
@@ -493,16 +581,21 @@ function loadRealtime(){
 function startPattern(){
     stopTimer();
     currentMode = "PATTERN";
+    isLoading = false;
 
     loadPatternCurrent();
     timer = setInterval(loadPatternCurrent, 5000);
 }
 
 function loadPatternCurrent(){
+    if(isLoading) return;
+    isLoading = true;
+    
     $.post("/posco/monitoring/trend/pattern/current",function(resp){
 
         if(!resp || resp.running !== true){
             clearChart();
+            isLoading = false;
             return;
         }
 
@@ -510,12 +603,13 @@ function loadPatternCurrent(){
 
             if(!result || result.length === 0){
                 clearChart();
+                isLoading = false;
                 return;
             }
 
             const categories = result.map(r => new Date(r.tdatetime).getTime());
 
-            const series = [
+            const newSeries = [
                 { name:'1존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac1_pv]) },
                 { name:'2존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac2_pv]) },
                 { name:'3존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac3_pv]) },
@@ -523,8 +617,25 @@ function loadPatternCurrent(){
                 { name:'온도 TSP', data: result.map((r,i)=>[categories[i],+r.tem_tsp]) }
             ];
 
-            chart ? chart.update({series}) : createChart(series);
+            // 차트가 없으면 새로 생성
+            if(!chart){
+                createChart(newSeries, "PATTERN");
+            } else {
+                // 차트가 있으면 데이터만 업데이트
+                newSeries.forEach((s, idx) => {
+                    if(chart.series[idx]) {
+                        chart.series[idx].setData(s.data, false);
+                    }
+                });
+                chart.redraw();
+            }
+            
+            isLoading = false;
+        }).fail(function(){
+            isLoading = false;
         });
+    }).fail(function(){
+        isLoading = false;
     });
 }
 
@@ -532,11 +643,18 @@ function loadPatternCurrent(){
    이벤트
 ================================ */
 $("#btnSearch").on("click",function(){
-    if(currentMode === "HIST") loadHistory();
+    console.log("조회 버튼 클릭");
+    if(currentMode === "HIST"){
+        loadHistory();
+    }
 });
 
 $("input[name='trendMode']").on("change",function(){
     const v = $(this).val();
+    console.log("트렌드 모드 변경:", v);
+    
+    isLoading = false; // 모드 전환시 로딩 상태 초기화
+    
     if(v==="HIST") loadHistory();
     if(v==="REAL") startRealtime();
     if(v==="PATTERN") startPattern();

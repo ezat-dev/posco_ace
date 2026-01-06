@@ -466,9 +466,15 @@
 
 
 
-
-
-
+.icon-ten{
+background: #c0c0c0;
+    border-radius: 5px;
+    width: 30px;
+    height: 24px;
+    position: absolute;
+    left: 860px;
+    top: 10px
+}
 
 
 

@@ -194,201 +194,175 @@
 </div>
 
 <script>
+// URL에서 패턴 번호 가져오기
+let currentPatternNo = 1; // 기본값
 
-
-//패턴 읽어오기(패턴관리화면 값)
 $(document).ready(function () {
-
+    // URL 파라미터에서 패턴 번호 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const patternNo = urlParams.get('patternNo');
     
-    loadAnalogValue("analog-pattern-number", ".analog-pattern-number");
-
+    if (patternNo) {
+        currentPatternNo = parseInt(patternNo, 10);
+        console.log("현재 수정 중인 패턴:", currentPatternNo);
+    }
     
-    loadAnalogValue("analog-pattern-time-1", ".input-pattern-time-1");
-    loadAnalogValue("analog-pattern-time-2", ".input-pattern-time-2");
-    loadAnalogValue("analog-pattern-time-3", ".input-pattern-time-3");
-    loadAnalogValue("analog-pattern-time-4", ".input-pattern-time-4");
-    loadAnalogValue("analog-pattern-time-5", ".input-pattern-time-5");
-    loadAnalogValue("analog-pattern-time-6", ".input-pattern-time-6");
-    loadAnalogValue("analog-pattern-time-7", ".input-pattern-time-7");
-    loadAnalogValue("analog-pattern-time-8", ".input-pattern-time-8");
-    loadAnalogValue("analog-pattern-time-9", ".input-pattern-time-9");
-    loadAnalogValue("analog-pattern-time-10", ".input-pattern-time-10");
-    loadAnalogValue("analog-pattern-time-11", ".input-pattern-time-11");
-    loadAnalogValue("analog-pattern-time-12", ".input-pattern-time-12");
-    loadAnalogValue("analog-pattern-time-13", ".input-pattern-time-13");
-    loadAnalogValue("analog-pattern-time-14", ".input-pattern-time-14");
-    loadAnalogValue("analog-pattern-time-15", ".input-pattern-time-15");
-    loadAnalogValue("analog-pattern-time-16", ".input-pattern-time-16");
-    loadAnalogValue("analog-pattern-time-17", ".input-pattern-time-17");
-    loadAnalogValue("analog-pattern-time-18", ".input-pattern-time-18");
-    loadAnalogValue("analog-pattern-time-19", ".input-pattern-time-19");
-    loadAnalogValue("analog-pattern-time-20", ".input-pattern-time-20");
-
+    // 패턴 번호 표시
+    $(".analog-pattern-number").val(currentPatternNo);
     
-    loadAnalogValue("analog-pattern-temp-1", ".input-pattern-temp-1");
-    loadAnalogValue("analog-pattern-temp-2", ".input-pattern-temp-2");
-    loadAnalogValue("analog-pattern-temp-3", ".input-pattern-temp-3");
-    loadAnalogValue("analog-pattern-temp-4", ".input-pattern-temp-4");
-    loadAnalogValue("analog-pattern-temp-5", ".input-pattern-temp-5");
-    loadAnalogValue("analog-pattern-temp-6", ".input-pattern-temp-6");
-    loadAnalogValue("analog-pattern-temp-7", ".input-pattern-temp-7");
-    loadAnalogValue("analog-pattern-temp-8", ".input-pattern-temp-8");
-    loadAnalogValue("analog-pattern-temp-9", ".input-pattern-temp-9");
-    loadAnalogValue("analog-pattern-temp-10", ".input-pattern-temp-10");
-    loadAnalogValue("analog-pattern-temp-11", ".input-pattern-temp-11");
-    loadAnalogValue("analog-pattern-temp-12", ".input-pattern-temp-12");
-    loadAnalogValue("analog-pattern-temp-13", ".input-pattern-temp-13");
-    loadAnalogValue("analog-pattern-temp-14", ".input-pattern-temp-14");
-    loadAnalogValue("analog-pattern-temp-15", ".input-pattern-temp-15");
-    loadAnalogValue("analog-pattern-temp-16", ".input-pattern-temp-16");
-    loadAnalogValue("analog-pattern-temp-17", ".input-pattern-temp-17");
-    loadAnalogValue("analog-pattern-temp-18", ".input-pattern-temp-18");
-    loadAnalogValue("analog-pattern-temp-19", ".input-pattern-temp-19");
-    loadAnalogValue("analog-pattern-temp-20", ".input-pattern-temp-20");
-
-   
+    // ① 먼저 READ 비트 트리거하여 INFO 그룹에 데이터 로드
+    loadPatternFromPLC();
+    
+    // 저장 버튼 이벤트
     $(".btn-save").click(savePopupValues);
 });
 
-
-//워드 읽기
-function loadAnalogValue(tag, selector) {
+// PLC에서 패턴 데이터 읽기 (READ 비트 트리거)
+function loadPatternFromPLC() {
+    console.log("📖 패턴 " + currentPatternNo + " 읽기 시작...");
+    
     $.ajax({
-        url: "/posco/monitoring/read/analog",
-        type: "get",
-        data: { tagName: tag },
-        success: function (res) {
-            if (res.status === "OK") {
-                $(selector).val(res.value);
-            }
+        url: "/posco/monitoring/write/patternInfoRead",
+        type: "post",
+        data: {
+            patternNo: currentPatternNo,
+            tagName: "pattern-read-" + currentPatternNo
+        },
+        success: function () {
+            console.log("✅ READ 비트 트리거 완료");
+            
+            // READ 완료 후 1.5초 대기하고 INFO 그룹에서 데이터 읽기
+            setTimeout(function() {
+                loadPatternDataFromINFO();
+            }, 1500);
+        },
+        error: function () {
+            alert("패턴 읽기 실패");
         }
     });
 }
 
-
-//패턴 수정
-function savePopupValues() {
-
-    const tagValueMap = [
-        ["input-pattern-time-1", $(".input-pattern-time-1").val()],
-        ["input-pattern-time-2", $(".input-pattern-time-2").val()],
-        ["input-pattern-time-3", $(".input-pattern-time-3").val()],
-        ["input-pattern-time-4", $(".input-pattern-time-4").val()],
-        ["input-pattern-time-5", $(".input-pattern-time-5").val()],
-        ["input-pattern-time-6", $(".input-pattern-time-6").val()],
-        ["input-pattern-time-7", $(".input-pattern-time-7").val()],
-        ["input-pattern-time-8", $(".input-pattern-time-8").val()],
-        ["input-pattern-time-9", $(".input-pattern-time-9").val()],
-        ["input-pattern-time-10", $(".input-pattern-time-10").val()],
-        ["input-pattern-time-11", $(".input-pattern-time-11").val()],
-        ["input-pattern-time-12", $(".input-pattern-time-12").val()],
-        ["input-pattern-time-13", $(".input-pattern-time-13").val()],
-        ["input-pattern-time-14", $(".input-pattern-time-14").val()],
-        ["input-pattern-time-15", $(".input-pattern-time-15").val()],
-        ["input-pattern-time-16", $(".input-pattern-time-16").val()],
-        ["input-pattern-time-17", $(".input-pattern-time-17").val()],
-        ["input-pattern-time-18", $(".input-pattern-time-18").val()],
-        ["input-pattern-time-19", $(".input-pattern-time-19").val()],
-        ["input-pattern-time-20", $(".input-pattern-time-20").val()],
-
-        ["input-pattern-temp-1", $(".input-pattern-temp-1").val()],
-        ["input-pattern-temp-2", $(".input-pattern-temp-2").val()],
-        ["input-pattern-temp-3", $(".input-pattern-temp-3").val()],
-        ["input-pattern-temp-4", $(".input-pattern-temp-4").val()],
-        ["input-pattern-temp-5", $(".input-pattern-temp-5").val()],
-        ["input-pattern-temp-6", $(".input-pattern-temp-6").val()],
-        ["input-pattern-temp-7", $(".input-pattern-temp-7").val()],
-        ["input-pattern-temp-8", $(".input-pattern-temp-8").val()],
-        ["input-pattern-temp-9", $(".input-pattern-temp-9").val()],
-        ["input-pattern-temp-10", $(".input-pattern-temp-10").val()],
-        ["input-pattern-temp-11", $(".input-pattern-temp-11").val()],
-        ["input-pattern-temp-12", $(".input-pattern-temp-12").val()],
-        ["input-pattern-temp-13", $(".input-pattern-temp-13").val()],
-        ["input-pattern-temp-14", $(".input-pattern-temp-14").val()],
-        ["input-pattern-temp-15", $(".input-pattern-temp-15").val()],
-        ["input-pattern-temp-16", $(".input-pattern-temp-16").val()],
-        ["input-pattern-temp-17", $(".input-pattern-temp-17").val()],
-        ["input-pattern-temp-18", $(".input-pattern-temp-18").val()],
-        ["input-pattern-temp-19", $(".input-pattern-temp-19").val()],
-        ["input-pattern-temp-20", $(".input-pattern-temp-20").val()]
-    ];
-
-    if (!confirm("패턴을 수정 하시겠습니까?")) return;
-
-//    writeSequential(tagValueMap, 0);
-    writeSequential(tagValueMap);
+// INFO 그룹에서 패턴 데이터 읽어서 POPUP input에 세팅
+function loadPatternDataFromINFO() {
+    console.log("📊 INFO 그룹에서 데이터 로드 중...");
+    
+    // 패턴 번호 로드
+    loadInfoValue("analog-pattern-number", ".analog-pattern-number");
+    
+    // 시간 데이터 로드 (INFO → POPUP input)
+    for (let i = 1; i <= 20; i++) {
+        loadInfoValue(
+            "info-pattern-" + currentPatternNo + "-time-" + i,
+            ".input-pattern-time-" + i
+        );
+    }
+    
+    // 온도 데이터 로드 (INFO → POPUP input)
+    for (let i = 1; i <= 20; i++) {
+        loadInfoValue(
+            "info-pattern-" + currentPatternNo + "-temp-" + i,
+            ".input-pattern-temp-" + i
+        );
+    }
 }
 
-//저장 메서드((2025-12-24 추가)[변경])
-function writeSequential(list){
-	
-	var listParam = JSON.stringify(list);
-	
+// INFO 그룹에서 값 읽기
+function loadInfoValue(infoTag, inputSelector) {
     $.ajax({
-        url: "/posco/monitoring/write/patternInputList",
+        url: "/posco/monitoring/read/infoanalog",
+        type: "get",
+        data: { tagName: infoTag },
+        success: function (res) {
+            if (res.status === "OK") {
+                $(inputSelector).val(res.value);
+                console.log("✓ " + infoTag + " → " + inputSelector + " = " + res.value);
+            }
+        },
+        error: function() {
+            console.warn("⚠️ " + infoTag + " 읽기 실패");
+        }
+    });
+}
+
+// 패턴 수정 (저장)
+function savePopupValues() {
+    const tagValueMap = [];
+    
+    // 시간 데이터 수집 (POPUP 그룹용)
+    for (let i = 1; i <= 20; i++) {
+        const value = $(".input-pattern-time-" + i).val();
+        if (value !== "" && value !== undefined) {
+            tagValueMap.push([
+                "input-pattern-time-" + i,
+                value
+            ]);
+        }
+    }
+    
+    // 온도 데이터 수집 (POPUP 그룹용)
+    for (let i = 1; i <= 20; i++) {
+        const value = $(".input-pattern-temp-" + i).val();
+        if (value !== "" && value !== undefined) {
+            tagValueMap.push([
+                "input-pattern-temp-" + i,
+                value
+            ]);
+        }
+    }
+
+    if (!confirm("패턴 " + currentPatternNo + "을 수정 하시겠습니까?")) return;
+
+    console.log("💾 저장할 데이터:", tagValueMap);
+    writeSequentialToPOPUP(tagValueMap);
+}
+
+// POPUP 그룹에 데이터 저장
+function writeSequentialToPOPUP(list) {
+    var listParam = JSON.stringify(list);
+    
+    console.log("📤 POPUP 그룹에 데이터 전송 중...");
+    
+    $.ajax({
+        url: "/posco/monitoring/write/patternInputList",  // POPUP 그룹용
         type: "post",
         traditional: true,
         data: {
-        	"listParam":listParam
+            "listParam": listParam
         },
         success: function (result) {
-            console.log(result);
+            console.log("✅ POPUP 그룹 저장 완료:", result);
+            
+            // POPUP 그룹 저장 후 WRITE 비트 트리거
             triggerPatternWriteBit();
         },
         error: function () {
-            alert("저장 실패 : " + tagName);
-        }
-    });
-
-}
-/*
-//저장 메서드
-function writeSequential(list, idx) {
-
-    if (idx >= list.length) {
-        triggerPatternWriteBit();
-        return;
-    }
-
-    const tagName = list[idx][0];
-    const value = list[idx][1];
-
-    $.ajax({
-        url: "/posco/monitoring/write/patternInput",
-        type: "post",
-        data: {
-            tagName: tagName,
-            value: value
-        },
-        success: function () {
-            writeSequential(list, idx + 1);
-        },
-        error: function () {
-            alert("저장 실패 : " + tagName);
+            alert("저장 실패");
         }
     });
 }
-*/
 
-//패턴쓰기(버튼) 비트살리기
+// 패턴별 쓰기 비트 트리거 (INFO 그룹)
 function triggerPatternWriteBit() {
-
+    console.log("📝 WRITE 비트 트리거 중...");
+    
     $.ajax({
-        url: "/posco/monitoring/write/patternWriteBit",
+        url: "/posco/monitoring/write/patternInfoWrite",  // INFO 그룹
         type: "post",
         data: {
-            tagName: "pattern-write",
-            value: 1
+            patternNo: currentPatternNo,
+            tagName: "pattern-write-" + currentPatternNo
         },
         success: function () {
-
-           
+            console.log("✅ 패턴 " + currentPatternNo + " WRITE 완료");
+            
+            // 부모 창 새로고침
             if (window.opener && !window.opener.closed) {
-                window.opener.overviewListView();
-                window.opener.overviewListViewString();
+                if (typeof window.opener.updateAllPatternData === 'function') {
+                    window.opener.updateAllPatternData();
+                }
             }
 
-            alert("패턴이 수정 되었습니다.");
+            alert("패턴 " + currentPatternNo + "이 수정 되었습니다.");
             window.close();
         },
         error: function () {
@@ -396,10 +370,7 @@ function triggerPatternWriteBit() {
         }
     });
 }
-
-
 </script>
-
 
 </body>
 </html>

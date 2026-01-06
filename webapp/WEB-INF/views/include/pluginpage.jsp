@@ -22,6 +22,10 @@
 <script type="text/javascript" src="/posco/js/highchart/exporting.js"></script>
 <script type="text/javascript" src="/posco/js/highchart/export-data.js"></script>
 <script type="text/javascript" src="/posco/js/highchart/data.js"></script>
+<!-- <script type="text/javascript" src="/posco/js/highchart/highstock.js"></script> -->
+<script type="text/javascript" src="/posco/js/highchart/offline-exporting.js"></script>
+
+
 
 
 <!-- Air Datepicker -->

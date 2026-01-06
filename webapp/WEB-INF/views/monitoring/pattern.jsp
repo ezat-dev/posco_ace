@@ -56,6 +56,43 @@
             content: "⚙";
             font-size: 32px;
         }
+		
+		/* 통합 섹션 스타일 */
+.combined-section {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #33363d;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.section-title::before {
+    content: "📊";
+    font-size: 22px;
+}
+
+.section-title #patternStatus {
+    margin-left: auto;
+}
+
+/* 현재 운전 상태 테이블과 패턴 정보 테이블 간격 */
+.seg-table-wrap {
+    margin-bottom: 20px;
+}
+
+.st-table-wrap {
+    margin-top: 20px;
+}
 
         #patternStatus {
             background: linear-gradient(135deg, #33363d, #4a4d57);
@@ -171,7 +208,8 @@
         /* 기존 버튼 클래스명 유지 */
         .pattern-read,
         .pattern-write,
-        .pattern-skip {
+        .pattern-skip,
+        .pattern-manage-btn {
             flex: 1;
             min-width: 100px;
             height: 55px;
@@ -213,17 +251,27 @@
         .pattern-skip::before {
             content: "⏭️";
         }
+        
+        .pattern-manage-btn {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+
+        .pattern-manage-btn::before {
+            content: "📁";
+        }
 
         .pattern-read:hover,
         .pattern-write:hover,
-        .pattern-skip:hover {
+        .pattern-skip:hover,
+        .pattern-manage-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .pattern-read:active,
         .pattern-write:active,
-        .pattern-skip:active {
+        .pattern-skip:active,
+        .pattern-manage-btn:active {
             transform: translateY(-1px);
         }
 
@@ -488,149 +536,137 @@
             
         </div>
 
-        <!-- 1. 현재 운전 상태 (최상단) -->
-        <div class="status-section">
-            <div class="section-title">현재 운전 상태</div>
-            <div class="seg-table-wrap">
-                <table class="seg-table">
-                    <tr>
-                        <th>현재 운전 패턴번호</th>
-                        <th>현재 진행 Seg</th>
-                        <th>현재 진행 Seg 남은시간(분)</th>
-                    </tr>
-                    <tr>
-                        <td class="analog-pattern-status"></td>
-                        <td class="analog-seg-status"></td>
-                        <td class="analog-seg-time"></td>
-                    </tr>      
-                </table>
-            </div>
+        <!-- 1. 컨트롤 패널 (최상단) -->
+<div class="control-panel">
+    <!-- 패턴 제어 -->
+    <div class="control-card">
+        <div class="card-title">패턴 제어</div>
+        <div class="btn-group">
+            <div class="pattern-skip">패턴 스킵</div>
+            <div class="pattern-manage-btn">패턴 관리</div>
         </div>
+    </div>
 
-        <!-- 2. 컨트롤 패널 (두번째 줄) -->
-        <div class="control-panel">
-            <!-- 패턴 제어 -->
-            <div class="control-card">
-                <div class="card-title">패턴 제어</div>
-                <div class="btn-group">
-                    <div class="pattern-read">패턴 읽기</div>
-                    <div class="pattern-write">패턴 수정</div>
-                    <div class="pattern-skip">패턴 스킵</div>
-                </div>
-            </div>
-
-            <!-- 운전 패턴 설정 -->
-            <div class="control-card">
-                <div class="card-title">운전 패턴 설정</div>
-                <div class="input-group">
-                    <label class="pattern-label">운전 패턴번호</label>
-                    <input type="number" class="pattern-run" min="1" max="14">
-                    <div class="pattern-on">적용</div>
-                </div>
-            </div>
-
-            <!-- 온도계 통신 전환 -->
-            <div class="control-card">
-                <div class="card-title">온도계 통신 전환(비가동중일때만 조작 가능)</div>
-                <div class="switch-group">
-                    <div class="btn pattern-switch-on" data-tag="pattern-switch-on">온도계 통신 전환 ON</div>
-					<div class="btn pattern-switch-off" data-tag="pattern-switch-off">온도계 통신 전환 OFF</div>
-
-                </div>
-            </div>
+    <!-- 운전 패턴 설정 -->
+    <!-- <div class="control-card">
+        <div class="card-title">운전 패턴 설정</div>
+        <div class="input-group">
+            <label class="pattern-label">운전 패턴번호</label>
+            <input type="number" class="pattern-run" min="1" max="14">
+            <div class="pattern-on">적용</div>
         </div>
+    </div> -->
 
-        <!-- 3. 패턴 테이블 (세번째 줄) -->
-        <div class="table-section">
-            <div class="section-title">패턴 정보관리 <div id="patternStatus">상태: -</div></div>
-            
-            <div class="st-table-wrap">
-                <table class="st-table">
-                    <colgroup>
-                        <col span="21">
-                    </colgroup>
-
-                    <tr>
-                        <th colspan="3" class="pattern-number">
-                            패턴 번호 : <input type="number" class="analog-pattern-number" min="1" max="14">
-                        </th>
-                        <th colspan="18">진공 열처리로 패턴 프로그램</th>
-                    </tr>
-
-                    <tr>
-                        <td class="big">Seg</td>
-                        <td class="big">1</td>
-                        <td class="big">2</td>
-                        <td class="big">3</td>
-                        <td class="big">4</td>
-                        <td class="big">5</td>
-                        <td class="big">6</td>
-                        <td class="big">7</td>
-                        <td class="big">8</td>
-                        <td class="big">9</td>
-                        <td class="big">10</td>
-                        <td class="big">11</td>
-                        <td class="big">12</td>
-                        <td class="big">13</td>
-                        <td class="big">14</td>
-                        <td class="big">15</td>
-                        <td class="big">16</td>
-                        <td class="big">17</td>
-                        <td class="big">18</td>
-                        <td class="big">19</td>
-                        <td class="big">20</td>
-                    </tr>
-
-                    <tr>
-                        <td>시간(분)</td>
-                        <td class="analog-pattern-time-1"></td>
-                        <td class="analog-pattern-time-2"></td>
-                        <td class="analog-pattern-time-3"></td>
-                        <td class="analog-pattern-time-4"></td>
-                        <td class="analog-pattern-time-5"></td>
-                        <td class="analog-pattern-time-6"></td>
-                        <td class="analog-pattern-time-7"></td>
-                        <td class="analog-pattern-time-8"></td>
-                        <td class="analog-pattern-time-9"></td>
-                        <td class="analog-pattern-time-10"></td>
-                        <td class="analog-pattern-time-11"></td>
-                        <td class="analog-pattern-time-12"></td>
-                        <td class="analog-pattern-time-13"></td>
-                        <td class="analog-pattern-time-14"></td>
-                        <td class="analog-pattern-time-15"></td>
-                        <td class="analog-pattern-time-16"></td>
-                        <td class="analog-pattern-time-17"></td>
-                        <td class="analog-pattern-time-18"></td>
-                        <td class="analog-pattern-time-19"></td>
-                        <td class="analog-pattern-time-20"></td>
-                    </tr>
-
-                    <tr>
-                        <td>온도(℃)</td>
-                        <td class="analog-pattern-temp-1"></td>
-                        <td class="analog-pattern-temp-2"></td>
-                        <td class="analog-pattern-temp-3"></td>
-                        <td class="analog-pattern-temp-4"></td>
-                        <td class="analog-pattern-temp-5"></td>
-                        <td class="analog-pattern-temp-6"></td>
-                        <td class="analog-pattern-temp-7"></td>
-                        <td class="analog-pattern-temp-8"></td>
-                        <td class="analog-pattern-temp-9"></td>
-                        <td class="analog-pattern-temp-10"></td>
-                        <td class="analog-pattern-temp-11"></td>
-                        <td class="analog-pattern-temp-12"></td>
-                        <td class="analog-pattern-temp-13"></td>
-                        <td class="analog-pattern-temp-14"></td>
-                        <td class="analog-pattern-temp-15"></td>
-                        <td class="analog-pattern-temp-16"></td>
-                        <td class="analog-pattern-temp-17"></td>
-                        <td class="analog-pattern-temp-18"></td>
-                        <td class="analog-pattern-temp-19"></td>
-                        <td class="analog-pattern-temp-20"></td>
-                    </tr>
-                </table>
-            </div>
+    <!-- 온도계 통신 전환 -->
+    <div class="control-card">
+        <div class="card-title">온도계 통신 전환(비가동중일때만 조작 가능)</div>
+        <div class="switch-group">
+            <div class="btn pattern-switch-on" data-tag="pattern-switch-on">온도계 통신 전환 ON</div>
+            <div class="btn pattern-switch-off" data-tag="pattern-switch-off">온도계 통신 전환 OFF</div>
         </div>
+    </div>
+</div>
+
+<!-- 2. 현재 운전 상태 + 패턴 정보 통합 -->
+<div class="combined-section">
+    <!-- 현재 운전 상태 -->
+    <div class="section-title">현재 운전 상태 <div id="patternStatus">상태: -</div></div>
+    <div class="seg-table-wrap">
+        <table class="seg-table">
+            <tr>
+                <th>현재 운전 패턴번호</th>
+                <th>현재 진행 Seg</th>
+                <th>현재 진행 Seg 남은시간(분)</th>
+            </tr>
+            <tr>
+                <td class="analog-pattern-status"></td>
+                <td class="analog-seg-status"></td>
+                <td class="analog-seg-time"></td>
+            </tr>      
+        </table>
+    </div>
+
+    <!-- 패턴 정보 테이블 -->
+    <div class="st-table-wrap">
+        <table class="st-table">
+            <colgroup>
+                <col span="21">
+            </colgroup>
+
+            <tr>
+                <td class="big">Seg</td>
+                <td class="big">1</td>
+                <td class="big">2</td>
+                <td class="big">3</td>
+                <td class="big">4</td>
+                <td class="big">5</td>
+                <td class="big">6</td>
+                <td class="big">7</td>
+                <td class="big">8</td>
+                <td class="big">9</td>
+                <td class="big">10</td>
+                <td class="big">11</td>
+                <td class="big">12</td>
+                <td class="big">13</td>
+                <td class="big">14</td>
+                <td class="big">15</td>
+                <td class="big">16</td>
+                <td class="big">17</td>
+                <td class="big">18</td>
+                <td class="big">19</td>
+                <td class="big">20</td>
+            </tr>
+
+            <tr>
+                <td>시간(분)</td>
+                <td class="analog-pattern-time-1"></td>
+                <td class="analog-pattern-time-2"></td>
+                <td class="analog-pattern-time-3"></td>
+                <td class="analog-pattern-time-4"></td>
+                <td class="analog-pattern-time-5"></td>
+                <td class="analog-pattern-time-6"></td>
+                <td class="analog-pattern-time-7"></td>
+                <td class="analog-pattern-time-8"></td>
+                <td class="analog-pattern-time-9"></td>
+                <td class="analog-pattern-time-10"></td>
+                <td class="analog-pattern-time-11"></td>
+                <td class="analog-pattern-time-12"></td>
+                <td class="analog-pattern-time-13"></td>
+                <td class="analog-pattern-time-14"></td>
+                <td class="analog-pattern-time-15"></td>
+                <td class="analog-pattern-time-16"></td>
+                <td class="analog-pattern-time-17"></td>
+                <td class="analog-pattern-time-18"></td>
+                <td class="analog-pattern-time-19"></td>
+                <td class="analog-pattern-time-20"></td>
+            </tr>
+
+            <tr>
+                <td>온도(℃)</td>
+                <td class="analog-pattern-temp-1"></td>
+                <td class="analog-pattern-temp-2"></td>
+                <td class="analog-pattern-temp-3"></td>
+                <td class="analog-pattern-temp-4"></td>
+                <td class="analog-pattern-temp-5"></td>
+                <td class="analog-pattern-temp-6"></td>
+                <td class="analog-pattern-temp-7"></td>
+                <td class="analog-pattern-temp-8"></td>
+                <td class="analog-pattern-temp-9"></td>
+                <td class="analog-pattern-temp-10"></td>
+                <td class="analog-pattern-temp-11"></td>
+                <td class="analog-pattern-temp-12"></td>
+                <td class="analog-pattern-temp-13"></td>
+                <td class="analog-pattern-temp-14"></td>
+                <td class="analog-pattern-temp-15"></td>
+                <td class="analog-pattern-temp-16"></td>
+                <td class="analog-pattern-temp-17"></td>
+                <td class="analog-pattern-temp-18"></td>
+                <td class="analog-pattern-temp-19"></td>
+                <td class="analog-pattern-temp-20"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 
         <!-- 오버레이 (기존 유지) -->
         <div class="pattern-overlay">
@@ -678,6 +714,10 @@ $(".pattern-write").on("click", function () {
 
 $(".pattern-skip").on("click", function () {
     openPopup("/posco/popup/patternSkip", 350, 140);
+});
+
+$(".pattern-manage-btn").on("click", function () {
+    openPopup("/posco/popup/patternInfo", 1700, 900);
 });
 function openPopup(url, w, h) {
     // 화면 중앙 계산

@@ -569,6 +569,10 @@ h1{
   
   
   
+  <div class="icon-ten"></div>
+  
+  
+  
   <div class="lamp-check-lowvacuum"></div>
   <div class="lamp-check-hivacuum"></div>
   <div class="lamp-check-heat"></div>
@@ -590,7 +594,7 @@ h1{
   <div class="btn vacuum-valve" data-tag="vacuum-valve">고진공 밸브</div>
   <div class="btn cold-pen" data-tag="cold-pen">냉각 펜</div>
   <div class="btn luffing-pump" data-tag="luffing-pump">저진공 펌프</div>
-  <div class="diff-pump" data-tag="diff-pump">고진공 펌프</div>
+  <div class="btn diff-pump" data-tag="diff-pump">고진공 펌프</div>
   <div class="btn booster-pump" data-tag="booster-pump">저진공 보조 펌프</div>
   <div class="btn fourline-valve" data-tag="fourline-valve">포라인 밸브</div>
   <div class="btn luffing-valve" data-tag="luffing-valve">저진공 밸브</div>

@@ -460,10 +460,213 @@ public class MonitoringController {
 		return result;
 	}
 	
-	
-	
-	
-	
+//////////////////////////////////////패턴관리(팝업)////////////////////////////////////////////////
+
+	//PLC 패턴 관리(팝업) 아날로그값 READ
+	@RequestMapping(value = "/monitoring/read/patternInfoAnalog", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> patternInfoAnalog() {
+		Map<String, Object> result = new HashMap<>();
+		OpcDataMap opc = new OpcDataMap();
+		try {            
+			result = opc.getOpcDataListMap("ace_posco.INFO");
+			result.put("status", "OK");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("status", "NG");
+			result.put("error", "PLC 연결 끊김");
+		}
+		return result;
+	}
+
+
+	//PLC 패턴 관리(팝업) 개별 읽기버튼
+	@RequestMapping(value = "/monitoring/write/patternInfoRead", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean patternInfoRead(
+			@RequestParam int patternNo,
+			@RequestParam String tagName) {  // 👈 tagName 파라미터 추가
+		try {
+			OpcDataMap opc = new OpcDataMap();
+
+			// ① 패턴번호 설정
+			opc.setOpcData(
+					"ace_posco.INFO.analog-pattern-number",
+					(short) patternNo
+					);
+			Thread.sleep(300);
+
+			// ② 패턴별 읽기 비트 ON (pattern-read-1 ~ pattern-read-14)
+			opc.setOpcData("ace_posco.INFO." + tagName, true);
+			Thread.sleep(1000);
+
+			// ③ 패턴별 읽기 비트 OFF
+			opc.setOpcData("ace_posco.INFO." + tagName, false);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	//PLC 패턴 관리(팝업) 개별 수정버튼 (패턴 쓰기)
+	@RequestMapping(value = "/monitoring/write/patternInfoWrite", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean patternInfoWrite(
+			@RequestParam int patternNo,
+			@RequestParam String tagName) {  // 👈 pattern-write-1 ~ pattern-write-14
+		try {
+			OpcDataMap opc = new OpcDataMap();
+
+			// ① 패턴번호 설정
+			opc.setOpcData(
+					"ace_posco.INFO.analog-pattern-number",
+					(short) patternNo
+					);
+			Thread.sleep(300);
+
+			// ② 패턴별 쓰기 비트 ON (pattern-write-1 ~ pattern-write-14)
+			opc.setOpcData("ace_posco.INFO." + tagName, true);
+			Thread.sleep(2000);
+
+			// ③ 패턴별 쓰기 비트 OFF
+			opc.setOpcData("ace_posco.INFO." + tagName, false);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	//PLC 패턴 관리(팝업) 개별 적용버튼
+	@RequestMapping(value = "/monitoring/write/patternInfoApplyBit", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean patternInfoApplyBit(
+			@RequestParam String tagName,
+			@RequestParam int value) {
+		try {
+			String node = "ace_posco.INFO." + tagName;
+			NodeId nodeId = new NodeId(
+					Unsigned.ushort(2),
+					node
+					);
+
+			MainController.client.writeValue(
+					nodeId,
+					new DataValue(new Variant(value == 1))
+					).get();
+
+			// 5초 후 자동 OFF
+			new Thread(() -> {
+				try {
+					Thread.sleep(5000);
+					MainController.client.writeValue(
+							nodeId,
+							new DataValue(new Variant(false))
+							).get();
+				} catch (Exception ignored) {}
+			}).start();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	//PLC 패턴 관리(팝업) 아날로그 값만 쓰기 (운전 패턴번호 설정용)
+	@RequestMapping(value = "/monitoring/write/patternInfoAnalogOnly", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> patternInfoAnalogOnly(
+			@RequestParam String tagName,
+			@RequestParam int value) {
+		Map<String, Object> rMap = new HashMap<>();
+		OpcDataMap opc = new OpcDataMap();
+		try {
+			if (value < -32768 || value > 32767) {
+				rMap.put("alert", "범위초과");
+				return rMap;
+			}
+
+			// INFO 그룹으로 아날로그 값 설정
+			opc.setOpcData(
+					"ace_posco.INFO." + tagName,
+					(short) value
+					);
+
+			rMap.put("status", "OK");
+			return rMap;
+		} catch (Exception e) {
+			rMap.put("alert", e.getMessage());
+			return rMap;
+		}
+	}
+
+
+	//PLC 패턴 관리(팝업) 패턴 데이터 일괄 쓰기
+	@RequestMapping(value = "/monitoring/write/patternInfoInputList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> patternInfoInputList(@RequestParam(required = false) String listParam) {
+		Map<String, Object> rtnMap = new HashMap<>();
+		JSONParser listParser = new JSONParser();
+		Object listObj = new Object();
+		JSONArray listJsonArray = new JSONArray();
+		OpcDataMap opc = new OpcDataMap();
+
+		try {
+			// 현재 조회중인 패턴 값 읽기
+			Map<String, Object> ptrnNumberMap = opc.getOpcData("ace_posco.INFO.analog-pattern-number");
+			short ptrn_no = Short.parseShort(ptrnNumberMap.get("value").toString());
+
+			listObj = listParser.parse(listParam);
+
+			if(listObj instanceof JSONArray) {
+				listJsonArray = (JSONArray)listObj;
+				rtnMap.put("ptrn_no", ptrn_no);
+
+				for(int i=0; i<listJsonArray.size(); i++) {
+					JSONArray aa = (JSONArray)listJsonArray.get(i);
+
+					String tagName = "";
+					String columnName = "";
+					short tagValue = 0;
+
+					for(int j=0; j<aa.size(); j++) {
+						tagName = "ace_posco.INFO." + aa.get(0).toString();  // 👈 INFO 그룹
+
+						if(aa.get(0).toString().length() > 0) {
+							String[] aaArray = aa.get(0).toString().split("-");
+							if(aa.get(0).toString().contains("-time-")) {
+								columnName = "ptrn_seg" + aaArray[3] + "_time";
+							} else {
+								columnName = "ptrn_seg" + aaArray[3] + "_temp";
+							}
+						}
+
+						tagValue = Short.parseShort(aa.get(1).toString());
+					}
+
+					rtnMap.put(columnName, tagValue);
+					opc.setOpcData(tagName, tagValue);
+				}
+
+				logger.info("패턴관리(팝업)-패턴수정 : {}", "패턴 데이터적용 : " + rtnMap.toString());
+			}
+
+			monitoringService.patternInputList(rtnMap);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rtnMap;
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//패턴 읽기버튼 쓰기
 	@RequestMapping(value = "/monitoring/write/patternBit", method = RequestMethod.POST)
@@ -896,7 +1099,23 @@ public class MonitoringController {
 	}
 
 
-	
+	@RequestMapping(value = "/monitoring/read/infoanalog", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> inforeadAnalog(@RequestParam String tagName) {
+	    Map<String, Object> result = new HashMap<>();
+	    OpcDataMap opc = new OpcDataMap();
+	    
+	    try {
+	        // INFO 그룹에서 읽기
+	        Map<String, Object> data = opc.getOpcData("ace_posco.INFO." + tagName);
+	        result.put("status", "OK");
+	        result.put("value", data.get("value"));
+	    } catch (Exception e) {
+	        result.put("status", "NG");
+	    }
+	    
+	    return result;
+	}
 	
 	
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -1149,6 +1368,12 @@ public class MonitoringController {
 	@RequestMapping(value = "/popup/patternSkip", method = RequestMethod.GET)
 	public String patternSjip(Users users) {
 		return "/popup/patternSkip.jsp"; 
+	}
+	
+	//패턴관리
+	@RequestMapping(value = "/popup/patternInfo", method = RequestMethod.GET)
+	public String patternInfo(Users users) {
+		return "/popup/patternInfo.jsp"; 
 	}
 	///////////////////////////////////////////////
 	

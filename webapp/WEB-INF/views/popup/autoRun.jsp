@@ -83,7 +83,7 @@
 (function(){
   console.log("### Trend Popup Script Loaded");
 
-  const DURATION = 1000;
+  const DURATION = 600;
   let timerInterval = null;
   let startTime = 0;
   let activeButton = null;

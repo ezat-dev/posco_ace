@@ -1,0 +1,559 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>패턴관리</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<%@include file="../include/pluginpage.jsp" %> 
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Noto Sans KR", "맑은 고딕", Arial, Helvetica, sans-serif;
+    background: #f5f5f5;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    background: white;
+}
+
+/* 헤더 */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #33363d, #4a4d57);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-title::before {
+    content: "📁";
+    font-size: 28px;
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 좌측 패턴 트리 */
+.pattern-tree {
+    width: 250px;
+    background: #f8f9fa;
+    border-right: 2px solid #e0e0e0;
+    overflow-y: auto;
+    padding: 20px;
+    margin-top: 80px;
+}
+
+.pattern-tree-item {
+    background: white;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    color: #33363d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pattern-tree-item::before {
+    content: "📄";
+    font-size: 18px;
+}
+
+.pattern-tree-item:hover {
+    background: #e8f0fe;
+    transform: translateX(5px);
+}
+
+.pattern-tree-item.active {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+}
+
+/* 우측 컨텐츠 영역 */
+.pattern-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    margin-top: 80px;
+}
+
+.pattern-detail {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.pattern-detail-header {
+    background: linear-gradient(135deg, #33363d, #4a4d57);
+    color: white;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.pattern-detail-body {
+    padding: 20px;
+}
+
+.pattern-table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.pattern-detail-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.pattern-detail-table th {
+    background: linear-gradient(135deg, #33363d, #4a4d57);
+    color: white;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pattern-detail-table td {
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    background: white;
+}
+
+.pattern-detail-table td.label {
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.pattern-action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.pattern-action-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pattern-action-btn.read {
+    background: linear-gradient(135deg, #33363d, #4a4d57);
+}
+
+.pattern-action-btn.read::before {
+    content: "📖";
+}
+
+.pattern-action-btn.edit {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+}
+
+.pattern-action-btn.edit::before {
+    content: "✏️";
+}
+
+.pattern-action-btn.apply {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.pattern-action-btn.apply::before {
+    content: "✓";
+}
+
+.pattern-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 18px;
+}
+
+.empty-state::before {
+    content: "📋";
+    display: block;
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .pattern-tree {
+        width: 100%;
+        max-height: 200px;
+    }
+    
+    .header-title {
+        font-size: 18px;
+    }
+}
+</style>
+</head>
+<body>
+
+
+<div class="header">
+    <div class="header-title">패턴 관리</div>
+    <button class="close-btn" onclick="window.close()">닫기</button>
+</div>
+
+
+<div class="container">
+    
+    <div class="pattern-tree" id="patternTree">
+        <!--동적 생성 -->
+    </div>
+    
+    
+    <div class="pattern-content" id="patternContent">
+        <div class="empty-state">
+            좌측에서 패턴을 선택하세요
+        </div>
+    </div>
+</div>
+
+<script>
+
+// 페이지 로드시 실행
+document.addEventListener('DOMContentLoaded', function() {
+    initPatternTree();
+    
+    // 2초마다 전체 패턴 데이터 갱신
+    setInterval(function() {
+        updateAllPatternData();
+    }, 2000);
+});
+
+// 전체 패턴 데이터 갱신
+function updateAllPatternData() {
+    $.ajax({
+        url: "/posco/monitoring/read/patternInfoAnalog",
+        type: "post",
+        data: {},
+        success: function(res) {
+            if (res.status === "NG") {
+                console.warn("⚠️ PLC 연결 끊김:", res.error);
+                return;
+            }
+            
+            const opcDatas = res.multiValues;
+            
+            for (let rows in opcDatas) {
+                for (let row in opcDatas[rows]) {
+                    const d = opcDatas[rows];
+                    
+                    if (d[row].action == "value") {
+                        // info-pattern-1-time-1 형식의 클래스에 값 설정
+                        const elements = document.querySelectorAll('.' + row);
+                        elements.forEach(el => {
+                            el.textContent = d[row].value;
+                        });
+                    }
+                }
+            }
+        },
+        error: function(err) {
+            console.error("❌ 패턴 데이터 읽기 실패:", err);
+        }
+    });
+}
+
+// 패턴 트리 초기화
+function initPatternTree() {
+    const treeContainer = document.getElementById('patternTree');
+    treeContainer.innerHTML = '';
+    
+    for (let i = 1; i <= 14; i++) {
+        const item = document.createElement('div');
+        item.className = 'pattern-tree-item';
+        item.textContent = `패턴 ${i}`;
+        item.dataset.pattern = i;
+        
+        item.addEventListener('click', function() {
+            // 모든 항목 비활성화
+            document.querySelectorAll('.pattern-tree-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            // 현재 항목 활성화
+            this.classList.add('active');
+            // 패턴 내용 표시
+            showPatternDetail(i);
+        });
+        
+        treeContainer.appendChild(item);
+    }
+}
+
+// 패턴 상세 정보 표시
+function showPatternDetail(patternNum) {
+    const contentContainer = document.getElementById('patternContent');
+    
+    // 요소 생성
+    const detailDiv = document.createElement('div');
+    detailDiv.className = 'pattern-detail';
+    
+    // 헤더 생성
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'pattern-detail-header';
+    headerDiv.textContent = '패턴 ' + patternNum + ' 상세 정보';
+    
+    // 바디 생성
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'pattern-detail-body';
+    
+    // 테이블 컨테이너 생성
+    const tableContainer = document.createElement('div');
+    tableContainer.className = 'pattern-table-container';
+    
+    // 테이블 생성
+    const table = document.createElement('table');
+    table.className = 'pattern-detail-table';
+    
+    // Colgroup
+    const colgroup = document.createElement('colgroup');
+    const firstCol = document.createElement('col');
+    firstCol.style.width = '80px';
+    colgroup.appendChild(firstCol);
+    for (let i = 0; i < 20; i++) {
+        colgroup.appendChild(document.createElement('col'));
+    }
+    table.appendChild(colgroup);
+    
+    // Seg 행
+    const segRow = document.createElement('tr');
+    const segLabel = document.createElement('td');
+    segLabel.className = 'label';
+    segLabel.textContent = 'Seg';
+    segRow.appendChild(segLabel);
+    for (let i = 1; i <= 20; i++) {
+        const td = document.createElement('td');
+        const strong = document.createElement('strong');
+        strong.textContent = i;
+        td.appendChild(strong);
+        segRow.appendChild(td);
+    }
+    table.appendChild(segRow);
+    
+    // 시간 행
+    const timeRow = document.createElement('tr');
+    const timeLabel = document.createElement('td');
+    timeLabel.className = 'label';
+    timeLabel.textContent = '시간(분)';
+    timeRow.appendChild(timeLabel);
+    for (let i = 1; i <= 20; i++) {
+        const td = document.createElement('td');
+        td.className = 'info-pattern-' + patternNum + '-time-' + i;
+        td.textContent = '-';
+        timeRow.appendChild(td);
+    }
+    table.appendChild(timeRow);
+    
+    // 온도 행
+    const tempRow = document.createElement('tr');
+    const tempLabel = document.createElement('td');
+    tempLabel.className = 'label';
+    tempLabel.textContent = '온도(℃)';
+    tempRow.appendChild(tempLabel);
+    for (let i = 1; i <= 20; i++) {
+        const td = document.createElement('td');
+        td.className = 'info-pattern-' + patternNum + '-temp-' + i;
+        td.textContent = '-';
+        tempRow.appendChild(td);
+    }
+    table.appendChild(tempRow);
+    
+    tableContainer.appendChild(table);
+    bodyDiv.appendChild(tableContainer);
+    
+    // 버튼 영역 생성
+    const buttonDiv = document.createElement('div');
+    buttonDiv.className = 'pattern-action-buttons';
+    
+    // 읽기 버튼
+    const readBtn = document.createElement('button');
+    readBtn.className = 'pattern-action-btn read';
+    readBtn.textContent = '읽기';
+    readBtn.onclick = function() { readPattern(patternNum); };
+    
+    // 수정 버튼
+    const editBtn = document.createElement('button');
+    editBtn.className = 'pattern-action-btn edit';
+    editBtn.textContent = '수정';
+    editBtn.onclick = function() { editPattern(patternNum); };
+    
+    // 적용 버튼
+    const applyBtn = document.createElement('button');
+    applyBtn.className = 'pattern-action-btn apply';
+    applyBtn.textContent = '적용';
+    applyBtn.onclick = function() { applyPattern(patternNum); };
+    
+    buttonDiv.appendChild(readBtn);
+    buttonDiv.appendChild(editBtn);
+    buttonDiv.appendChild(applyBtn);
+    
+    bodyDiv.appendChild(buttonDiv);
+    
+    // 조립
+    detailDiv.appendChild(headerDiv);
+    detailDiv.appendChild(bodyDiv);
+    
+    // 기존 내용 제거 후 추가
+    contentContainer.innerHTML = '';
+    contentContainer.appendChild(detailDiv);
+}
+
+// 패턴 읽기
+function readPattern(patternNum) {
+    console.log('패턴 ' + patternNum + ' 읽기');
+    
+    $.ajax({
+        url: "/posco/monitoring/write/patternInfoRead",
+        type: "post",
+        data: { 
+            patternNo: patternNum,
+            tagName: "pattern-read-" + patternNum
+        },
+        success: function() {
+            console.log("✅ 패턴 " + patternNum + " 읽기 트리거 완료");
+            alert("패턴 " + patternNum + " 정보를 읽어왔습니다.");
+        },
+        error: function(err) {
+            console.error("❌ 패턴 읽기 실패:", err);
+            alert("패턴 읽기 실패");
+        }
+    });
+}
+
+// 패턴 수정 - patternWrite 팝업 열기 (읽기 제거)
+function editPattern(patternNum) {
+    console.log('패턴 ' + patternNum + ' 수정 팝업 열기');
+    
+    // 바로 팝업 열기 (읽기 과정 완전 제거)
+    openPopup("/posco/popup/patternWrite?patternNo=" + patternNum, 1250, 300);
+}
+
+// 팝업 열기
+function openPopup(url, w, h) {
+    const left = (window.screen.width - w) / 2;
+    const top = (window.screen.height - h) / 2;
+    const options = "width=" + w + ",height=" + h + ",left=" + left + ",top=" + top + ",resizable=yes,scrollbars=yes";
+    window.open(url, "_blank", options);
+}
+
+// 패턴 적용
+function applyPattern(patternNum) {
+    if (!confirm('패턴 ' + patternNum + '을 운전 패턴으로 적용하시겠습니까?')) {
+        return;
+    }
+    
+    console.log('패턴 ' + patternNum + ' 적용');
+    
+    // ① 운전 패턴번호 설정
+    $.ajax({
+        url: "/posco/monitoring/write/patternInfoAnalogOnly",
+        type: "post",
+        data: {
+            tagName: "pattern-run",
+            value: patternNum
+        },
+        success: function(res) {
+            if(res.alert) {
+                alert(res.alert);
+                return;
+            }
+            
+            console.log("✅ 운전 패턴번호 설정 완료");
+            
+            // ② 패턴별 적용 비트 ON
+            $.ajax({
+                url: "/posco/monitoring/write/patternInfoApplyBit",
+                type: "post",
+                data: {
+                    tagName: "pattern-on-" + patternNum,
+                    value: 1
+                },
+                success: function() {
+                    console.log("✅ 패턴 적용 완료");
+                    alert("패턴 " + patternNum + "이 운전 패턴으로 적용되었습니다.");
+                },
+                error: function(err) {
+                    console.error("❌ 패턴 적용 비트 실패:", err);
+                    alert("패턴 적용 실패");
+                }
+            });
+        },
+        error: function(err) {
+            console.error("❌ 패턴번호 설정 실패:", err);
+            alert("패턴번호 설정 실패");
+        }
+    });
+}
+
+</script>
+</body>
+</html>
