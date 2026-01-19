@@ -85,12 +85,17 @@
 	</update>
 	
 	<select id="getPatternList" parameterType="pattern" resultType="pattern">
-	    SELECT 
-	        proc_date, proc_ptrn_no, proc_ptrn_start, proc_ptrn_end
-	    FROM tb_pattern_proc
-	    WHERE proc_date BETWEEN #{sdate} AND #{edate}
-	    ORDER BY proc_ptrn_start;
-	</select>
+    SELECT 
+        p.proc_date,
+        p.proc_ptrn_no,
+        p.proc_ptrn_start,
+        p.proc_ptrn_end,
+        COALESCE(pn.pattern_name, CONCAT('패턴 ', p.proc_ptrn_no)) AS pattern_name
+    FROM tb_pattern_proc p
+    LEFT JOIN tb_pattern_name pn ON p.proc_ptrn_no = pn.pattern_no
+    WHERE p.proc_date BETWEEN #{sdate} AND #{edate}
+    ORDER BY p.proc_ptrn_start DESC
+</select>
 	
 	
 	<select id="getPatternInfo" parameterType="int" resultType="hashmap">

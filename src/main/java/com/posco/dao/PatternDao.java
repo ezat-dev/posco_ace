@@ -15,5 +15,14 @@ public interface PatternDao {
 	void patternEndDataUpdate(Pattern p);
 
 	List<Pattern> patternEndDataList(Pattern p);
-
+	
+	
+	
+	
+	
+    
+    
+    
+    
+    
 }

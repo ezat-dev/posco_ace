@@ -145,5 +145,8 @@ public class PatternServiceImpl implements PatternService {
 		}
 		
 	}
+	
+	
+	
 
 }

@@ -205,9 +205,9 @@ function pageObject(paramKey){
 			"a01":["/posco/monitoring/overView","운용화면"],
 			"a02":["/posco/monitoring/alarm","알람현황"],
 			"a03":["/posco/monitoring/alarmHistory","알람이력"],
-			"a04":["/posco/monitoring/trend","트렌드"],
-			"a05":"",
-			"a06":"",
+			"a04":["/posco/monitoring/historyTrend","히스토리 트렌드"],
+			"a05":["/posco/monitoring/realTrend","실시간 트렌드"],
+			"a06":["/posco/monitoring/patternTrend","패턴 트렌드"],
 			"a07":"",
 			//생산관리
 			"b01":["/posco/monitoring/pattern","패턴관리"],
@@ -220,7 +220,7 @@ function pageObject(paramKey){
 			//유지보수
 			"c01":["/posco/user/userInsert","사용자등록"],
 			"c02":["/posco/user/userPermission","사용자권한부여"],
-			"c03":["/posco/preservation/suriHistory","설비수리이력"],
+			"c03":"",
 			"c04":"",
 			"c05":"",
 			"c06":"",

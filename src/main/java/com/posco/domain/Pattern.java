@@ -57,6 +57,13 @@ public class Pattern {
 	private int ptrn_seg20_time;
 	
 	
+	//패턴이름부여
+	private int pattern_no;
+	private String pattern_name;
+	private String tdatetime;
+	
+	
+	
 	//2025-12-24 추가
 	private String proc_regtime;	//테이블에서 생성되는 기준키값
 	private String proc_date;		//패턴 등록일
@@ -383,6 +390,24 @@ public class Pattern {
 	}
 	public void setProc_comment(String proc_comment) {
 		this.proc_comment = proc_comment;
+	}
+	public int getPattern_no() {
+		return pattern_no;
+	}
+	public void setPattern_no(int pattern_no) {
+		this.pattern_no = pattern_no;
+	}
+	public String getPattern_name() {
+		return pattern_name;
+	}
+	public void setPattern_name(String pattern_name) {
+		this.pattern_name = pattern_name;
+	}
+	public String getTdatetime() {
+		return tdatetime;
+	}
+	public void setTdatetime(String tdatetime) {
+		this.tdatetime = tdatetime;
 	}
 	
 

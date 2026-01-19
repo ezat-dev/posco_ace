@@ -306,9 +306,35 @@ h1{
     
 }
 
+.icon-on, .icon-off {
+    font-size: 0 !important;  /* 텍스트 크기를 0으로 */
+    color: transparent !important;  /* 텍스트 투명하게 */
+}
+
+.ten-on {
+    border: 1px solid #00ff00;
+    /* 다른 스타일 유지 */
+}
 
 
-
+.analog-vac1_pv::after,
+.analog-vac2_pv::after,
+.analog-vac3_pv::after,
+.analog-tem_sp::after,
+.analog-tem_tsp::after,
+.analog-tem_1::after,
+.analog-tem_2::after,
+.analog-tem_3::after,
+.analog-tem_4::after,
+.analog-tem_5::after,
+.analog-tem_6::after,
+.analog-tem_7::after,
+.analog-tem_8::after,
+.analog-tem_9::after {
+    content: "℃";
+    margin-left: 2px;
+    font-size : 12px;
+}
 
 
 
@@ -414,7 +440,7 @@ h1{
 
 
 
-<!-- 가스 방향 -->
+<!-- 냉각펜 방향 -->
 
 <div class="lamp-arrow-gas" style="left: 1270px; top: 358px;">
     <div class="dot"></div>
@@ -495,6 +521,48 @@ h1{
 
 
 
+<!-- 질소가스 방향 -->
+
+
+<!-- <div class="lamp-arrow-gasgas" style="left: 1320px; top: 358px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div> -->
+
+
+<div class="lamp-arrow-gasgas vertical" style="left: 1406px; top: 305px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+<div class="lamp-arrow-gasgas vertical" style="left: 1406px; top: 240px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+<div class="lamp-arrow-gasgas vertical" style="left: 1406px; top: 170px;">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+
+
+
+
  <div class="st-table-wrap">
     <table class="st-table">
         <tr>
@@ -515,7 +583,7 @@ h1{
             <td class="analog-vac2_pv"></td>
             <td class="analog-vac3_pv"></td>   
             <td class="analog-tem_sp"></td>  
-            <td class="analog-tem_sp"></td>       
+            <td class="analog-tem_tsp"></td>       
         </tr>        
     </table>
 </div>
@@ -555,6 +623,7 @@ h1{
   <!-- 운전모드 확인 -->
   <div id="runStatus" style="position:absolute; left:35px; top:150px; font-size:18px; font-weight:bold; color:#003366;"> 운전 모드:</div>
   <div class="lamp-bit1-auto-run" style="position:absolute; left:120px; top:150px; font-size:18px; font-weight:bold; color:#003366;"></div>
+  <div class="lamp-bbit-auto-run" style="position:absolute; left:120px; top:150px; font-size:18px; font-weight:bold; color:#003366;"></div>
   <div class="lamp-bit2-manual-run" style="position:absolute; left:120px; top:150px; font-size:18px; font-weight:bold; color:#003366;"></div>
   
   <!-- 운전상태 확인 -->
@@ -569,13 +638,18 @@ h1{
   
   
   
-  <div class="icon-ten"></div>
+  <div class="icon-on" data-tag="icon-on"></div>
+  <div class="icon-off"></div>
   
   
   
   <div class="lamp-check-lowvacuum"></div>
   <div class="lamp-check-hivacuum"></div>
   <div class="lamp-check-heat"></div>
+  
+  <div class="lamp-check-setLow"></div>
+  <div class="lamp-check-setHi"></div>
+  <div class="lamp-check-setHeat"></div>
   
   <div class="line-1"></div>
   <div class="line-2"></div>
@@ -587,7 +661,7 @@ h1{
   <div class="water-cool-switch-3">냉각수 유량 3</div>
   <div class="water-cool-switch-4">냉각수 유량 4</div>
   
-  
+   <!-- <img class="gan" src="/posco/image/overview/gan.png" /> -->
   <img class="btn vantil" src="/posco/image/overview/vantil1.png" />
   <div class="btn vantil-pen" data-tag="vantil-pen">배기 펜</div>  
   <div class="btn vacuum-heat" data-tag="vacuum-heat">진공로 히터</div>
@@ -830,7 +904,7 @@ $(document).ready(function () {
 
   	//냉각팬
     $(".cold-pen").on("click", function () {
-        openPopup("/posco/popup/coldPen", 350, 140);
+        openPopup("/posco/popup/coldPen", 350, 180);
     });
 
   	//냉각팬
@@ -855,7 +929,7 @@ $(document).ready(function () {
 
     //가스밸브
     $(".gas-valve").on("click", function () {
-        openPopup("/posco/popup/gasValve", 350, 140);
+        openPopup("/posco/popup/gasValve", 350, 180);
     });
 
  	 //히팅SET
@@ -1095,7 +1169,14 @@ function lamp(key, value){
         }
         else if(key.includes("lamp-bit1")){
             if(value){
-                el.innerText = "자동운전 모드";
+                el.innerText = "자동운전 모드 - 일반공정";
+            } else {
+                el.innerText = "";
+            }
+        }
+        else if(key.includes("lamp-bbit")){
+            if(value){
+                el.innerText = "자동운전 모드 - 질소공정";
             } else {
                 el.innerText = "";
             }
@@ -1156,6 +1237,8 @@ function lamp(key, value){
                 el.innerText = "";
             }
         }
+
+        
     });
 }
 
@@ -1262,40 +1345,37 @@ function loadOverviewAlarm() {
     $.ajax({
         url: "/posco/monitoring/alarmRecordListOver/list",
         type: "POST",
-        data: {
-            s_sdate: new Date().toISOString().slice(0, 10),
-            s_edate: new Date().toISOString().slice(0, 10)
-        },
         success: function(resp) {
-
             var arr = Array.isArray(resp) ? resp : (resp.data || []);
-
             
-            var activeList = arr.filter(a => !a.a_etime);
-
+            // ✅ end_time이 NULL이고, PLC에서도 활성화된 알람만
+            var activeList = arr.filter(a => {
+                return !a.a_etime && a.is_real_active !== false;
+            });
+            
             var $tbody = $("#overviewAlarmTable tbody").empty();
-
+            
             if (activeList.length === 0) {
-                $tbody.append("<tr><td colspan='4'>현재 알람 없음</td></tr>");
+                $tbody.append("<tr><td colspan='3'>현재 알람 없음</td></tr>");
                 return;
             }
-
+            
+            // ✅ 발생시간 내림차순 정렬
+            activeList.sort(function(a, b) {
+                return b.a_stime > a.a_stime ? 1 : -1;
+            });
+            
             activeList.forEach(function(r, i){
                 var tr = $("<tr></tr>");
-
                 tr.append("<td>" + (i + 1) + "</td>");
                 tr.append("<td style='text-align:left;'>" + (r.a_desc || "") + "</td>");
                 tr.append("<td>" + shortTime(r.a_stime) + "</td>");
-                /* tr.append("<td class='active-alarm'>진행중</td>"); */
-
                 tr.addClass("active-alarm");
-
                 $tbody.append(tr);
             });
         }
     });
 }
-
 
 setInterval(loadOverviewAlarm, 5000);
 loadOverviewAlarm();
@@ -1306,7 +1386,7 @@ loadOverviewAlarm();
 //=======================================
 
 document
-    .querySelectorAll('.icon-stop, .icon-reset, .icon-test')
+    .querySelectorAll('.icon-stop, .icon-reset, .icon-test, .icon-on, .icon-off')
     .forEach(icon => {
 
         icon.addEventListener('click', function () {
@@ -1323,6 +1403,12 @@ document
             } else if (this.classList.contains('icon-test')) {
                 tagName = "icon-test";
                 alertMsg = "알람 테스트 완료";
+            } else if (this.classList.contains('icon-on')) {
+                tagName = "icon-on";
+                alertMsg = "10초모드 on";
+            } else if (this.classList.contains('icon-off')) {
+                tagName = "icon-off";
+                alertMsg = "10초모드 off";
             }
 
             if (!tagName) return;
@@ -1358,6 +1444,8 @@ document
 function pollLampStatus() {
 
 //ON Lamp
+
+
 //부스터펌프 오버뷰 램프 on
 $.ajax({
  url: "/posco/monitoring/read/overviewLamp",
@@ -1566,6 +1654,32 @@ $.ajax({
 	     }
 	 }
 	});
+
+
+//10초 알람램프
+$.ajax({
+    url: "/posco/monitoring/read/pgLamp",
+    type: "get",
+    data: { tagName: "lamp-icon" },
+    success: function(res) {
+        if (res.status === "OK") {
+            const isOn = res.value === true;
+            const onBtn = document.querySelector("[data-tag='icon-on']");
+            
+            if (onBtn) {
+                // ✅ 텍스트 완전히 제거
+                onBtn.textContent = '';
+                onBtn.innerHTML = '';
+                
+                if (isOn) {
+                    onBtn.classList.add("ten-on");
+                } else {
+                    onBtn.classList.remove("ten-on");
+                }
+            }
+        }
+    }
+});
 
 }
 

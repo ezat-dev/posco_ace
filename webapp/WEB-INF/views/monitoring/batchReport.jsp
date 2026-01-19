@@ -83,6 +83,7 @@
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
 }
 
 .batch-modal.show {
@@ -91,16 +92,41 @@
 
 .modal-close {
     position: absolute;
-    right: 110px;
-    top: 15px;
-    font-size: 28px;
+    right: 30px;
+    top: 20px;
+    font-size: 32px;
     font-weight: bold;
     cursor: pointer;
     color: #666;
+    z-index: 10;
 }
 
 .modal-close:hover {
     color: #000;
+}
+
+/* 모달 헤더 */
+.batch-modal-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #33363d;
+}
+
+.batch-modal-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #33363d;
+    margin-bottom: 10px;
+}
+
+.batch-modal-subtitle {
+    font-size: 16px;
+    color: #666;
+}
+
+.batch-modal-subtitle span {
+    margin: 0 15px;
 }
 
 .batch-section {
@@ -117,32 +143,6 @@
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 2px solid #33363d;
-}
-
-/* 패턴 정보 테이블 */
-.pattern-info-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-top: 15px;
-}
-
-.pattern-info-table th,
-.pattern-info-table td {
-    border: 1px solid #e0e0e0;
-    padding: 10px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.pattern-info-table th {
-    background: linear-gradient(135deg, #33363d, #4a4d57);
-    color: white;
-    font-weight: bold;
-}
-
-.pattern-info-table td {
-    background: white;
 }
 
 /* 알람 테이블 */
@@ -171,6 +171,7 @@
     font-weight: bold;
     position: sticky;
     top: 0;
+    z-index: 1;
 }
 
 .alarm-table td {
@@ -186,7 +187,7 @@
 /* 트렌드 차트 */
 .trend-chart-container {
     width: 100%;
-    height: 400px;
+    height: 450px;
     margin-top: 15px;
 }
     
@@ -223,39 +224,16 @@
     <div class="batch-modal-content">
         <span class="modal-close" onclick="closeBatchModal()">&times;</span>
         
-        <!-- 1. 패턴 정보 섹션 -->
-        <div class="batch-section">
-            <div class="batch-section-title">패턴 정보</div>
-            <table class="pattern-info-table">
-                <thead>
-                    <tr>
-                        <th>Seg</th>
-                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
-                        <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
-                        <th>11</th><th>12</th><th>13</th><th>14</th><th>15</th>
-                        <th>16</th><th>17</th><th>18</th><th>19</th><th>20</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="font-weight: bold;">시간(분)</td>
-                        <td id="seg-time-1"></td><td id="seg-time-2"></td><td id="seg-time-3"></td><td id="seg-time-4"></td><td id="seg-time-5"></td>
-                        <td id="seg-time-6"></td><td id="seg-time-7"></td><td id="seg-time-8"></td><td id="seg-time-9"></td><td id="seg-time-10"></td>
-                        <td id="seg-time-11"></td><td id="seg-time-12"></td><td id="seg-time-13"></td><td id="seg-time-14"></td><td id="seg-time-15"></td>
-                        <td id="seg-time-16"></td><td id="seg-time-17"></td><td id="seg-time-18"></td><td id="seg-time-19"></td><td id="seg-time-20"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold;">온도(℃)</td>
-                        <td id="seg-temp-1"></td><td id="seg-temp-2"></td><td id="seg-temp-3"></td><td id="seg-temp-4"></td><td id="seg-temp-5"></td>
-                        <td id="seg-temp-6"></td><td id="seg-temp-7"></td><td id="seg-temp-8"></td><td id="seg-temp-9"></td><td id="seg-temp-10"></td>
-                        <td id="seg-temp-11"></td><td id="seg-temp-12"></td><td id="seg-temp-13"></td><td id="seg-temp-14"></td><td id="seg-temp-15"></td>
-                        <td id="seg-temp-16"></td><td id="seg-temp-17"></td><td id="seg-temp-18"></td><td id="seg-temp-19"></td><td id="seg-temp-20"></td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- 모달 헤더 -->
+        <div class="batch-modal-header">
+            <div class="batch-modal-title" id="modalPatternTitle"></div>
+            <div class="batch-modal-subtitle">
+                <span><strong>시작:</strong> <span id="modalStartTime"></span></span>
+                <span><strong>종료:</strong> <span id="modalEndTime"></span></span>
+            </div>
         </div>
 
-        <!-- 2. 알람 발생 내역 -->
+        <!-- 1. 알람 발생 내역 -->
         <div class="batch-section">
             <div class="batch-section-title">알람 발생 내역</div>
             <div class="alarm-table-wrapper">
@@ -275,7 +253,7 @@
             </div>
         </div>
 
-        <!-- 3. 온도 트렌드 -->
+        <!-- 2. 온도 트렌드 -->
         <div class="batch-section">
             <div class="batch-section-title">온도 트렌드</div>
             <div class="trend-chart-container" id="modalTrendChart"></div>
@@ -284,6 +262,11 @@
 </div>
 
 <script>
+// ---------------------------
+// 전역 변수
+// ---------------------------
+let modalChart = null;  // ✅ 모달 차트 전역 변수 추가
+
 // ---------------------------
 // 최초 로딩
 // ---------------------------
@@ -296,6 +279,56 @@ $(document).ready(function () {
     getPatternList();
 });
 
+/* 날짜 유틸 */
+function pad(n){ return n < 10 ? "0"+n : n; }
+
+function getExportFilename(extension) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = pad(now.getMonth() + 1);
+    const day = pad(now.getDate());
+    const hour = pad(now.getHours());
+    const minute = pad(now.getMinutes());
+    const second = pad(now.getSeconds());
+    
+    return year + month + day + hour + minute + second + "_배치리포트." + extension;
+}
+
+/* CSV 서버 저장 */
+function downloadCSVToServer() {
+    if (!modalChart) {
+        alert('차트 데이터가 없습니다.');
+        return;
+    }
+    
+    const csv = modalChart.getCSV();
+    
+    if (!csv || csv.trim() === '') {
+        alert('CSV 데이터가 비어있습니다.');
+        return;
+    }
+    
+    const filename = getExportFilename('csv');
+    
+    $.ajax({
+        url: '/posco/monitoring/trend/saveCSV',
+        type: 'POST',
+        data: {
+            csvData: csv,
+            filename: filename
+        },
+        success: function(response) {
+            if (response.status === 'OK') {
+                alert('CSV 파일이 저장되었습니다.\n경로: ' + response.path);
+            } else {
+                alert('CSV 저장 실패: ' + (response.error || '알 수 없는 오류'));
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('CSV 저장 중 오류가 발생했습니다.\n' + error);
+        }
+    });
+}
 
 var printIconProc = function(cell, formatterParams){
    var icon = "<img src='/posco/image/search-icon.png' alt='report' class='button-image' style='cursor:pointer;'></img>";
@@ -304,152 +337,148 @@ var printIconProc = function(cell, formatterParams){
 
 	   
 function getPatternList(){	
-	userTable = new Tabulator("#tab1", {
-	    height:"750px",
-	    layout:"fitColumns",
-	    selectable:true,
-	    tooltips:true,
-	    selectableRangeMode:"click",
-	    reactiveData:true,
-	    headerHozAlign:"center",
-	    ajaxConfig:"POST",
-	    ajaxLoader:false,
-	    ajaxURL:"/posco/pattern/getPatternList",
-	    ajaxProgressiveLoad:"scroll",
-	    ajaxParams:{
-	    	"sdate": $("#sdate").val(),
+    userTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true,
+        tooltips:true,
+        selectableRangeMode:"click",
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/posco/pattern/getPatternList",
+        ajaxProgressiveLoad:"scroll",
+        ajaxParams:{
+            "sdate": $("#sdate").val(),
             "edate": $("#edate").val(),
-		    },
-	    placeholder:"조회된 데이터가 없습니다.",
-	    paginationSize:20,
-	    ajaxResponse:function(url, params, response){
-			$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-	        return response;
-	    },
-	    columns:[
-	        {title:"NO", field:"idx", sorter:"number", width:80, hozAlign:"center"},
-	        {title:"운전 시작일", field:"proc_date", sorter:"string", width:250, hozAlign:"center", headerFilter:"input"},	
-		    {title:"운전 패턴번호", field:"proc_ptrn_no", sorter:"number", width:120, hozAlign:"center", headerFilter:"input"},     
-			{title:"운전 시작시간", field:"proc_ptrn_start", sorter:"string", width:300, hozAlign:"center", headerFilter:"input"}, 
-			{title:"운전 종료시간", field:"proc_ptrn_end", sorter:"string", width:300, hozAlign:"center", headerFilter:"input"}, 	
-			{   
+        },
+        placeholder:"조회된 데이터가 없습니다.",
+        paginationSize:20,
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            return response;
+        },
+        columns:[
+            {title:"NO", field:"idx", sorter:"number", width:80, hozAlign:"center"},
+            {title:"운전 시작일", field:"proc_date", sorter:"string", width:180, hozAlign:"center", headerFilter:"input"},	
+            {title:"운전 패턴번호", field:"proc_ptrn_no", sorter:"number", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"패턴 이름", field:"pattern_name", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"운전 시작시간", field:"proc_ptrn_start", sorter:"string", width:250, hozAlign:"center", headerFilter:"input"}, 
+            {title:"운전 종료시간", field:"proc_ptrn_end", sorter:"string", width:250, hozAlign:"center", headerFilter:"input"}, 	
+            {   
                 headerSort:false,
                 formatter:printIconProc, 
-                width:150, 
+                width:120, 
                 title:"배치 리포트",
                 cellClick:function(e, cell){
                     var rowData = cell.getRow().getData();
                     openBatchModal(rowData);
                 }
             },
-	    ],
-	    rowFormatter:function(row){
-		    var data = row.getData();
-		    row.getElement().style.fontWeight = "700";
-			row.getElement().style.backgroundColor = "#FFFFFF";
-		},
-		rowClick:function(e, row){
-			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-				if($(this).hasClass("row_select")){							
-					$(this).removeClass('row_select');
-					row.getElement().className += " row_select";
-				}else{
-					$("#tab1 div.row_select").removeClass("row_select");
-					row.getElement().className += " row_select";	
-				}
-			});
-			var rowData = row.getData();
-		},
-	});		
+        ],
+        rowFormatter:function(row){
+            var data = row.getData();
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+                if($(this).hasClass("row_select")){							
+                    $(this).removeClass('row_select');
+                    row.getElement().className += " row_select";
+                }else{
+                    $("#tab1 div.row_select").removeClass("row_select");
+                    row.getElement().className += " row_select";	
+                }
+            });
+            var rowData = row.getData();
+        },
+    });		
 }
 
-// 모달오픈
+// 모달 오픈
 function openBatchModal(rowData) {
     console.log("선택된 데이터:", rowData);
     
     var patternNo = rowData.proc_ptrn_no;
+    var patternName = rowData.pattern_name || ('패턴 ' + patternNo);
     var startTime = rowData.proc_ptrn_start;
     var endTime = rowData.proc_ptrn_end;
     
     console.log("패턴번호:", patternNo);
+    console.log("패턴이름:", patternName);
     console.log("시작시간:", startTime);
     console.log("종료시간:", endTime);
     
-    // 1. 패턴 정보 조회
-    loadPatternInfo(patternNo);
+    // 헤더 정보 설정
+    $("#modalPatternTitle").text(patternName + " (패턴 " + patternNo + ")");
+    $("#modalStartTime").text(startTime);
+    $("#modalEndTime").text(endTime);
     
-    // 2. 알람 내역 조회
+    // 알람 내역 조회
     loadAlarmHistory(startTime, endTime);
     
-    // 3. 트렌드 차트 조회
+    // 트렌드 차트 조회
     loadTrendChart(startTime, endTime);
     
- 
     $("#batchModal").addClass("show");
 }
 
-
 function closeBatchModal() {
     $("#batchModal").removeClass("show");
+    
+    // ✅ 차트 메모리 해제
+    if(modalChart) {
+        modalChart.destroy();
+        modalChart = null;
+    }
 }
 
-
-function loadPatternInfo(patternNo) {
-    $.ajax({
-        url: "/posco/pattern/getPatternInfo",
-        type: "POST",
-        data: { patternNo: patternNo },
-        success: function(result) {
-            
-            for(var i = 1; i <= 20; i++) {
-                $("#seg-time-" + i).text(result["ptrn_seg" + i + "_time"] || "-");
-                $("#seg-temp-" + i).text(result["ptrn_seg" + i + "_temp"] || "-");
-            }
-        },
-        error: function() {
-            alert("패턴 정보 조회 실패");
-        }
-    });
-}
-
-//알람
 function loadAlarmHistory(startTime, endTime) {
-    var startDate = startTime.substring(0, 10);
-    var endDate = endTime.substring(0, 10);
-    
-    console.log("알람 조회 - 시작:", startDate, "종료:", endDate);
+    console.log("알람 조회 - 시작:", startTime, "종료:", endTime);
     
     $.ajax({
-        url: "/posco/monitoring/alarmRecordListAll/list",
+        url: "/posco/monitoring/batchReport/alarms",
         type: "POST",
         data: {
-            s_sdate: startDate,
-            s_edate: endDate
+            startTime: startTime,
+            endTime: endTime
         },
         success: function(resp) {
-            console.log("알람 데이터:", resp);
+            console.log("알람 응답:", resp);
+            
+            if(!resp.success) {
+                console.error("알람 조회 실패:", resp.error);
+                $("#modalAlarmTableBody").html('<tr><td colspan="6" style="color:red;">알람 조회 중 오류가 발생했습니다.</td></tr>');
+                return;
+            }
             
             var arr = resp.data || [];
             var $tbody = $("#modalAlarmTableBody").empty();
             
             if(arr.length === 0) {
-                $tbody.append('<tr><td colspan="6">알람 발생 내역이 없습니다.</td></tr>');
+                $tbody.append('<tr><td colspan="6">해당 기간 동안 알람 발생 내역이 없습니다.</td></tr>');
                 return;
             }
+            
+            console.log("표시할 알람 개수:", arr.length);
             
             arr.forEach(function(r, idx) {
                 var tr = $("<tr></tr>");
                 tr.append("<td>" + (idx + 1) + "</td>");
                 tr.append("<td>" + (r.a_addr || "") + "</td>");
-                tr.append("<td style='text-align:left;'>" + (r.a_desc || "") + "</td>");
+                tr.append("<td style='text-align:left; padding-left:10px;'>" + (r.a_desc || "") + "</td>");
                 tr.append("<td>" + (r.a_stime || "") + "</td>");
-                tr.append("<td>" + (r.a_etime || "") + "</td>");
                 
+                // 해제시간 처리
                 if(!r.a_etime || r.a_etime === "") {
                     tr.addClass("active-alarm");
+                    tr.append("<td style='color:#d30000; font-weight:bold;'>-</td>");
                     tr.append("<td style='color:#d30000; font-weight:bold;'>진행 중</td>");
                 } else {
-                    tr.append("<td>-</td>");
+                    tr.append("<td>" + r.a_etime + "</td>");
+                    tr.append("<td style='color:#28a745;'>해제됨</td>");
                 }
                 
                 $tbody.append(tr);
@@ -457,11 +486,16 @@ function loadAlarmHistory(startTime, endTime) {
         },
         error: function(xhr, status, error) {
             console.error("알람 내역 조회 실패:", error);
-            alert("알람 내역 조회 실패");
+            console.error("상태:", status);
+            console.error("응답:", xhr.responseText);
+            
+            $("#modalAlarmTableBody").html(
+                '<tr><td colspan="6" style="color:red;">알람 조회 중 오류가 발생했습니다.<br>' + 
+                error + '</td></tr>'
+            );
         }
     });
 }
-
 
 function loadTrendChart(startTime, endTime) {
     var startFormatted = startTime.substring(0, 16);
@@ -486,7 +520,31 @@ function loadTrendChart(startTime, endTime) {
             
             var categories = result.map(r => new Date(r.tdatetime).getTime());
             
-            Highcharts.chart('modalTrendChart', {
+            // 데이터 범위 계산
+            var dataMin = Math.min(...categories);
+            var dataMax = Math.max(...categories);
+            var dataRange = dataMax - dataMin;
+            
+            // 최적 tick interval 계산
+            var tickInterval, labelFormat;
+            var rangeHours = dataRange / (1000 * 60 * 60);
+            
+            if (rangeHours <= 1) {
+                tickInterval = 5 * 60 * 1000;
+                labelFormat = '%H:%M';
+            } else if (rangeHours <= 3) {
+                tickInterval = 10 * 60 * 1000;
+                labelFormat = '%H:%M';
+            } else if (rangeHours <= 6) {
+                tickInterval = 30 * 60 * 1000;
+                labelFormat = '%H:%M';
+            } else {
+                tickInterval = 60 * 60 * 1000;
+                labelFormat = '%m-%d %H:%M';
+            }
+            
+            // ✅ modalChart 전역 변수에 할당
+            modalChart = Highcharts.chart('modalTrendChart', {
                 chart: { 
                     type: 'line',
                     zoomType: 'x'
@@ -494,16 +552,16 @@ function loadTrendChart(startTime, endTime) {
                 title: { text: '온도 트렌드' },
                 xAxis: {
                     type: 'datetime',
+                    tickInterval: tickInterval,
                     labels: {
                         formatter: function() {
-                            return Highcharts.dateFormat('%H:%M', this.value);
+                            return Highcharts.dateFormat(labelFormat, this.value);
                         }
                     }
                 },
                 yAxis: {
                     title: { text: "온도 (℃)" },
-                    min: 0,
-                    max: 1200
+                    min: 0
                 },
                 plotOptions: {
                     line: {
@@ -512,12 +570,39 @@ function loadTrendChart(startTime, endTime) {
                 },
                 tooltip: {
                     shared: true,
-                    xDateFormat: '%Y-%m-%d %H:%M'
+                    xDateFormat: '%Y-%m-%d %H:%M:%S'
                 },
                 legend: {
                     layout: 'horizontal',
                     align: 'center',
                     verticalAlign: 'bottom'
+                },
+                exporting: {
+                    enabled: true,
+                    buttons: {
+                        contextButton: {
+                            menuItems: [
+                                {
+                                    text: 'PNG 다운로드',
+                                    onclick: function() {
+                                        this.exportChart({
+                                            type: 'image/png',
+                                            filename: getExportFilename('png')
+                                        });
+                                    }
+                                },
+                                {
+                                    text: 'CSV 다운로드',
+                                    onclick: function() {
+                                        downloadCSVToServer();
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    csv: {
+                        dateFormat: '%Y-%m-%d %H:%M:%S'
+                    }
                 },
                 series: [
                     { name: '1존온도 PV', data: result.map((r, idx) => [categories[idx], Number(r.vac1_pv)]) },
@@ -536,7 +621,6 @@ function loadTrendChart(startTime, endTime) {
 }
 
 </script>
-
 
 </body>
 </html>

@@ -40,5 +40,8 @@ public class PatternDaoImpl implements PatternDao {
 		sqlSession.update("pattern.patternEndDataUpdate",p);
 	}
 	
+	
+	
+	
 
 }

@@ -56,6 +56,11 @@
 	  <button class="btn ctrl-btn" data-tag="cool-pen-on">ON</button>
 
     </div>
+    
+    <div class="controls" style="margin-top:6px;">
+	    <button class="btn manual ctrl-btn" data-tag="cool-manual-on">수동모드</button>
+      <button class="btn auto ctrl-btn" data-tag="cool-auto-on">자동모드</button>
+  	</div>
 
     <div class="progress-wrap" aria-hidden="true" title="길게 누르세요">
       <div id="progressBar" class="progress-bar"></div>
@@ -237,6 +242,44 @@ $.ajax({
        }
    }
 });
+
+
+$.ajax({
+	   url: "/posco/monitoring/read/bit",
+	   type: "get",
+	   data: { tagName: "cool-manual-lamp-on" },
+	   success: function(res) {
+	       if (res.status === "OK") {
+	           const isOff = res.value === true;
+
+	           const offBtn = document.querySelector("[data-tag='cool-manual-on']");
+	           if (isOff) {
+	               offBtn.classList.add("active-off");
+	           } else {
+	               offBtn.classList.remove("active-off");
+	           }
+	       }
+	   }
+	});
+
+$.ajax({
+	   url: "/posco/monitoring/read/bit",
+	   type: "get",
+	   data: { tagName: "cool-auto-lamp-on" },
+	   success: function(res) {
+	       if (res.status === "OK") {
+	           const isOff = res.value === true;
+
+	           const offBtn = document.querySelector("[data-tag='cool-auto-on']");
+	           if (isOff) {
+	               offBtn.classList.add("active-off");
+	           } else {
+	               offBtn.classList.remove("active-off");
+	           }
+	       }
+	   }
+	});
+
 }
 
 //1초마다 PLC 상태 갱신

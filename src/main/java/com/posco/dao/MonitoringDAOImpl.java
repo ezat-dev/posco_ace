@@ -22,6 +22,7 @@ public class MonitoringDAOImpl implements MonitoringDAO{
 		return sqlSession.selectList("monitoring.gettrend", monitoring);
 	}
 	
+	 
 	@Override
 	public List<Monitoring> getPatternTrend(Monitoring monitoring) {
 	    return sqlSession.selectList("monitoring.getPatternTrend", monitoring);
@@ -49,6 +50,12 @@ public class MonitoringDAOImpl implements MonitoringDAO{
 	}
 	
 	@Override
+    public List<Monitoring> getBatchReportAlarms(Monitoring monitoring) {
+        return sessionSQLite.selectList("alarm.getBatchReportAlarms", monitoring);
+    }
+ 
+	
+	@Override
 	public List<Monitoring> alarmRecordListOver() {
 		return sessionSQLite.selectList("alarm.alarmRecordListOver");
 	}
@@ -62,4 +69,36 @@ public class MonitoringDAOImpl implements MonitoringDAO{
 	public Map<String, Object> getPatternInfo(int patternNo) {
 		return sqlSession.selectOne("monitoring.getPatternInfo", patternNo);
 	}
+	
+	
+	
+	@Override
+    public Pattern getPatternName(int pattern_no) {
+        return sqlSession.selectOne("pattern.getPatternName", pattern_no);
+    }
+    
+    @Override
+    public List<Pattern> getAllPatternNames() {
+        return sqlSession.selectList("pattern.getAllPatternNames");
+    }
+    
+    @Override
+    public int updatePatternName(Pattern pattern) {
+        return sqlSession.update("pattern.updatePatternName", pattern);
+    }
+    
+    @Override
+    public int resetPatternName(int pattern_no) {
+        return sqlSession.update("pattern.resetPatternName", pattern_no);
+    }
+    
+    @Override
+    public int checkPatternNameExists(int pattern_no) {
+        return sqlSession.selectOne("pattern.checkPatternNameExists", pattern_no);
+    }
+    
+    @Override
+    public int insertPatternName(Pattern pattern) {
+        return sqlSession.insert("pattern.insertPatternName", pattern);
+    }
 }

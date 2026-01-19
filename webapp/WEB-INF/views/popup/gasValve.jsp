@@ -56,6 +56,11 @@
 	  <button class="btn ctrl-btn" data-tag="gas-valve-on">ON</button>
 
     </div>
+    
+    <div class="controls" style="margin-top:6px;">
+	    <button class="btn manual ctrl-btn" data-tag="gas-manual-on">수동모드</button>
+      <button class="btn auto ctrl-btn" data-tag="gas-auto-on">자동모드</button>
+  	</div>
 
     <div class="progress-wrap" aria-hidden="true" title="길게 누르세요">
       <div id="progressBar" class="progress-bar"></div>
@@ -237,6 +242,44 @@ $.ajax({
        }
    }
 });
+
+$.ajax({
+	   url: "/posco/monitoring/read/bit",
+	   type: "get",
+	   data: { tagName: "gas-manual-lamp-on" },
+	   success: function(res) {
+	       if (res.status === "OK") {
+	           const isOff = res.value === true;
+
+	           const offBtn = document.querySelector("[data-tag='gas-manual-on']");
+	           if (isOff) {
+	               offBtn.classList.add("active-off");
+	           } else {
+	               offBtn.classList.remove("active-off");
+	           }
+	       }
+	   }
+	});
+
+$.ajax({
+	   url: "/posco/monitoring/read/bit",
+	   type: "get",
+	   data: { tagName: "gas-auto-lamp-on" },
+	   success: function(res) {
+	       if (res.status === "OK") {
+	           const isOff = res.value === true;
+
+	           const offBtn = document.querySelector("[data-tag='gas-auto-on']");
+	           if (isOff) {
+	               offBtn.classList.add("active-off");
+	           } else {
+	               offBtn.classList.remove("active-off");
+	           }
+	       }
+	   }
+	});
+
+
 }
 
 //1초마다 PLC 상태 갱신

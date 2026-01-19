@@ -466,23 +466,162 @@
 
 
 
-.icon-ten{
-background: #c0c0c0;
-    border-radius: 5px;
-    width: 30px;
-    height: 24px;
+
+
+/* 질소가스 화살표 - 가로 방향 (기본) */
+.lamp-arrow-gasgas {
     position: absolute;
-    left: 860px;
-    top: 10px
+    width: 45px;
+    height: 40px;
+}
+
+.lamp-arrow-gasgas::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #2980b9, #3498db);
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.lamp-arrow-gasgas::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-right: 15px solid #2980b9;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.lamp-arrow-gasgas .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+    animation: moveDots 2s linear infinite;
+}
+
+.lamp-arrow-gasgas .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-gasgas .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-gasgas .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-gasgas .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-gasgas .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDots {
+    0% { 
+        right: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        right: 100%;
+        opacity: 0; 
+    }
+}
+
+/* ========== 세로 방향 ========== */
+.lamp-arrow-gasgas.vertical {
+    width: 40px;
+    height: 50px;
+}
+
+.lamp-arrow-gasgas.vertical::before {
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #3498db, #2980b9);
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.lamp-arrow-gasgas.vertical::after {
+    left: 50%;
+    top: auto;
+    bottom: -10px;
+    transform: translateX(-50%);
+    border-right: 0;
+    border-top: 15px solid #2980b9;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 0;
+}
+
+.lamp-arrow-gasgas.vertical .dot {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    animation: moveDotsVertical 2s linear infinite;
+}
+
+/* 세로 점 시간차 */
+.lamp-arrow-gasgas.vertical .dot:nth-child(1) { animation-delay: 0s; }
+.lamp-arrow-gasgas.vertical .dot:nth-child(2) { animation-delay: 0.4s; }
+.lamp-arrow-gasgas.vertical .dot:nth-child(3) { animation-delay: 0.8s; }
+.lamp-arrow-gasgas.vertical .dot:nth-child(4) { animation-delay: 1.2s; }
+.lamp-arrow-gasgas.vertical .dot:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes moveDotsVertical {
+    0% { 
+        top: 0;
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    90% { 
+        opacity: 1; 
+    }
+    100% { 
+        top: 100%;
+        opacity: 0; 
+    }
 }
 
 
 
 
 
-.lamp-check-lowvacuum{
-   
-       
+.icon-on{
+background: #ffffff;
+    border-radius: 5px;
+    width: 20px;
+    height: 24px;
+    position: absolute;
+    left: 854px;
+    top: 10px;
+    border : 0.1px solid gray;
+}
+.icon-off{
+background: #ffffff;
+    border-radius: 5px;
+    width: 20px;
+    height: 24px;
+    position: absolute;
+    left: 880px;
+    top: 10px;
+    border : 0.1px solid gray;
+}
+
+
+
+
+
+.lamp-check-lowvacuum{       
    border-style: solid;
     border-color: #ff0000;
     border-width: 4px;
@@ -492,11 +631,8 @@ background: #c0c0c0;
     left: 350px;
     top: 719px;
     z-index: 1;
-
 }
 .lamp-check-hivacuum{
-   
-       
    border-style: solid;
     border-color: #ff0000;
     border-width: 4px;
@@ -506,11 +642,8 @@ background: #c0c0c0;
     left: 350px;
     top: 748px;
     z-index: 1;
-
 }
-.lamp-check-heat{
-   
-       
+.lamp-check-heat{       
    border-style: solid;
     border-color: #ff0000;
     border-width: 4px;
@@ -520,8 +653,43 @@ background: #c0c0c0;
     left: 350px;
     top: 779px;
     z-index: 1;
-
 }
+
+
+.lamp-check-setLow{       
+    border-style: solid;
+    border-color: #ff0000;
+    border-width: 3px;
+    width: 81px;
+    height: 27px;
+    position: absolute;
+    left: 158px;
+    top: 717px;
+    z-index: 1;
+}
+.lamp-check-setHi{
+   border-style: solid;
+    border-color: #ff0000;
+    border-width: 3px;
+    width: 81px;
+    height: 26px;
+    position: absolute;
+    left: 158px;
+    top: 748px;
+    z-index: 1;
+}
+.lamp-check-setHeat{       
+   border-style: solid;
+    border-color: #ff0000;
+    border-width: 3px;
+    width: 81px;
+    height: 27px;
+    position: absolute;
+    left: 158px;
+    top: 778px;
+    z-index: 1;
+}
+
 
 .text20{
 	width: 70px;
@@ -808,7 +976,16 @@ background: #c0c0c0;
   aspect-ratio: 726/395;
   z-index : -1;
 }
-
+.gan {
+  width: 50px;
+  height: 100px;
+  position: absolute;
+  left: 1320px;
+  top: 24px;
+  object-fit: cover;
+  aspect-ratio: 726/395;
+  z-index : 1;
+}
 .footer {
   background: #33363d;
   width: 1684px;

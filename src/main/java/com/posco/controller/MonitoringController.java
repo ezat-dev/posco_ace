@@ -1,11 +1,18 @@
 package com.posco.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.milo.opcua.stack.core.UaException;
@@ -17,7 +24,6 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +38,7 @@ import com.posco.domain.Monitoring;
 import com.posco.domain.Pattern;
 import com.posco.domain.Users;
 import com.posco.service.MonitoringService;
+import com.posco.service.PatternService;
 import com.posco.util.OpcDataMap;
 
 @Controller
@@ -39,6 +46,8 @@ public class MonitoringController {
 	
 	@Autowired
 	private MonitoringService monitoringService;
+	
+	private PatternService patternService;
 	
 	private final Logger logger = LoggerFactory.getLogger(MonitoringController.class);
 	
@@ -48,34 +57,35 @@ public class MonitoringController {
 	@RequestMapping(value = "/pattern/getPatternList", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> getPatternList(
-			@RequestParam String sdate,
-			@RequestParam String edate) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Pattern pattern = new Pattern();
-
-		pattern.setSdate(sdate);
-		pattern.setEdate(edate);
-
-
-		List<Pattern> patternList = monitoringService.getPatternList(pattern);
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<patternList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("proc_date", patternList.get(i).getProc_date());
-			rowMap.put("proc_ptrn_no", patternList.get(i).getProc_ptrn_no());
-			rowMap.put("proc_ptrn_start", patternList.get(i).getProc_ptrn_start());
-			rowMap.put("proc_ptrn_end", patternList.get(i).getProc_ptrn_end());
-
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
+	        @RequestParam String sdate,
+	        @RequestParam String edate) {
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    
+	    Pattern pattern = new Pattern();
+	    pattern.setSdate(sdate);
+	    pattern.setEdate(edate);
+	    
+	    List<Pattern> patternList = monitoringService.getPatternList(pattern);
+	    
+	    List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+	    for(int i=0; i<patternList.size(); i++) {
+	        HashMap<String, Object> rowMap = new HashMap<String, Object>();
+	        rowMap.put("idx", (i+1));
+	        rowMap.put("proc_date", patternList.get(i).getProc_date());
+	        rowMap.put("proc_ptrn_no", patternList.get(i).getProc_ptrn_no());
+	        rowMap.put("proc_ptrn_start", patternList.get(i).getProc_ptrn_start());
+	        rowMap.put("proc_ptrn_end", patternList.get(i).getProc_ptrn_end());
+	        
+	        // ✅ 패턴 이름 추가
+	        rowMap.put("pattern_name", patternList.get(i).getPattern_name());
+	        
+	        rtnList.add(rowMap);
+	    }
+	    
+	    rtnMap.put("last_page",1);
+	    rtnMap.put("data",rtnList);
+	    
+	    return rtnMap; 
 	}
 	
 	
@@ -241,6 +251,28 @@ public class MonitoringController {
 		Map<String, Object> result = new HashMap<>();
 		try {
 			String fullNodeId = "ace_posco.OVERVIEW." + tagName;
+			UShort namespaceIndex = Unsigned.ushort(2);
+			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+
+			DataValue dataValue = MainController.client.readValue(0, TimestampsToReturn.Neither, nodeId).get();
+			boolean value = (boolean) dataValue.getValue().getValue();
+
+			result.put("status", "OK");
+			result.put("value", value);
+		} catch (Exception e) {
+			result.put("status", "ERR");
+			result.put("value", false);
+		}
+		return result;
+	}
+	
+	//seg별 램프 비트 읽기
+	@RequestMapping(value = "/monitoring/read/segLamp", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> segLamp(@RequestParam String tagName) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			String fullNodeId = "ace_posco.INFO." + tagName;
 			UShort namespaceIndex = Unsigned.ushort(2);
 			NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
 
@@ -609,63 +641,62 @@ public class MonitoringController {
 
 
 	//PLC 패턴 관리(팝업) 패턴 데이터 일괄 쓰기
-	@RequestMapping(value = "/monitoring/write/patternInfoInputList", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> patternInfoInputList(@RequestParam(required = false) String listParam) {
-		Map<String, Object> rtnMap = new HashMap<>();
-		JSONParser listParser = new JSONParser();
-		Object listObj = new Object();
-		JSONArray listJsonArray = new JSONArray();
-		OpcDataMap opc = new OpcDataMap();
+		@RequestMapping(value = "/monitoring/write/patternInfoInputList", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> patternInfoInputList(@RequestParam(required = false) String listParam) {
+			Map<String, Object> rtnMap = new HashMap<>();
+			JSONParser listParser = new JSONParser();
+			Object listObj = new Object();
+			JSONArray listJsonArray = new JSONArray();
+			OpcDataMap opc = new OpcDataMap();
 
-		try {
-			// 현재 조회중인 패턴 값 읽기
-			Map<String, Object> ptrnNumberMap = opc.getOpcData("ace_posco.INFO.analog-pattern-number");
-			short ptrn_no = Short.parseShort(ptrnNumberMap.get("value").toString());
+			try {
+				// 현재 조회중인 패턴 값 읽기
+				Map<String, Object> ptrnNumberMap = opc.getOpcData("ace_posco.INFO.analog-pattern-number");
+				short ptrn_no = Short.parseShort(ptrnNumberMap.get("value").toString());
 
-			listObj = listParser.parse(listParam);
+				listObj = listParser.parse(listParam);
 
-			if(listObj instanceof JSONArray) {
-				listJsonArray = (JSONArray)listObj;
-				rtnMap.put("ptrn_no", ptrn_no);
+				if(listObj instanceof JSONArray) {
+					listJsonArray = (JSONArray)listObj;
+					rtnMap.put("ptrn_no", ptrn_no);
 
-				for(int i=0; i<listJsonArray.size(); i++) {
-					JSONArray aa = (JSONArray)listJsonArray.get(i);
+					for(int i=0; i<listJsonArray.size(); i++) {
+						JSONArray aa = (JSONArray)listJsonArray.get(i);
 
-					String tagName = "";
-					String columnName = "";
-					short tagValue = 0;
+						String tagName = "";
+						String columnName = "";
+						short tagValue = 0;
 
-					for(int j=0; j<aa.size(); j++) {
-						tagName = "ace_posco.INFO." + aa.get(0).toString();  // 👈 INFO 그룹
+						for(int j=0; j<aa.size(); j++) {
+							tagName = "ace_posco.INFO." + aa.get(0).toString();  // 👈 INFO 그룹
 
-						if(aa.get(0).toString().length() > 0) {
-							String[] aaArray = aa.get(0).toString().split("-");
-							if(aa.get(0).toString().contains("-time-")) {
-								columnName = "ptrn_seg" + aaArray[3] + "_time";
-							} else {
-								columnName = "ptrn_seg" + aaArray[3] + "_temp";
+							if(aa.get(0).toString().length() > 0) {
+								String[] aaArray = aa.get(0).toString().split("-");
+								if(aa.get(0).toString().contains("-time-")) {
+									columnName = "ptrn_seg" + aaArray[3] + "_time";
+								} else {
+									columnName = "ptrn_seg" + aaArray[3] + "_temp";
+								}
 							}
+
+							tagValue = Short.parseShort(aa.get(1).toString());
 						}
 
-						tagValue = Short.parseShort(aa.get(1).toString());
+						rtnMap.put(columnName, tagValue);
+						opc.setOpcData(tagName, tagValue);
 					}
 
-					rtnMap.put(columnName, tagValue);
-					opc.setOpcData(tagName, tagValue);
+					logger.info("패턴관리(팝업)-패턴수정 : {}", "패턴 데이터적용 : " + rtnMap.toString());
 				}
 
-				logger.info("패턴관리(팝업)-패턴수정 : {}", "패턴 데이터적용 : " + rtnMap.toString());
+				monitoringService.patternInputList(rtnMap);
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-			monitoringService.patternInputList(rtnMap);
-
-		} catch (Exception e) {
-			e.printStackTrace();
+			return rtnMap;
 		}
-		return rtnMap;
-	}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//패턴 읽기버튼 쓰기
@@ -764,75 +795,114 @@ public class MonitoringController {
 	}
 	
 	
-	//PLC 패턴 아날로그값 WRITE(2025-12-24 추가)
 	@RequestMapping(value = "/monitoring/write/patternInputList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> patternInputList(@RequestParam(required = false) String listParam) {
+	public Map<String, Object> patternInputList(
+	        @RequestParam(required = false) String listParam,
+	        @RequestParam(required = false) Integer patternNo) {
 
-//		System.out.println(listParam);
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    
+	    JSONParser listParser = new JSONParser();
+	    JSONArray listJsonArray = new JSONArray();
+	    OpcDataMap opc = new OpcDataMap();
+	    
+	    try {
+	        // ✅ 패턴 번호 결정
+	        short ptrn_no;
+	        if (patternNo != null && patternNo >= 1 && patternNo <= 14) {
+	            ptrn_no = patternNo.shortValue();
+	        } else {
+	            Map<String, Object> ptrnNumberMap = opc.getOpcData("ace_posco.OVERVIEW.analog-pattern-number");
+	            ptrn_no = Short.parseShort(ptrnNumberMap.get("value").toString());
+	        }
+	        
+	        rtnMap.put("ptrn_no", ptrn_no);
+	        logger.info("========================================");
+	        logger.info("패턴 수정 시작: 패턴번호 = {}", ptrn_no);
+	        
+	        Object listObj = listParser.parse(listParam);
+	        
+	        if(listObj instanceof JSONArray) {
+	            listJsonArray = (JSONArray)listObj;
+	            
+	            int successCount = 0;
+	            int failCount = 0;
+	            
+	            for(int i=0; i<listJsonArray.size(); i++) {
+	                JSONArray aa = (JSONArray)listJsonArray.get(i);
+	                
+	                String tagStr = aa.get(0).toString();
+	                String valueStr = aa.get(1).toString();
+	                
+	                String tagName = "ace_posco.POPUP." + tagStr;
+	                
+	                // DB 컬럼명 추출
+	                String columnName = "";
+	                if(tagStr.length() > 0) {
+	                    String[] aaArray = tagStr.split("-");
+	                    if(tagStr.contains("-time-")) {
+	                        columnName = "ptrn_seg" + aaArray[3] + "_time";
+	                    } else {
+	                        columnName = "ptrn_seg" + aaArray[3] + "_temp";
+	                    }
+	                }
+	                
+	                try {
+	                    int intValue = Integer.parseInt(valueStr);
+	                    
+	                    if (intValue < Short.MIN_VALUE || intValue > Short.MAX_VALUE) {
+	                        logger.error("❌ 값 범위 초과: {} = {}", tagStr, intValue);
+	                        failCount++;
+	                        continue;
+	                    }
+	                    
+	                    short tagValue = (short) intValue;
+	                    
+	                    // ✅ PLC에 쓰기
+	                    opc.setOpcData(tagName, tagValue);
+	                    
+	                    // ✅ DB용 Map에 저장
+	                    if (!columnName.isEmpty()) {
+	                        rtnMap.put(columnName, tagValue);
+	                    }
+	                    
+	                    successCount++;
+	                    logger.info("  ✅ {} = {}", tagName, tagValue);
+	                    
+	                    // ✅ 10개마다 10ms 대기 (PLC 부하 방지)
+	                    if (i % 10 == 9) {
+	                        Thread.sleep(10);
+	                    }
+	                    
+	                } catch (NumberFormatException e) {
+	                    logger.error("❌ 숫자 변환 실패: {} = {}", tagStr, valueStr);
+	                    failCount++;
+	                }
+	            }
+	            
+	            logger.info("========================================");
+	            logger.info("PLC 쓰기 완료: 성공 {}, 실패 {}", successCount, failCount);
+	            logger.info("DB 저장 데이터: {}", rtnMap);
+	            logger.info("========================================");
+	        }
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
-		JSONParser listParser = new JSONParser();
-		Object listObj = new Object();
-		JSONArray listJsonArray = new JSONArray();
+	        // DB 저장
+	        monitoringService.patternInputList(rtnMap);
+	        
+	        logger.info("✅ 패턴 {} DB 저장 완료", ptrn_no);
+	        
+	        rtnMap.put("status", "OK");
+	        rtnMap.put("message", "패턴 저장 완료");
 
-		OpcDataMap opc = new OpcDataMap();
-		
-		//현재 조회중인 패턴 값
-		//analog-pattern-number
-		Map<String, Object> ptrnNumberMap = null;
-		
-		try {
-			
-			ptrnNumberMap = opc.getOpcData("ace_posco.OVERVIEW.analog-pattern-number");
-			
-			short ptrn_no = Short.parseShort(ptrnNumberMap.get("value").toString());
-			
-			listObj = listParser.parse(listParam);
-			
-			if(listObj instanceof JSONArray) {
-				listJsonArray = (JSONArray)listObj;
-				//패턴번호 
-				rtnMap.put("ptrn_no",ptrn_no);
-				
-				for(int i=0; i<listJsonArray.size(); i++) {
-//					System.out.println(listJsonArray.get(i));
-					JSONArray aa = (JSONArray)listJsonArray.get(i);
-					
-					//PLC 전송용
-					String tagName = "";
-					//DB 저장용
-					String columnName = "";
-					
-					short tagValue = 0;
-					for(int j=0; j<aa.size(); j++) {
-
-						tagName = "ace_posco.POPUP."+aa.get(0).toString();
-						
-						if(aa.get(0).toString().length() > 0) {
-							String[] aaArray = aa.get(0).toString().split("-");
-							if(aa.get(0).toString().contains("-time-")) {
-								columnName = "ptrn_seg"+aaArray[3]+"_time";
-							}else {
-								columnName = "ptrn_seg"+aaArray[3]+"_temp";
-							}
-						}
-						
-						tagValue = Short.parseShort(aa.get(1).toString());
-					}
-					rtnMap.put(columnName,tagValue);
-					opc.setOpcData(tagName, tagValue);
-				}
-				logger.info("패턴관리-패턴수정 : {}","패턴 데이터적용 : "+rtnMap.toString());
-			}
-
-			monitoringService.patternInputList(rtnMap);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return rtnMap;
+	    } catch (Exception e) {
+	        logger.error("❌ 패턴 수정 실패", e);
+	        e.printStackTrace();
+	        rtnMap.put("status", "ERROR");
+	        rtnMap.put("message", e.getMessage());
+	    }
+	    
+	    return rtnMap;
 	}
 	
 	//PLC 패턴 아날로그값 WRITE
@@ -1132,6 +1202,7 @@ public class MonitoringController {
 	
 	
 	
+	
 	// PLC 오버뷰 아날로그 값 바로 쓰기
 	/*
 	 * @RequestMapping(value = "/monitoring/write/analog", method =
@@ -1240,10 +1311,22 @@ public class MonitoringController {
 		return "/monitoring/batchReport.jsp";
 	}
 	
-	@RequestMapping(value = "/monitoring/trend", method = RequestMethod.GET)
-	public String trend(Users users) {
+	@RequestMapping(value = "/monitoring/historyTrend", method = RequestMethod.GET)
+	public String historyTrend(Users users) {
 
-		return "/monitoring/trend.jsp";
+		return "/monitoring/historyTrend.jsp";
+	}
+	
+	@RequestMapping(value = "/monitoring/realTrend", method = RequestMethod.GET)
+	public String realTrend(Users users) {
+
+		return "/monitoring/realTrend.jsp";
+	}
+	
+	@RequestMapping(value = "/monitoring/patternTrend", method = RequestMethod.GET)
+	public String patternTrend(Users users) {
+
+		return "/monitoring/patternTrend.jsp";
 	}
 	
 	
@@ -1420,35 +1503,124 @@ public class MonitoringController {
 	
 	
 	@RequestMapping(value = "/monitoring/alarmRecordListOver/list", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> alarmRecordListOver() {
-
-
-		Map<String, Object> rtnMap = new HashMap<>();
-
-
-		List<Monitoring> alarmList = monitoringService.alarmRecordListOver();
-
-		
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<>();
-		for (int i = 0; i < alarmList.size(); i++) {
-			Monitoring a = alarmList.get(i);
-			HashMap<String, Object> rowMap = new HashMap<>();
-			rowMap.put("idx", (i + 1));
-			rowMap.put("a_addr", a.getTagname());
-			rowMap.put("a_desc", a.getAlarmdesc());
-			rowMap.put("a_stime", a.getStart_time());
-			rowMap.put("a_etime", a.getEnd_time());
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("data", rtnList);
-		rtnMap.put("last_page", 1);
-		rtnMap.put("total_count", alarmList.size());
-
-		return rtnMap;
+	@ResponseBody
+	public Map<String, Object> alarmRecordListOver() {
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    List<Monitoring> alarmList = monitoringService.alarmRecordListOver();
+	    
+	    List<HashMap<String, Object>> rtnList = new ArrayList<>();
+	    for (int i = 0; i < alarmList.size(); i++) {
+	        Monitoring a = alarmList.get(i);
+	        
+	        // ✅ 실시간 PLC 상태 확인
+	        boolean isActiveInPLC = checkAlarmStatusInPLC(a.getTagname());
+	        
+	        HashMap<String, Object> rowMap = new HashMap<>();
+	        rowMap.put("idx", (i + 1));
+	        rowMap.put("a_addr", a.getTagname());
+	        rowMap.put("a_desc", a.getAlarmdesc());
+	        rowMap.put("a_stime", a.getStart_time());
+	        
+	        // ✅ PLC에서 꺼져있으면 해제시간 표시 (또는 제외)
+	        if (!isActiveInPLC && a.getEnd_time() == null) {
+	            rowMap.put("a_etime", "자동해제");  // 또는 현재시간
+	            rowMap.put("is_real_active", false);
+	        } else {
+	            rowMap.put("a_etime", a.getEnd_time());
+	            rowMap.put("is_real_active", isActiveInPLC);
+	        }
+	        
+	        rtnList.add(rowMap);
+	    }
+	    rtnMap.put("data", rtnList);
+	    rtnMap.put("last_page", 1);
+	    rtnMap.put("total_count", alarmList.size());
+	    return rtnMap;
 	}
+	
+	
+	@RequestMapping(value = "/monitoring/batchReport/alarms", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getBatchReportAlarms(
+	        @RequestParam String startTime,
+	        @RequestParam String endTime) {
+	    
+	    System.out.println("배치리포트 알람 조회");
+	    System.out.println("시작시간: " + startTime);
+	    System.out.println("종료시간: " + endTime);
+	    
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    
+	    try {
+	        Monitoring monitoring = new Monitoring();
+	        monitoring.setS_sdate(startTime);  // 2025-01-19 10:30:00
+	        monitoring.setS_edate(endTime);    // 2025-01-19 15:45:00
+	        
+	        List<Monitoring> alarmList = monitoringService.getBatchReportAlarms(monitoring);
+	        
+	        System.out.println("조회된 알람 개수: " + alarmList.size());
+	        
+	        List<HashMap<String, Object>> rtnList = new ArrayList<>();
+	        for (int i = 0; i < alarmList.size(); i++) {
+	            Monitoring a = alarmList.get(i);
+	            HashMap<String, Object> rowMap = new HashMap<>();
+	            rowMap.put("idx", (i + 1));
+	            rowMap.put("a_addr", a.getTagname());
+	            rowMap.put("a_desc", a.getAlarmdesc());
+	            rowMap.put("a_stime", a.getStart_time());
+	            rowMap.put("a_etime", a.getEnd_time() != null ? a.getEnd_time() : "");
+	            
+	            // 해제되지 않은 알람 체크
+	            if(a.getEnd_time() == null || a.getEnd_time().isEmpty()) {
+	                rowMap.put("is_active", true);
+	            } else {
+	                rowMap.put("is_active", false);
+	            }
+	            
+	            rtnList.add(rowMap);
+	        }
+	        
+	        rtnMap.put("success", true);
+	        rtnMap.put("data", rtnList);
+	        rtnMap.put("total_count", alarmList.size());
+	        
+	    } catch (Exception e) {
+	        System.err.println("배치리포트 알람 조회 오류: " + e.getMessage());
+	        e.printStackTrace();
+	        
+	        rtnMap.put("success", false);
+	        rtnMap.put("error", e.getMessage());
+	        rtnMap.put("data", new ArrayList<>());
+	        rtnMap.put("total_count", 0);
+	    }
+	    
+	    return rtnMap;
+	}
+	
+
+	// ✅ PLC 알람 상태 확인 메서드
+	private boolean checkAlarmStatusInPLC(String tagName) {
+	    try {
+	        String fullNodeId = "ace_posco.ALARM." + tagName;
+	        UShort namespaceIndex = Unsigned.ushort(2);
+	        NodeId nodeId = new NodeId(namespaceIndex, fullNodeId);
+	        
+	        DataValue dataValue = MainController.client.readValue(
+	            0, TimestampsToReturn.Neither, nodeId
+	        ).get();
+	        
+	        return (boolean) dataValue.getValue().getValue();
+	    } catch (Exception e) {
+	        // PLC 읽기 실패 시 DB 기준으로 판단
+	        return true;
+	    }
+	}
+	
+	
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/monitoring/trend/list", method = RequestMethod.POST)
 	@ResponseBody
@@ -1465,7 +1637,61 @@ public class MonitoringController {
 
 	    return monitoringService.gettrend(monitoring);
 	}
-
+	
+	
+	// CSV 저장
+	@RequestMapping(value = "/monitoring/trend/saveCSV", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> saveCSV(@RequestParam String csvData, @RequestParam String filename) {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	        // 저장 경로 설정
+	        String directoryPath = "D:\\온도파일저장";
+	        String fullPath = directoryPath + "\\" + filename;
+	        
+	        // 디렉토리 생성 (없으면)
+	        File directory = new File(directoryPath);
+	        if (!directory.exists()) {
+	            boolean created = directory.mkdirs();
+	            if (!created) {
+	                result.put("status", "ERR");
+	                result.put("error", "디렉토리 생성 실패: " + directoryPath);
+	                return result;
+	            }
+	        }
+	        
+	        // CSV 파일 저장 (UTF-8 BOM 추가 - 엑셀 한글 깨짐 방지)
+	        Path path = Paths.get(fullPath);
+	        byte[] bom = new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF };
+	        byte[] csvBytes = csvData.getBytes(StandardCharsets.UTF_8);
+	        
+	        // BOM + CSV 데이터 결합
+	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	        outputStream.write(bom);
+	        outputStream.write(csvBytes);
+	        
+	        Files.write(path, outputStream.toByteArray());
+	        
+	        result.put("status", "OK");
+	        result.put("path", fullPath);
+	        result.put("filename", filename);
+	        
+	        System.out.println("✅ CSV 파일 저장 완료: " + fullPath);
+	        
+	    } catch (IOException e) {
+	        result.put("status", "ERR");
+	        result.put("error", "파일 저장 실패: " + e.getMessage());
+	        
+	        System.err.println("❌ CSV 파일 저장 실패: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    return result;
+	}
+	
+	
+	
 		
 	@RequestMapping(value = "/monitoring/trend/pattern", method = RequestMethod.POST)
 	@ResponseBody
@@ -1500,6 +1726,172 @@ public class MonitoringController {
 
 	    return map;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	///////////////패턴 네이밍//////////////////
+	@RequestMapping(value = "/monitoring/pattern/name", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getPatternName(@RequestParam int pattern_no) {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	        Pattern pattern = monitoringService.getPatternName(pattern_no);
+	        
+	        if (pattern != null) {
+	            result.put("status", "OK");
+	            result.put("pattern_no", pattern.getPattern_no());
+	            result.put("pattern_name", pattern.getPattern_name());
+	        } else {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴을 찾을 수 없습니다.");
+	        }
+	        
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("message", e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    return result;
+	}
+
+	//패턴 좌측 이름 한꺼번에 조회 메서드
+	@RequestMapping(value = "/monitoring/pattern/names", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getAllPatternNames() {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	        List<Pattern> patternNames = monitoringService.getAllPatternNames();
+	        
+	        result.put("status", "OK");
+	        result.put("patternNames", patternNames);
+	        
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("message", e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    return result;
+	}
+
+	//패턴이름수정
+	@RequestMapping(value = "/monitoring/pattern/name/update", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updatePatternName(
+	        @RequestParam int pattern_no, 
+	        @RequestParam String pattern_name) {
+	    
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	        
+	        if (pattern_no < 1 || pattern_no > 14) {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴 번호는 1~14 범위여야 합니다.");
+	            return result;
+	        }
+	        
+	        
+	        if (pattern_name == null || pattern_name.trim().isEmpty()) {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴 이름을 입력해주세요.");
+	            return result;
+	        }
+	        
+	        if (pattern_name.length() > 200) {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴 이름은 200자 이내로 입력해주세요.");
+	            return result;
+	        }
+	        
+	        
+	        boolean success = monitoringService.updatePatternName(pattern_no, pattern_name.trim());
+	        
+	        if (success) {
+	            result.put("status", "OK");
+	            result.put("message", "패턴 이름이 수정되었습니다.");
+	        } else {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴 이름 수정 실패");
+	        }
+	        
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("message", e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    return result;
+	}
+
+	//초기화
+	@RequestMapping(value = "/monitoring/pattern/name/reset", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> resetPatternName(@RequestParam int pattern_no) {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	        
+	        if (pattern_no < 1 || pattern_no > 14) {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴 번호는 1~14 범위여야 합니다.");
+	            return result;
+	        }
+	        
+	        
+	        boolean success = monitoringService.resetPatternName(pattern_no);
+	        
+	        if (success) {
+	            result.put("status", "OK");
+	            result.put("message", "패턴 이름이 초기화되었습니다.");
+	        } else {
+	            result.put("status", "ERR");
+	            result.put("message", "패턴 이름 초기화 실패");
+	        }
+	        
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("message", e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    return result;
+	}
+
+	//초기세팅
+	@RequestMapping(value = "/monitoring/pattern/initialize", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> initializePatternNames() {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	    	monitoringService.initializePatternNames();
+	        
+	        result.put("status", "OK");
+	        result.put("message", "패턴 이름 초기화 완료");
+	        
+	    } catch (Exception e) {
+	        result.put("status", "ERR");
+	        result.put("message", e.getMessage());
+	        e.printStackTrace();
+	    }
+	    
+	    return result;
+	}
+	
+	
 
 	
 

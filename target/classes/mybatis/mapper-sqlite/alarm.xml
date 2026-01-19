@@ -37,7 +37,82 @@
         NULL AS end_time
     FROM ALARMDATA w
     WHERE w.ALARMSTATE = 'Warning'
+      AND NOT EXISTS (
+          SELECT 1
+          FROM ALARMDATA c
+          WHERE c.TAGNAME = w.TAGNAME
+            AND c.ALARMNAME = w.ALARMNAME
+            AND c.ALARMSTATE = 'Clear'
+            AND c.TIME > w.TIME
+      )
+      AND w.TIME = (
+          SELECT MAX(w2.TIME)
+          FROM ALARMDATA w2
+          WHERE w2.TAGNAME = w.TAGNAME
+            AND w2.ALARMNAME = w.ALARMNAME
+            AND w2.ALARMSTATE = 'Warning'
+      )
     ORDER BY w.TIME DESC
+]]>
+</select>
+
+
+
+<select id="getBatchReportAlarms" parameterType="monitoring" resultType="monitoring">
+<![CDATA[
+    SELECT 
+        w.TAGNAME AS tagname,
+        w.ALARMNAME AS alarmname,
+        w.ALARMDESC AS alarmdesc,
+        strftime('%Y-%m-%d %H:%M:%S', w.TIME) AS start_time,
+        strftime('%Y-%m-%d %H:%M:%S',
+            (
+                SELECT MIN(c.TIME)
+                FROM ALARMDATA c
+                WHERE c.TAGNAME = w.TAGNAME
+                  AND c.ALARMNAME = w.ALARMNAME
+                  AND c.ALARMSTATE = 'Clear'
+                  AND c.TIME > w.TIME
+            )
+        ) AS end_time
+    FROM ALARMDATA w
+    WHERE w.ALARMSTATE = 'Warning'
+      AND (
+          (w.TIME >= #{s_sdate} AND w.TIME <= #{s_edate})
+          OR
+          (
+              w.TIME < #{s_sdate}
+              AND (
+                  NOT EXISTS (
+                      SELECT 1
+                      FROM ALARMDATA c
+                      WHERE c.TAGNAME = w.TAGNAME
+                        AND c.ALARMNAME = w.ALARMNAME
+                        AND c.ALARMSTATE = 'Clear'
+                        AND c.TIME > w.TIME
+                  )
+                  OR
+                  EXISTS (
+                      SELECT 1
+                      FROM ALARMDATA c
+                      WHERE c.TAGNAME = w.TAGNAME
+                        AND c.ALARMNAME = w.ALARMNAME
+                        AND c.ALARMSTATE = 'Clear'
+                        AND c.TIME > w.TIME
+                        AND c.TIME >= #{s_sdate}
+                  )
+              )
+          )
+      )
+      AND w.TIME = (
+          SELECT MAX(w2.TIME)
+          FROM ALARMDATA w2
+          WHERE w2.TAGNAME = w.TAGNAME
+            AND w2.ALARMNAME = w.ALARMNAME
+            AND w2.ALARMSTATE = 'Warning'
+            AND w2.TIME <= #{s_edate}
+      )
+    ORDER BY w.TIME ASC
 ]]>
 </select>
 

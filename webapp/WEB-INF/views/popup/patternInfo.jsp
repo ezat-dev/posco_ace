@@ -67,6 +67,76 @@ html, body {
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* 상태 표시 영역 */
+.status-bar {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 15px 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #33363d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-label::before {
+    content: "📊";
+    font-size: 20px;
+}
+
+#patternStatus {
+    background: linear-gradient(135deg, #33363d, #4a4d57);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(51, 54, 61, 0.3);
+    min-width: 120px;
+    text-align: center;
+}
+
+#patternStatus.reading {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    animation: pulse 1.5s infinite;
+}
+
+#patternStatus.writing {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    animation: pulse 1.5s infinite;
+}
+
+#patternStatus.read-complete {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+#patternStatus.write-complete {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
 /* 좌측 패턴 트리 */
 .pattern-tree {
     width: 250px;
@@ -74,7 +144,7 @@ html, body {
     border-right: 2px solid #e0e0e0;
     overflow-y: auto;
     padding: 20px;
-    margin-top: 80px;
+    margin-top: 140px;
 }
 
 .pattern-tree-item {
@@ -112,7 +182,7 @@ html, body {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
-    margin-top: 80px;
+    margin-top: 140px;
 }
 
 .pattern-detail {
@@ -218,6 +288,14 @@ html, body {
     content: "✓";
 }
 
+.pattern-action-btn.rename {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.pattern-action-btn.rename::before {
+    content: "🏷️";
+}
+
 .pattern-action-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -256,19 +334,23 @@ html, body {
 </head>
 <body>
 
-
 <div class="header">
     <div class="header-title">패턴 관리</div>
     <button class="close-btn" onclick="window.close()">닫기</button>
 </div>
 
+<!-- 상태 표시 바 -->
+<div class="status-bar">
+    <div class="status-display">
+        <span class="status-label">현재 운전 상태</span>
+        <div id="patternStatus">-</div>
+    </div>
+</div>
 
 <div class="container">
-    
     <div class="pattern-tree" id="patternTree">
         <!--동적 생성 -->
     </div>
-    
     
     <div class="pattern-content" id="patternContent">
         <div class="empty-state">
@@ -279,13 +361,110 @@ html, body {
 
 <script>
 
+//상태 표시 함수
+function setPatternStatus(text, statusClass) {
+    const statusEl = document.getElementById("patternStatus");
+    if (statusEl) {
+        statusEl.textContent = text;
+        statusEl.className = '';
+        if (statusClass) {
+            statusEl.classList.add(statusClass);
+        }
+    }
+}
+
+//비트값 ON 체크용 헬퍼
+function isBitOn(value) {
+    return value === true || value === 1;
+}
+
+//읽기중 / 쓰기중 상태 체크 (순차 실행)
+function pollPatternWaitStatus() {
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-wait-read" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("읽기중...", "reading");
+            } else {
+                checkWriteStatus();
+            }
+        },
+        error: function() {
+            checkWriteStatus();
+        }
+    });
+}
+
+function checkWriteStatus() {
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-wait-write" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("쓰기중...", "writing");
+            } else {
+                pollPatternDoneLamp();
+            }
+        },
+        error: function() {
+            pollPatternDoneLamp();
+        }
+    });
+}
+
+function pollPatternDoneLamp() {
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-read-lamp" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("읽기 완료", "read-complete");
+            } else {
+                checkWriteComplete();
+            }
+        },
+        error: function() {
+            checkWriteComplete();
+        }
+    });
+}
+
+function checkWriteComplete() {
+    $.ajax({
+        url: "/posco/monitoring/read/waitbit",
+        type: "get",
+        data: { tagName: "pattern-write-lamp" },
+        success: function (res) {
+            if (res.status === "OK" && isBitOn(res.value)) {
+                setPatternStatus("쓰기 완료", "write-complete");
+            } else {
+                setPatternStatus("-");
+            }
+        },
+        error: function() {
+            setPatternStatus("-");
+        }
+    });
+}
+
 // 페이지 로드시 실행
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function() {
+    console.log("✅ 페이지 로드 완료");
+    
     initPatternTree();
     
-    // 2초마다 전체 패턴 데이터 갱신
+    // ✅ 3초로 늘리기 (2초 → 3초)
     setInterval(function() {
         updateAllPatternData();
+    }, 3000);
+    
+    // ✅ 2초로 늘리기 (1초 → 2초)
+    setInterval(function() {
+        pollPatternWaitStatus();
     }, 2000);
 });
 
@@ -308,7 +487,6 @@ function updateAllPatternData() {
                     const d = opcDatas[rows];
                     
                     if (d[row].action == "value") {
-                        // info-pattern-1-time-1 형식의 클래스에 값 설정
                         const elements = document.querySelectorAll('.' + row);
                         elements.forEach(el => {
                             el.textContent = d[row].value;
@@ -323,25 +501,73 @@ function updateAllPatternData() {
     });
 }
 
-// 패턴 트리 초기화
+// 패턴 트리 초기화 (DB에서 이름 가져오기)
 function initPatternTree() {
+    console.log("🔄 패턴 트리 초기화 시작");
+    
+    $.ajax({
+        url: "/posco/monitoring/pattern/names",
+        type: "get",
+        success: function(res) {
+            console.log("✅ 패턴 이름 조회 성공:", res);
+            
+            if (res.status === "OK") {
+                const treeContainer = document.getElementById('patternTree');
+                treeContainer.innerHTML = '';
+                
+                const patternNames = res.patternNames;
+                
+                for (let i = 1; i <= 14; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'pattern-tree-item';
+                    
+                    // DB에서 가져온 이름 사용
+                    const patternData = patternNames.find(p => p.pattern_no === i);
+                    const displayName = patternData ? patternData.pattern_name : ('패턴 ' + i);
+                    
+                    item.textContent = displayName;
+                    item.dataset.pattern = i;
+                    
+                    item.addEventListener('click', function() {
+                        document.querySelectorAll('.pattern-tree-item').forEach(el => {
+                            el.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        showPatternDetail(i);
+                    });
+                    
+                    treeContainer.appendChild(item);
+                }
+            } else {
+                console.warn("⚠️ 패턴 이름 조회 실패, 기본 이름 사용");
+                initPatternTreeDefault();
+            }
+        },
+        error: function(err) {
+            console.error("❌ 패턴 이름 조회 에러:", err);
+            initPatternTreeDefault();
+        }
+    });
+}
+
+// 기본 패턴 트리 (에러 시 사용)
+function initPatternTreeDefault() {
+    console.log("🔄 기본 패턴 트리 생성");
+    
     const treeContainer = document.getElementById('patternTree');
     treeContainer.innerHTML = '';
     
     for (let i = 1; i <= 14; i++) {
         const item = document.createElement('div');
         item.className = 'pattern-tree-item';
-        item.textContent = `패턴 ${i}`;
+        item.textContent = '패턴 ' + i;
         item.dataset.pattern = i;
         
         item.addEventListener('click', function() {
-            // 모든 항목 비활성화
             document.querySelectorAll('.pattern-tree-item').forEach(el => {
                 el.classList.remove('active');
             });
-            // 현재 항목 활성화
             this.classList.add('active');
-            // 패턴 내용 표시
             showPatternDetail(i);
         });
         
@@ -353,28 +579,22 @@ function initPatternTree() {
 function showPatternDetail(patternNum) {
     const contentContainer = document.getElementById('patternContent');
     
-    // 요소 생성
     const detailDiv = document.createElement('div');
     detailDiv.className = 'pattern-detail';
     
-    // 헤더 생성
     const headerDiv = document.createElement('div');
     headerDiv.className = 'pattern-detail-header';
     headerDiv.textContent = '패턴 ' + patternNum + ' 상세 정보';
     
-    // 바디 생성
     const bodyDiv = document.createElement('div');
     bodyDiv.className = 'pattern-detail-body';
     
-    // 테이블 컨테이너 생성
     const tableContainer = document.createElement('div');
     tableContainer.className = 'pattern-table-container';
     
-    // 테이블 생성
     const table = document.createElement('table');
     table.className = 'pattern-detail-table';
     
-    // Colgroup
     const colgroup = document.createElement('colgroup');
     const firstCol = document.createElement('col');
     firstCol.style.width = '80px';
@@ -430,39 +650,40 @@ function showPatternDetail(patternNum) {
     tableContainer.appendChild(table);
     bodyDiv.appendChild(tableContainer);
     
-    // 버튼 영역 생성
+    // 버튼 영역
     const buttonDiv = document.createElement('div');
     buttonDiv.className = 'pattern-action-buttons';
     
-    // 읽기 버튼
     const readBtn = document.createElement('button');
     readBtn.className = 'pattern-action-btn read';
     readBtn.textContent = '읽기';
     readBtn.onclick = function() { readPattern(patternNum); };
     
-    // 수정 버튼
     const editBtn = document.createElement('button');
     editBtn.className = 'pattern-action-btn edit';
     editBtn.textContent = '수정';
     editBtn.onclick = function() { editPattern(patternNum); };
     
-    // 적용 버튼
     const applyBtn = document.createElement('button');
     applyBtn.className = 'pattern-action-btn apply';
     applyBtn.textContent = '적용';
     applyBtn.onclick = function() { applyPattern(patternNum); };
     
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'pattern-action-btn rename';
+    renameBtn.textContent = '이름변경';
+    renameBtn.onclick = function() { renamePattern(patternNum); };
+    
     buttonDiv.appendChild(readBtn);
     buttonDiv.appendChild(editBtn);
     buttonDiv.appendChild(applyBtn);
+    buttonDiv.appendChild(renameBtn);
     
     bodyDiv.appendChild(buttonDiv);
     
-    // 조립
     detailDiv.appendChild(headerDiv);
     detailDiv.appendChild(bodyDiv);
     
-    // 기존 내용 제거 후 추가
     contentContainer.innerHTML = '';
     contentContainer.appendChild(detailDiv);
 }
@@ -480,7 +701,7 @@ function readPattern(patternNum) {
         },
         success: function() {
             console.log("✅ 패턴 " + patternNum + " 읽기 트리거 완료");
-            alert("패턴 " + patternNum + " 정보를 읽어왔습니다.");
+            alert("패턴 " + patternNum + " 정보를 읽기를 시작합니다.");
         },
         error: function(err) {
             console.error("❌ 패턴 읽기 실패:", err);
@@ -489,11 +710,9 @@ function readPattern(patternNum) {
     });
 }
 
-// 패턴 수정 - patternWrite 팝업 열기 (읽기 제거)
+// 패턴 수정
 function editPattern(patternNum) {
     console.log('패턴 ' + patternNum + ' 수정 팝업 열기');
-    
-    // 바로 팝업 열기 (읽기 과정 완전 제거)
     openPopup("/posco/popup/patternWrite?patternNo=" + patternNum, 1250, 300);
 }
 
@@ -511,9 +730,8 @@ function applyPattern(patternNum) {
         return;
     }
     
-    console.log('패턴 ' + patternNum + ' 적용');
+    console.log('패턴 ' + patternNum + ' 쓰기를 시작합니다.');
     
-    // ① 운전 패턴번호 설정
     $.ajax({
         url: "/posco/monitoring/write/patternInfoAnalogOnly",
         type: "post",
@@ -529,7 +747,6 @@ function applyPattern(patternNum) {
             
             console.log("✅ 운전 패턴번호 설정 완료");
             
-            // ② 패턴별 적용 비트 ON
             $.ajax({
                 url: "/posco/monitoring/write/patternInfoApplyBit",
                 type: "post",
@@ -550,6 +767,37 @@ function applyPattern(patternNum) {
         error: function(err) {
             console.error("❌ 패턴번호 설정 실패:", err);
             alert("패턴번호 설정 실패");
+        }
+    });
+}
+
+// 패턴 이름 변경
+function renamePattern(patternNum) {
+    const newName = prompt('새 패턴 이름을 입력하세요:', '패턴 ' + patternNum);
+    
+    if (newName === null || newName.trim() === '') {
+        return;
+    }
+    
+    $.ajax({
+        url: "/posco/monitoring/pattern/name/update",
+        type: "post",
+        data: {
+            pattern_no: patternNum,
+            pattern_name: newName.trim()
+        },
+        success: function(res) {
+            if (res.status === "OK") {
+                alert(res.message);
+                initPatternTree(); // 트리 새로고침
+                showPatternDetail(patternNum); // 상세 화면 새로고침
+            } else {
+                alert(res.message);
+            }
+        },
+        error: function(err) {
+            console.error("❌ 이름 변경 실패:", err);
+            alert("이름 변경에 실패했습니다.");
         }
     });
 }
