@@ -34,7 +34,7 @@
                          AND IFNULL(p.proc_ptrn_end, NOW())
 
     WHERE p.proc_ptrn_no = #{patternNo}
-
+	 AND p.proc_ptrn_end IS NULL
     ORDER BY t.tdatetime
 
 </select>

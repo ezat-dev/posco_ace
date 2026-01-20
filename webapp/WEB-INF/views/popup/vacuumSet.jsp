@@ -61,11 +61,11 @@
 <body>
 <div class="container">
 
-    <div class="header">고진공 SET 설정</div>
+    <div class="header">고진공&N2 SET 설정</div>
 
     <div class="box-wrap">
         <div class="row heat-inline">
-    <label>고진공-SET</label>
+    <label>고진공&N2-SET</label>
 
     <input type="text" class="input-hivacuum-1">
 

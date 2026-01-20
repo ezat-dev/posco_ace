@@ -72,19 +72,30 @@
 		CALL sp_ptrn_save(#{ptrn_no}, #{ptrn_seg1_temp}, #{ptrn_seg2_temp}, #{ptrn_seg3_temp},
 						  #{ptrn_seg4_temp}, #{ptrn_seg5_temp}, #{ptrn_seg6_temp}, #{ptrn_seg7_temp},
 						  #{ptrn_seg8_temp}, #{ptrn_seg9_temp}, #{ptrn_seg10_temp},
+						  #{ptrn_seg11_temp}, #{ptrn_seg12_temp}, #{ptrn_seg13_temp},
+						  #{ptrn_seg14_temp}, #{ptrn_seg15_temp}, #{ptrn_seg16_temp}, #{ptrn_seg17_temp},
+						  #{ptrn_seg18_temp}, #{ptrn_seg19_temp}, #{ptrn_seg20_temp},
 						  #{ptrn_seg1_time}, #{ptrn_seg2_time}, #{ptrn_seg3_time}, #{ptrn_seg4_time},
 						  #{ptrn_seg5_time}, #{ptrn_seg6_time}, #{ptrn_seg7_time}, #{ptrn_seg8_time},
-						  #{ptrn_seg9_time}, #{ptrn_seg10_time}
+						  #{ptrn_seg9_time}, #{ptrn_seg10_time},
+						  #{ptrn_seg11_time}, #{ptrn_seg12_time}, #{ptrn_seg13_time}, #{ptrn_seg14_time},
+						  #{ptrn_seg15_time}, #{ptrn_seg16_time}, #{ptrn_seg17_time}, #{ptrn_seg18_time},
+						  #{ptrn_seg19_time}, #{ptrn_seg20_time}
 		)
 	</update>
 	
 	<select id="getPatternList" parameterType="pattern" resultType="pattern">
-	    SELECT 
-	        proc_date, proc_ptrn_no, proc_ptrn_start, proc_ptrn_end
-	    FROM tb_pattern_proc
-	    WHERE proc_date BETWEEN #{sdate} AND #{edate}
-	    ORDER BY proc_ptrn_start;
-	</select>
+    SELECT 
+        p.proc_date,
+        p.proc_ptrn_no,
+        p.proc_ptrn_start,
+        p.proc_ptrn_end,
+        COALESCE(pn.pattern_name, CONCAT('패턴 ', p.proc_ptrn_no)) AS pattern_name
+    FROM tb_pattern_proc p
+    LEFT JOIN tb_pattern_name pn ON p.proc_ptrn_no = pn.pattern_no
+    WHERE p.proc_date BETWEEN #{sdate} AND #{edate}
+    ORDER BY p.proc_ptrn_start DESC
+</select>
 	
 	
 	<select id="getPatternInfo" parameterType="int" resultType="hashmap">

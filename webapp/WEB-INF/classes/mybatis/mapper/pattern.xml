@@ -40,4 +40,71 @@
     	AND proc_ptrn_start = #{proc_ptrn_start}
     	AND proc_ptrn_end IS NULL
     </update>
+    
+    
+    
+    
+    <!-- 패턴 이름 조회 (단건) -->
+    <select id="getPatternName" parameterType="int" resultType="pattern">
+        SELECT 
+            pattern_no,
+            pattern_name,
+            tdatetime
+        FROM tb_pattern_name
+        WHERE pattern_no = #{pattern_no}
+    </select>
+    
+    <!-- 전체 패턴 이름 조회 -->
+    <select id="getAllPatternNames" resultType="pattern">
+        SELECT 
+            pattern_no,
+            pattern_name,
+            tdatetime
+        FROM tb_pattern_name
+        ORDER BY pattern_no ASC
+    </select>
+    
+    <!-- 패턴 이름 수정 -->
+    <update id="updatePatternName" parameterType="pattern">
+        UPDATE tb_pattern_name
+        SET 
+            pattern_name = #{pattern_name},
+            tdatetime = NOW()
+        WHERE pattern_no = #{pattern_no}
+    </update>
+    
+    <!-- 패턴 이름 초기화 -->
+    <update id="resetPatternName" parameterType="int">
+        UPDATE tb_pattern_name
+        SET 
+            pattern_name = CONCAT('패턴 ', pattern_no),
+            tdatetime = NOW()
+        WHERE pattern_no = #{pattern_no}
+    </update>
+    
+    <!-- 패턴 이름 존재 여부 확인 -->
+    <select id="checkPatternNameExists" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_pattern_name
+        WHERE pattern_no = #{pattern_no}
+    </select>
+    
+    <!-- 패턴 이름 초기 데이터 삽입 -->
+    <insert id="insertPatternName" parameterType="pattern">
+        INSERT INTO tb_pattern_name (pattern_no, pattern_name, tdatetime)
+        VALUES (#{pattern_no}, #{pattern_name}, NOW())
+    </insert>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 </mapper>

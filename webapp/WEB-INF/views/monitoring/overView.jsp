@@ -781,7 +781,7 @@ h1{
   <div class="box10"></div>
   <div class="box11"></div>
   <div class="box12">히팅 SP</div>
-  <div class="box13">고진공 SP</div>
+  <div class="box13">고진공&N2 SP</div>
   <div class="box14">운전 선택</div>
   <div class="auto-run-off-box">자동운전 정지</div>
   <div class="auto-run-on-box">자동운전 시작</div>
@@ -827,7 +827,7 @@ h1{
   <div class="text6">Torr</div>
   <div class="text7">Torr</div>
   <div class="text19">Torr</div>
-  <div class="text8">고진공 도달</div>
+  <div class="text8">고진공&N2 도달</div>
   <div class="text9">히팅 도달</div>
   <div class="text10">양압계</div>
   <div class="text11">진공도</div>
@@ -1094,6 +1094,10 @@ function valueDisplay(key, val) {
 
     let displayValue = val;
 
+    // ✅ analog-pg가 0일 때 "-" 표시
+    if (key === "analog-pg" && (val == 0 || val === "0")) {
+        displayValue = "-";
+    }
     
     const decimalKeys = [
         "analog-vacuum-pv-1",

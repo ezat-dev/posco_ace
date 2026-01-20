@@ -82,7 +82,7 @@
     <div class="range-buttons">
     <button class="range-btn" data-range="1">1분</button>
     <button class="range-btn" data-range="2">2분</button>
-    <button class="range-btn active" data-range="5">5분</button>
+    <button class="range-btn" data-range="5">5분</button>
     <button class="range-btn" data-range="10">10분</button>
     <button class="range-btn" data-range="15">15분</button>
     <button class="range-btn" data-range="30">30분</button>
@@ -103,6 +103,7 @@
 let chart = null;
 let timer = null;
 let markerEnabled = false;
+let selectedRangeMinutes = 60; // 기본 1시간
 
 /* 범례 상태 저장/복원 */
 function saveLegendState(){
@@ -122,12 +123,10 @@ function loadLegendState(){
 /* tick interval에 따른 레이블 형식 결정 */
 function getLabelFormat(tickIntervalMinutes) {
     if (tickIntervalMinutes <= 2) {
-        // 1~2분: 시:분만 표시
         return function() {
             return Highcharts.dateFormat("%H:%M", this.value);
         };
     } else {
-        // 5분 이상: 월-일, 시:분 (2줄)
         return function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
@@ -149,15 +148,29 @@ function updateXAxis(tickIntervalMinutes) {
     });
 }
 
+/* 선택된 범위에 맞춰 차트 표시 범위 조정 */
+function applySelectedRange(rangeMinutes) {
+    if(!chart) return;
+    
+    const xAxis = chart.xAxis[0];
+    const extremes = xAxis.getExtremes();
+    const dataMax = extremes.dataMax; // 최신 데이터 시간
+    
+    // 선택된 범위만큼만 표시 (최신 데이터 기준)
+    const rangeMillis = rangeMinutes * 60 * 1000;
+    const newMin = dataMax - rangeMillis;
+    xAxis.setExtremes(Math.max(extremes.dataMin, newMin), dataMax);
+}
+
 /* 줌 레벨에 따른 최적 tick interval 계산 */
 function getOptimalTickIntervalForZoom(rangeMillis) {
     const rangeMinutes = rangeMillis / (60 * 1000);
     
-    if (rangeMinutes <= 5) return 1;        // 5분 이하: 1분
-    if (rangeMinutes <= 15) return 2;       // 15분 이하: 2분
-    if (rangeMinutes <= 30) return 5;       // 30분 이하: 5분
-    if (rangeMinutes <= 60) return 10;      // 60분 이하: 10분
-    return 15;                               // 60분 초과: 15분
+    if (rangeMinutes <= 5) return 1;
+    if (rangeMinutes <= 15) return 2;
+    if (rangeMinutes <= 30) return 5;
+    if (rangeMinutes <= 60) return 10;
+    return 15;
 }
 
 /* 마우스 휠 줌 기능 */
@@ -176,23 +189,30 @@ function enableMouseWheelZoom() {
         const currentMax = extremes.max;
         const range = currentMax - currentMin;
         
-        // 줌 비율 (휠 방향에 따라)
+        // 줌 비율
         const zoomFactor = e.originalEvent.deltaY > 0 ? 1.1 : 0.9;
         const newRange = range * zoomFactor;
         
-        // 최소/최대 범위 제한
-        if (newRange > (dataMax - dataMin)) {
-            xAxis.setExtremes(dataMin, dataMax);
-            // 전체 범위일 때 최적 tick interval 적용
-            const optimalInterval = getOptimalTickIntervalForZoom(dataMax - dataMin);
-            updateXAxis(optimalInterval);
+        // 선택된 범위 내에서만 줌
+        const maxAllowedRange = selectedRangeMinutes * 60 * 1000;
+        
+        // 최대 범위 제한
+        if (newRange > maxAllowedRange) {
+            // 선택된 범위로 복귀
+            const newMin = dataMax - maxAllowedRange;
+            xAxis.setExtremes(Math.max(dataMin, newMin), dataMax);
             
-            // 버튼 상태 초기화
-            $('.range-btn').removeClass('active');
+            // 선택된 버튼에 맞는 tick interval 적용
+            const tickInterval = selectedRangeMinutes <= 5 ? 1 :
+                                 selectedRangeMinutes <= 10 ? 2 :
+                                 selectedRangeMinutes <= 15 ? 5 :
+                                 selectedRangeMinutes <= 30 ? 5 : 10;
+            updateXAxis(tickInterval);
             return;
         }
         
-        if (newRange < 60000) { // 최소 1분
+        // 최소 범위 제한 (1분)
+        if (newRange < 60000) {
             return;
         }
         
@@ -206,17 +226,27 @@ function enableMouseWheelZoom() {
         const newMax = center + (newRange * (1 - mouseRatio));
         
         // 범위 제한
-        const finalMin = Math.max(dataMin, newMin);
-        const finalMax = Math.min(dataMax, newMax);
+        let finalMin = Math.max(dataMin, newMin);
+        let finalMax = Math.min(dataMax, newMax);
+        
+        // 선택된 범위를 벗어나지 않도록
+        const selectedRangeMillis = selectedRangeMinutes * 60 * 1000;
+        const minAllowedTime = dataMax - selectedRangeMillis;
+        
+        if(finalMin < minAllowedTime) {
+            const shift = minAllowedTime - finalMin;
+            finalMin = minAllowedTime;
+            finalMax = Math.min(dataMax, finalMax + shift);
+        }
+        if(finalMax > dataMax) {
+            finalMax = dataMax;
+        }
         
         xAxis.setExtremes(finalMin, finalMax);
         
         // 줌 레벨에 따른 최적 tick interval 적용
         const optimalInterval = getOptimalTickIntervalForZoom(finalMax - finalMin);
         updateXAxis(optimalInterval);
-        
-        // 버튼 상태 초기화
-        $('.range-btn').removeClass('active');
     });
 }
 
@@ -252,14 +282,10 @@ function createChart(series){
                         const max = event.xAxis[0].max;
                         const range = max - min;
                         
-                        // 선택 영역에 따른 최적 tick interval 적용
                         const optimalInterval = getOptimalTickIntervalForZoom(range);
                         setTimeout(function() {
                             updateXAxis(optimalInterval);
                         }, 100);
-                        
-                        // 버튼 상태 초기화
-                        $('.range-btn').removeClass('active');
                     }
                 }
             }
@@ -284,7 +310,7 @@ function createChart(series){
         },
         xAxis:{
             type:"datetime",
-            tickInterval: 5 * 60 * 1000, // 기본 5분 간격
+            tickInterval: 10 * 60 * 1000, // 기본 10분 간격 (1시간 범위)
             labels:{
                 formatter: function(){
                     return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
@@ -353,13 +379,28 @@ function loadRealtime(){
 
         if(!chart){
             createChart(newSeries);
+            
+            // 초기 로딩 시 1시간 범위 표시 (전체 데이터)
+            // applySelectedRange는 호출하지 않음 - 전체 1시간 데이터 표시
         } else {
+            // 기존 표시 범위 저장
+            const xAxis = chart.xAxis[0];
+            const oldExtremes = xAxis.getExtremes();
+            const wasShowingFullRange = (oldExtremes.max === oldExtremes.dataMax);
+            
             newSeries.forEach((s, idx) => {
                 if(chart.series[idx]) {
                     chart.series[idx].setData(s.data, false);
                 }
             });
             chart.redraw();
+            
+            // 전체 범위를 보고 있었다면 계속 전체 범위 유지
+            // 줌/팬 중이었다면 상대적 위치 유지
+            if(wasShowingFullRange) {
+                const newExtremes = xAxis.getExtremes();
+                applySelectedRange(selectedRangeMinutes);
+            }
         }
     });
 }
@@ -378,18 +419,31 @@ $("#toggleMarker").on("change",function(){
     }
 });
 
-// 시간 범위 버튼 클릭 - tick interval만 변경
+// 시간 범위 버튼 클릭
 $('.range-btn').on('click', function(){
     const range = parseInt($(this).data('range'));
     $('.range-btn').removeClass('active');
     $(this).addClass('active');
     
-    // X축 tick interval만 업데이트
-    updateXAxis(range);
+    // 선택된 범위 저장
+    selectedRangeMinutes = range;
+    
+    // 범위에 맞춰 차트 표시
+    applySelectedRange(range);
+    
+    // 버튼에 맞는 tick interval 적용
+    const tickInterval = range <= 5 ? 1 :
+                         range <= 10 ? 2 :
+                         range <= 15 ? 5 :
+                         range <= 30 ? 5 : 10;
+    updateXAxis(tickInterval);
 });
 
 /* 초기화 및 타이머 시작 */
 $(function(){
+    // 버튼 초기 상태: 아무것도 선택 안 함 (전체 1시간 표시)
+    $('.range-btn').removeClass('active');
+    
     loadRealtime();
     timer = setInterval(loadRealtime, 5000);
 });

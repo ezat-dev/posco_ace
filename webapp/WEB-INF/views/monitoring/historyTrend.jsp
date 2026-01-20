@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>히스토리컬 트렌드</title>
+    <title>트렌드</title>
     <%@include file="../include/pluginpage.jsp" %>    
     <jsp:include page="../include/tabBar.jsp"/>
 
@@ -74,31 +74,44 @@
             font-weight: bold;
         }
         
-        /* 시간 범위 버튼 */
-        .range-buttons {
+        /* 모드 버튼 */
+        .mode-buttons {
             display: flex;
             gap: 8px;
             margin-left: 20px;
         }
         
-        .range-btn {
-            padding: 6px 12px;
+        .mode-btn {
+            padding: 8px 16px;
             border: 1px solid #007bff;
             background: white;
             color: #007bff;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: bold;
             transition: all 0.2s;
         }
         
-        .range-btn:hover {
+        .mode-btn:hover {
             background: #007bff;
             color: white;
         }
         
-        .range-btn.active {
+        .mode-btn.active {
             background: #007bff;
+            color: white;
+        }
+        
+        .mode-btn.realtime-btn.active {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .mode-btn.realtime-btn:hover {
+            background: #28a745;
+            border-color: #28a745;
             color: white;
         }
     </style>
@@ -107,7 +120,7 @@
 
 <div class="button-container">
     <label class="daylabel">검색 날짜 :</label>
-    <div class="date_input" style="display: flex; align-items: center;">
+    <div class="date_input" id="dateInputArea" style="display: flex; align-items: center;">
         <input type="text" autocomplete="off" class="datetimeSet" id="startDate">
         <span class="mid"> ~ </span>
         <input type="text" autocomplete="off" class="datetimeSet" id="endDate">
@@ -115,6 +128,11 @@
     <button class="select-button" id="btnSearch">
         <img src="/posco/css/tabBar/search-icon.png" alt="select" class="button-image">조회
     </button>
+    
+    <div class="mode-buttons">
+        <button class="mode-btn active" id="btnHistorical">히스토리컬</button>
+        <button class="mode-btn realtime-btn" id="btnRealtime">🔴 실시간</button>
+    </div>
     
     <div class="trend-option" style="margin-left: auto;">
         <label>
@@ -124,14 +142,14 @@
     </div>
 </div>
 
-
-
 <div id="container" style="width: 100%; height: 600px; margin-top: 20px;"></div>
 
 <script>
 /* 전역 변수 */
 let chart = null;
 let markerEnabled = false;
+let currentMode = "HISTORICAL"; // "HISTORICAL" or "REALTIME"
+let realtimeTimer = null;
 
 /* 날짜 유틸 */
 function pad(n){ return n < 10 ? "0"+n : n; }
@@ -173,67 +191,56 @@ function getOptimalSettings(rangeMillis) {
     let tickInterval, labelFormat;
     
     if (rangeDays > 30) {
-        // 30일 이상: 1일 간격, 월-일만 표시
         tickInterval = 24 * 60 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d", this.value);
         };
     } else if (rangeDays > 14) {
-        // 14~30일: 12시간 간격, 월-일, 시:분
         tickInterval = 12 * 60 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeDays > 7) {
-        // 7~14일: 6시간 간격
         tickInterval = 6 * 60 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeDays > 3) {
-        // 3~7일: 3시간 간격
         tickInterval = 3 * 60 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeDays > 1) {
-        // 1~3일: 1시간 간격
         tickInterval = 60 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeHours > 6) {
-        // 6~24시간: 30분 간격
         tickInterval = 30 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeHours > 3) {
-        // 3~6시간: 15분 간격
         tickInterval = 15 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeHours > 1) {
-        // 1~3시간: 10분 간격
         tickInterval = 10 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%m-%d<br>%H:%M", this.value);
         };
     } else if (rangeMinutes > 30) {
-        // 30~60분: 5분 간격
         tickInterval = 5 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%H:%M", this.value);
         };
     } else if (rangeMinutes > 15) {
-        // 15~30분: 2분 간격
         tickInterval = 2 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%H:%M", this.value);
         };
     } else {
-        // 15분 이하: 1분 간격
         tickInterval = 1 * 60 * 1000;
         labelFormat = function() {
             return Highcharts.dateFormat("%H:%M", this.value);
@@ -270,24 +277,20 @@ function enableMouseWheelZoom() {
         const currentMax = extremes.max;
         const range = currentMax - currentMin;
         
-        // 줌 비율 (휠 방향에 따라)
         const zoomFactor = e.originalEvent.deltaY > 0 ? 1.1 : 0.9;
         const newRange = range * zoomFactor;
         
-        // 최소/최대 범위 제한
         if (newRange > (dataMax - dataMin)) {
             xAxis.setExtremes(dataMin, dataMax);
-            // 전체 범위일 때 최적 설정 적용
             const settings = getOptimalSettings(dataMax - dataMin);
             updateXAxis(settings.tickInterval, settings.labelFormat);
             return;
         }
         
-        if (newRange < 60000) { // 최소 1분
+        if (newRange < 60000) {
             return;
         }
         
-        // 마우스 위치를 중심으로 줌
         const mouseX = e.originalEvent.offsetX;
         const chartWidth = chartObj.chartWidth;
         const mouseRatio = mouseX / chartWidth;
@@ -296,13 +299,11 @@ function enableMouseWheelZoom() {
         const newMin = center - (newRange * mouseRatio);
         const newMax = center + (newRange * (1 - mouseRatio));
         
-        // 범위 제한
         const finalMin = Math.max(dataMin, newMin);
         const finalMax = Math.min(dataMax, newMax);
         
         xAxis.setExtremes(finalMin, finalMax);
         
-        // 줌 레벨에 따른 최적 설정 적용
         const settings = getOptimalSettings(finalMax - finalMin);
         updateXAxis(settings.tickInterval, settings.labelFormat);
     });
@@ -312,6 +313,15 @@ function enableMouseWheelZoom() {
 function createChart(series, dataRange){
     const legendState = loadLegendState();
     
+    // 실시간 모드일 때만 온도분포 기본 숨김
+    if(currentMode === "REALTIME") {
+        series.forEach(s => {
+            if(s.name.includes('온도분포')){
+                s.visible = false;
+            }
+        });
+    }
+    
     if(legendState){
         series.forEach(s => {
             if(legendState.hasOwnProperty(s.name)){
@@ -320,7 +330,6 @@ function createChart(series, dataRange){
         });
     }
     
-    // 데이터 범위에 따른 최적 설정
     const settings = getOptimalSettings(dataRange);
     
     chart = Highcharts.chart("container",{
@@ -336,7 +345,6 @@ function createChart(series, dataRange){
                         const max = event.xAxis[0].max;
                         const range = max - min;
                         
-                        // 선택 영역에 따른 최적 설정 적용
                         const settings = getOptimalSettings(range);
                         setTimeout(function() {
                             updateXAxis(settings.tickInterval, settings.labelFormat);
@@ -345,7 +353,9 @@ function createChart(series, dataRange){
                 }
             }
         },
-        title:{ text:"히스토리컬 트렌드" },
+        title:{ 
+            text: currentMode === "REALTIME" ? "실시간 트렌드" : "히스토리컬 트렌드"
+        },
         plotOptions:{
             series:{
                 marker:{
@@ -409,7 +419,6 @@ function createChart(series, dataRange){
         series: series
     });
     
-    // 마우스 휠 줌 활성화
     enableMouseWheelZoom();
 }
 
@@ -471,6 +480,14 @@ function clearChart(){
     chart.redraw();
 }
 
+/* 타이머 정리 */
+function stopRealtimeTimer(){
+    if(realtimeTimer){
+        clearInterval(realtimeTimer);
+        realtimeTimer = null;
+    }
+}
+
 /* 히스토리컬 트렌드 조회 */
 function loadHistory(){
     const startDate = $("#startDate").val();
@@ -488,7 +505,6 @@ function loadHistory(){
 
         const categories = result.map(r => new Date(r.tdatetime).getTime());
         
-        // 데이터 범위 계산
         const dataMin = Math.min(...categories);
         const dataMax = Math.max(...categories);
         const dataRange = dataMax - dataMin;
@@ -517,8 +533,83 @@ function loadHistory(){
     });
 }
 
+/* 실시간 트렌드 조회 */
+function loadRealtime(){
+    $.post("/posco/monitoring/trend/realtime",function(result){
+        if(!result || result.length === 0){
+            clearChart();
+            return;
+        }
+
+        const categories = result.map(r => new Date(r.tdatetime).getTime());
+        
+        const dataMin = Math.min(...categories);
+        const dataMax = Math.max(...categories);
+        const dataRange = dataMax - dataMin;
+
+        const newSeries = [
+            { name:'1존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac1_pv]) },
+            { name:'2존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac2_pv]) },
+            { name:'3존온도 PV', data: result.map((r,i)=>[categories[i],+r.vac3_pv]) },
+            { name:'온도 SP', data: result.map((r,i)=>[categories[i],+r.tem_sp]) },
+            { name:'온도 TSP', data: result.map((r,i)=>[categories[i],+r.tem_tsp]) },
+            { name:'온도분포1', data: result.map((r,i)=>[categories[i],+r.tem_1]) },
+            { name:'온도분포2', data: result.map((r,i)=>[categories[i],+r.tem_2]) },
+            { name:'온도분포3', data: result.map((r,i)=>[categories[i],+r.tem_3]) },
+            { name:'온도분포4', data: result.map((r,i)=>[categories[i],+r.tem_4]) },
+            { name:'온도분포5', data: result.map((r,i)=>[categories[i],+r.tem_5]) },
+            { name:'온도분포6', data: result.map((r,i)=>[categories[i],+r.tem_6]) },
+            { name:'온도분포7', data: result.map((r,i)=>[categories[i],+r.tem_7]) },
+            { name:'온도분포8', data: result.map((r,i)=>[categories[i],+r.tem_8]) },
+            { name:'온도분포9', data: result.map((r,i)=>[categories[i],+r.tem_9]) }
+        ];
+
+        if(!chart){
+            createChart(newSeries, dataRange);
+        } else {
+            newSeries.forEach((s, idx) => {
+                if(chart.series[idx]) {
+                    chart.series[idx].setData(s.data, false);
+                }
+            });
+            chart.redraw();
+        }
+    });
+}
+
+/* 모드 전환 */
+function switchToHistorical(){
+    currentMode = "HISTORICAL";
+    stopRealtimeTimer();
+    
+    $("#btnHistorical").addClass("active");
+    $("#btnRealtime").removeClass("active");
+    
+    $("#dateInputArea").show();
+    $("#btnSearch").show();
+    
+    loadHistory();
+}
+
+function switchToRealtime(){
+    currentMode = "REALTIME";
+    stopRealtimeTimer();
+    
+    $("#btnHistorical").removeClass("active");
+    $("#btnRealtime").addClass("active");
+    
+    $("#dateInputArea").hide();
+    $("#btnSearch").hide();
+    
+    loadRealtime();
+    realtimeTimer = setInterval(loadRealtime, 5000);
+}
+
 /* 이벤트 핸들러 */
 $("#btnSearch").on("click", loadHistory);
+
+$("#btnHistorical").on("click", switchToHistorical);
+$("#btnRealtime").on("click", switchToRealtime);
 
 $("#toggleMarker").on("change",function(){
     markerEnabled = this.checked;
@@ -538,6 +629,11 @@ $(function(){
     $("#startDate").val(before1Hour());
     $("#endDate").val(now());
     loadHistory();
+});
+
+/* 페이지 떠날 때 타이머 정리 */
+$(window).on('beforeunload', function() {
+    stopRealtimeTimer();
 });
 </script>
 </body>
